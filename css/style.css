@@ -11,6 +11,7 @@ table td{
 #mainTable div{
     max-width: 100%;
     word-wrap:break-word;
+    outline: none;
 }
 
 #header{
