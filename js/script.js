@@ -19,10 +19,15 @@ function CreateTable(){
 
         for(var j=0; j<y; j++){
             var cell = document.createElement("td");
-            cell.id = i +"," + j;
+            cell.id = i +":" + j;
             var text = document.createTextNode(" ");
+
+            var inputElement = document.createElement("div");
+            inputElement.id="input"+i+":"+j;
+            inputElement.setAttribute("contenteditable","true");
             
-            cell.appendChild(text);
+            /*cell.appendChild(text);*/
+            cell.appendChild(inputElement);
 
             cell.setAttribute("bgcolor", "gray");
 
@@ -56,7 +61,7 @@ function ShowPosition(id){
         document.getElementById(wybranaKomorka).style.background = "";
     }
     var text = id;
-    alert(text.charAt(0) + ":" + text.charAt(2));
+    //alert(text.charAt(0) + ":" + text.charAt(2));
 
     wybranaKomorka = text;
     document.getElementById(text).style.background = "green";
@@ -75,6 +80,18 @@ function WybranaKomorka(){
 
 function AddBorderCell(){
     if(wybranaKomorka != null){
-        document.getElementById(wybranaKomorka).style.border = "1px solid red";
+        document.getElementById(wybranaKomorka).style.border = "3px solid red";
+    }
+}
+
+function TextColor(){
+    if(wybranaKomorka != null){
+        document.getElementById("input"+wybranaKomorka).style.color = "white";
+    }
+}
+
+function TextBold(){
+    if(wybranaKomorka != null){
+        document.getElementById("input"+wybranaKomorka).style.fontWeight = "bold";
     }
 }

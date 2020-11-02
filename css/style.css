@@ -3,5 +3,22 @@ table{
 }
 
 table td{
-    height: 20px;
+    height: 5vh;
+    width: 10vw;
+}
+
+
+#mainTable div{
+    max-width: 100%;
+    word-wrap:break-word;
+}
+
+#header{
+    margin-bottom: 5vh;
+}
+
+button{
+    width: 10vw;
+    height: 5vw;
+    margin: 1em;
 }
