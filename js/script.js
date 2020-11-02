@@ -25,7 +25,7 @@ function CreateTable(){
             var inputElement = document.createElement("div");
             inputElement.id="input"+i+":"+j;
             inputElement.setAttribute("contenteditable","true");
-            
+
             /*cell.appendChild(text);*/
             cell.appendChild(inputElement);
 
@@ -94,4 +94,10 @@ function TextBold(){
     if(wybranaKomorka != null){
         document.getElementById("input"+wybranaKomorka).style.fontWeight = "bold";
     }
+}
+
+function TextItalic(){
+  if(wybranaKomorka != null){
+    document.execCommand("italic");
+  }
 }
