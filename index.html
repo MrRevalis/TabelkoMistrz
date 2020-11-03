@@ -5,22 +5,54 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" crossorigin="anonymous">
 	<link rel="stylesheet" href="css/style.css">
 	<script type="text/javascript" src="js/script.js" defer></script>
-	<title> TabelkoMistrz</title>
+	<title>TabelkoMistrz</title>
 	</head>
 
 <body>
-	<div id="header">
-		<button onclick="CreateTable()">Utworz tabele</button>
-		<button onclick="AddBorder()">Dodaj obramówke do tabeli</button>
-		<button onclick="WybranaKomorka()">Wybrana Komorka</button>
-		<button onclick="AddBorderCell()">Dodaj obramowke</button>
-	</br>
-		<button onclick="TextColor()">Zmień kolor tekstu</button>
-		<button onclick="TextBold()">Pogrub tekst</button>
-		<button onclick="TextItalic()">Kursywa</button>
-	</div>
+	<nav>
+		<div class="nav-wrapper">
+			<div class="tab">
+				<a class="tab-btn active">Plik</a>
+				<div class="tab-content" style="display:block">
+					<a class="tab-item">Otwórz</a>
+					<a class="tab-item">Zapisz</a>
+					<div class="divider"></div>
+					<a class="tab-item" onclick="CreateTable()">Utworz tabele</a>
+					<a class="tab-item" onclick="AddBorder()">Dodaj obramówke do tabeli</a>
+					<a class="tab-item" onclick="WybranaKomorka()">Wybrana Komorka</a>
+					<a class="tab-item" onclick="AddBorderCell()">Dodaj obramowke</a>
+					<a class="tab-item" onclick="TextColor()">Zmień kolor tekstu</a>
+					<a class="tab-item" onclick="TextBold()">Pogrub tekst</a>
+					<a class="tab-item" onclick="TextItalic()">Kursywa</a>
+				</div>
+			</div>
+			<div class="tab">
+				<a class="tab-btn">Narzędzia główne</a>
+				<div class="tab-content">
+					<a class="tab-item"><i class="fas fa-bold"></i></a>
+					<a class="tab-item"><i class="fas fa-italic"></i></a>
+					<a class="tab-item"><i class="fas fa-underline"></i></a>
+				</div>
+			</div>
+			<div class="tab">
+				<a class="tab-btn">Edycja</a>
+				<div class="tab-content">
+					<a class="tab-item">Cofnij</a>
+					<a class="tab-item">Wklej</a>
+				</div>
+			</div>
+			<div class="tab">
+				<a class="tab-btn">Komórka</a>
+				<div class="tab-content">
+					<a class="tab-item">Asd</a>
+					<a class="tab-item">Wkfdsdfslej</a>
+				</div>
+			</div>
+		</div>
+	</nav>
 
 	<div id="body">
 

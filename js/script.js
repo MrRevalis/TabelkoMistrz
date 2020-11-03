@@ -101,3 +101,12 @@ function TextItalic(){
     document.execCommand("italic");
   }
 }
+
+$(document).ready(function(){
+  $(".tab-btn").click(function(){
+    $(".tab-btn").removeClass("active");
+    $(this).addClass("active");
+    $(".tab-content").css("display", "none");
+    $(this).parent().children(".tab-content").css("display", "block");
+  });
+});
