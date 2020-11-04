@@ -48,6 +48,7 @@ nav {
 .nav-wrapper {
   width: 100%;
   background-color: var(--nav-bg-color);
+  position: fixed;
 }
 .tab {
   position: relative;
