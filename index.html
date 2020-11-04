@@ -20,7 +20,16 @@
 					<a class="tab-item">Otwórz</a>
 					<a class="tab-item">Zapisz</a>
 					<div class="divider"></div>
-					<a class="tab-item" onclick="CreateTable()">Utworz tabele</a>
+					<div class="tab-item tooltip">Utworz tabele
+						<div class="tooltip-content">
+							<p id="aTBL">Wstaw tabelę</p>
+							<div id="addTableBox"></div>
+							<div class="divider"></div>
+							<div class="aTB-custom">
+								<input type="number" value="6" id="aTBr" />x<input type="number" value="6" id="aTBc" /><a id="aTBa"><i class="fas fa-plus-square fa-lg"></i></a>
+							</div>
+						</div>
+					</div>
 					<a class="tab-item" onclick="AddBorder()">Dodaj obramówke do tabeli</a>
 					<a class="tab-item" onclick="WybranaKomorka()">Wybrana Komorka</a>
 					<a class="tab-item" onclick="AddBorderCell()">Dodaj obramowke</a>
@@ -47,7 +56,9 @@
 			<div class="tab">
 				<a class="tab-btn">Komórka</a>
 				<div class="tab-content">
-					<a class="tab-item">Asd</a>
+					<a class="tab-item tooltip">Asd
+						<span class="tooltip-content">Hello</span>
+					</a>
 					<a class="tab-item">Wkfdsdfslej</a>
 				</div>
 			</div>

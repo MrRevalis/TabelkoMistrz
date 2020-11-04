@@ -99,3 +99,65 @@ nav {
   display: inline-block;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
+/* TOOLTIP */
+.tooltip { position: relative; }
+.tooltip .tooltip-content {
+  display: none;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  margin-left: -10px;
+  line-height: normal;
+  background-color: #f9f9f9;
+  min-width: 180px;
+  text-align: center;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+/* ADD TABLE TOOLTIP */
+.tooltip-content .row {
+  display: block;
+  height: 17px;
+}
+.tooltip-content .cell {
+  display: inline-block;
+  margin-right: 2px;
+  border: 1px solid #000;
+  height: 15px;
+  width: 15px;
+}
+.tooltip-content .cell:hover, .tooltip-content .active {
+  border-color: #F57D17;
+}
+.tooltip:hover .tooltip-content {
+  display: block;
+}
+.tooltip-content .divider {
+  position: relative;
+  /*border-top: 1px grey solid;*/
+  width: 85%;
+  height: 1px;
+  margin: auto;
+  display: block;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
+}
+#aTBL {
+  margin: 1px;
+  font-size: 16px;
+}
+.aTB-custom input {
+  border: 1px solid #e0e0e0;
+  width: 30%;
+  border-radius: 3px;
+  text-align: center;
+  font-size: 15px;
+  margin-right: 5px;
+}
+.aTB-custom input:nth-child(2){
+  margin-left: 5px;
+  margin-right: 10px;
+}
+.aTB-custom a:hover {
+  color: gray;
+  cursor: pointer;
+}

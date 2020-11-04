@@ -1,10 +1,7 @@
 var wybranaKomorka;
 
 
-function CreateTable(){
-    var x = prompt("Podaj ilosc wierszy");
-    var y = prompt("Podaj ilość kolumn");
-
+function CreateTable(x, y){
     document.getElementById("body").innerHTML = "";
 
     var gdzieUmiescic = document.getElementById("body");
@@ -109,4 +106,59 @@ $(document).ready(function(){
     $(".tab-content").css("display", "none");
     $(this).parent().children(".tab-content").css("display", "block");
   });
+  //add table tooltip
+  createAddTable();
+  $("#addTableBox .cell").hover(function(){
+    const temp = $(this).attr("id").split('x');
+    const row = Number(temp[1]);
+    const cell = Number(temp[2]);
+    //updtae msg
+    $("#aTBL").text("Wstaw tabelę "+(row+1)+"x"+(cell+1));
+    //add border
+    for(let i = 0; i <= row; i++){
+      for(let j = 0; j <= cell; j++){
+        $("#aTBCx"+i+"x"+j).addClass("active");
+      }
+    }
+    //remove border rows
+    for(let i = 9; i > row; i--){
+      for(let j = 9; j >= 0; j--){
+        $("#aTBCx"+i+"x"+j).removeClass("active");
+      }
+    }
+    //cols
+    for(let i = 9; i > cell; i--){
+      for(let j = 9; j >= 0; j--){
+        $("#aTBCx"+j+"x"+i).removeClass("active");
+      }
+    }
+  });
+  $("#addTableBox").mouseleave(function(){
+    $("#addTableBox .cell").removeClass("active");
+    //updtae msg
+    $("#aTBL").text("Wstaw tabelę");
+  });
+  $("#addTableBox .cell").click(function(){
+    const temp = $(this).attr("id").split('x');
+    const row = Number(temp[1]);
+    const col = Number(temp[2]);
+    CreateTable(row + 1, col + 1);
+  });
+  $("#aTBa").click(function(){
+    const rows = $("#aTBr").val();
+    const cols = $("#aTBc").val();
+    CreateTable(rows, cols);
+  });
+  //end add table tooltip
 });
+
+function createAddTable(){
+  for(let i = 0; i<10;i++){
+    $("#addTableBox").append("<div class='row'></div>");
+  }
+  $("#addTableBox .row").each(function(idx, item){
+    for(let i = 0; i < 10; i++){
+      $(item).append("<a class='cell' id ='aTBCx"+idx+"x"+i+"'></a>");
+    }
+  });
+}
