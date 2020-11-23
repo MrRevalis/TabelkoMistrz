@@ -21,12 +21,6 @@ table td{
     width: 10vw;
 }
 
-#mainTable div{
-    max-width: 100%;
-    word-wrap:break-word;
-    outline: none;
-}
-
 #header{
     margin-bottom: 5vh;
 }
