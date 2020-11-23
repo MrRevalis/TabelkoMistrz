@@ -2,6 +2,7 @@ var wybranaKomorka;
 var myszNacisnieta = false;
 var tabelaZaznaczonych = [];
 var pierwszaKomorka;
+var ostatniaEdytowana;
 
 function CreateTable(x, y){
     document.getElementById("body").innerHTML = "";
@@ -20,7 +21,7 @@ function CreateTable(x, y){
             var cell = document.createElement("td");
             cell.id = i +":" + j;
             cell.style.background = "gray";
-            cell.setAttribute("contenteditable","true");
+            cell.setAttribute("contenteditable","false");
 
             row.appendChild(cell)
         }
@@ -42,6 +43,15 @@ function AddFunction(){
           if(myszNacisnieta != true){
             ShowPosition(this.id);
           }
+
+          /*this.ondblclick = function(){
+            if(ostatniaEdytowana != ""){
+              console.log("edytujesz");
+              ostatniaEdytowana = this.id;
+              console.log(ostatniaEdytowana);
+              this.setAttribute("contenteditable","true");
+            }
+          }*/
         };
     }
 
@@ -76,9 +86,22 @@ function AddFunction(){
       }
     })
     //Kończymy zaznaczać i tym samym przez tabele "tabelaZaznaczonych" mamy dostęp do ID zaznaczonych
-    table.addEventListener("mouseup", function(e){
+    table.addEventListener("mouseup", function(){
       console.log("Mysz nie jest nacisnieta");
       myszNacisnieta = false;
+    })
+
+    table.addEventListener("dblclick", function(event){
+      console.log("edytujesz");
+      if(ostatniaEdytowana != null){
+        document.getElementById(ostatniaEdytowana).setAttribute("contenteditable","false");
+        ostatniaEdytowana = event.target.id;
+      }
+      else{
+        ostatniaEdytowana = event.target.id;
+      }
+      document.getElementById(ostatniaEdytowana).setAttribute("contenteditable","true");
+      document.getElementById(ostatniaEdytowana).focus();
     })
 }
 
