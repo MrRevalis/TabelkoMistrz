@@ -2,6 +2,7 @@ var wybranaKomorka;
 var myszNacisnieta = false;
 var tabelaZaznaczonych = [];
 var pierwszaKomorka;
+var ostatniaKomorka;
 var ostatniaEdytowana;
 
 function CreateTable(x, y){
@@ -79,6 +80,7 @@ function AddFunction(){
         //Jeśli target nie jest pusty oraz nie jest tabelką to wykonujemy zaznaczenie
         if(event.target.id != null && event.target.id != "mainTable"){
             WyczyscStyl();
+            ostatniaKomorka = event.target.id;
             var aktualnaKomorka = event.target.id.split(":");
             ZaznaczenieKomorek(pierwszaKomorka.split(":"), aktualnaKomorka);
           
@@ -181,6 +183,52 @@ function TextItalic(){
     document.execCommand("italic");
   }
 }
+
+function ScalKomorki(){
+  /*document.getElementById(pierwszaKomorka).rowSpan = "2";
+  document.getElementById(pierwszaKomorka).colSpan = "2";*/
+
+  console.log(pierwszaKomorka);
+  console.log(ostatniaKomorka);
+
+  //Usuwanie komorek z roznicy pomiedzy pierwsza a ostatnia
+  //Tekst pozostaje tylko w komorce startowej
+  //Dodajemy rowspan i colspan w Math.abs(roznica ostatnia i pierwsza po x i y)
+  var tekst = pierwszaKomorka.split(":");
+  var tekst2 = ostatniaKomorka.split(":");
+  var table = document.getElementById("mainTable");
+
+  var roznicaX = Math.abs(tekst[0] - tekst2[0]);
+  var roznicaY = Math.abs(tekst[1] - tekst2[1]);
+
+  var xMin = Math.min(tekst[0], tekst2[0]);
+  var xMax = Math.max(tekst[0], tekst2[0]);
+  var yMin = Math.min(tekst[1], tekst2[1]);
+  var yMax = Math.max(tekst[1], tekst2[1]);
+
+
+
+  var tekst = document.getElementById(pierwszaKomorka).innerHTML;
+  /*console.log(xMin);
+  console.log(xMax);
+  console.log(yMin);
+  console.log(yMax);*/
+
+  for(var x = xMin; x <= xMax; x++){
+    for(var y = yMin; y <= yMax; y++){
+      if(x+":"+y != xMin+":"+yMin){
+        document.getElementById(x+":"+y).remove();
+      }
+    }
+  }
+  console.log(xMax - xMin + 1);
+  console.log(yMax - yMin + 1);
+  console.log("skad zaczac "+ xMin+":"+yMin);
+  document.getElementById(xMin+":"+yMin).rowSpan = xMax - xMin + 1;
+  document.getElementById(xMin+":"+yMin).colSpan = yMax - yMin + 1;
+  document.getElementById(xMin+":"+yMin).innerHTML = tekst;
+}
+
 
 $(document).ready(function(){
   $(".tab-btn").click(function(){
