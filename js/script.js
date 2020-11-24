@@ -83,7 +83,7 @@ function AddFunction(){
             ostatniaKomorka = event.target.id;
             var aktualnaKomorka = event.target.id.split(":");
             ZaznaczenieKomorek(pierwszaKomorka.split(":"), aktualnaKomorka);
-          
+
         }
       }
     })
@@ -107,7 +107,7 @@ function AddFunction(){
     })
 }
 
-//Wykonuje zaznaczenie komórek, 
+//Wykonuje zaznaczenie komórek,
 function ZaznaczenieKomorek(poczatkowyPunkt, aktualnyPunkt){
 
   var xMin = Math.min(poczatkowyPunkt[0], aktualnyPunkt[0]);
@@ -229,6 +229,35 @@ function ScalKomorki(){
   document.getElementById(xMin+":"+yMin).innerHTML = tekst;
 }
 
+function InsertColumn(side){
+  //console.log();
+  const coords = wybranaKomorka.split(":");
+  const table = document.getElementById("mainTable");
+  let colID = parseInt(coords[1]);
+  if(side == 'p') colID+=document.getElementById(wybranaKomorka).colSpan;
+  //change ids
+  for (let i = 0; i < table.rows.length; i++) {
+      for (let j = colID; j < table.rows[i].cells.length; j++)
+        table.rows[i].cells[j].id = i+":"+(j+1);
+  }
+  //add cell
+  for(let i = 0; i < parseInt(coords[0]); i++){
+    let cell = table.rows[i].insertCell(colID);
+    cell.id = i +":" + colID;
+    cell.style.background = "gray";
+    cell.setAttribute("contenteditable","false");
+  }
+  let ecell = table.rows[parseInt(coords[0])].insertCell(colID-1);
+  ecell.id = parseInt(coords[0]) +":" + colID;
+  ecell.style.background = "gray";
+  ecell.setAttribute("contenteditable","false");
+  for(let i = parseInt(coords[0])+1; i < table.rows.length; i++){
+    let cell = table.rows[i].insertCell(colID);
+    cell.id = i +":" + colID;
+    cell.style.background = "gray";
+    cell.setAttribute("contenteditable","false");
+  }
+}
 
 $(document).ready(function(){
   $(".tab-btn").click(function(){
