@@ -19,6 +19,7 @@ table{
 table td{
     height: 5vh;
     width: 10vw;
+    user-select: none; 
 }
 
 #header{

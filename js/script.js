@@ -42,17 +42,9 @@ function AddFunction(){
         for (var j = 0; j < table.rows[i].cells.length; j++)
         table.rows[i].cells[j].onclick = function () {
           if(myszNacisnieta != true){
+            WyczyscStyl();
             ShowPosition(this.id);
           }
-
-          /*this.ondblclick = function(){
-            if(ostatniaEdytowana != ""){
-              console.log("edytujesz");
-              ostatniaEdytowana = this.id;
-              console.log(ostatniaEdytowana);
-              this.setAttribute("contenteditable","true");
-            }
-          }*/
         };
     }
 
@@ -61,12 +53,12 @@ function AddFunction(){
       console.log("Mysz nacisnieta");
       if(myszNacisnieta == false){
         if(event.target.id != "mainTable" && event.target.id){
+          //Wyczyszczenie styli do podstawowych
+          WyczyscStyl();
           //Wyczyszczenie tabelii zaznaczonych (na przyszłość, aktualnie nie wiem po co xD)
           tabelaZaznaczonych = [];
           //Zapisanie pierwszej zaznaczonej komórki
           pierwszaKomorka = event.target.id;
-          //Wyczyszczenie styli do podstawowych
-          WyczyscStyl();
           //Zmiana koloru, na kolor zaznaczenie
           ZmienKolor(pierwszaKomorka);
           myszNacisnieta = true;
@@ -83,7 +75,6 @@ function AddFunction(){
             ostatniaKomorka = event.target.id;
             var aktualnaKomorka = event.target.id.split(":");
             ZaznaczenieKomorek(pierwszaKomorka.split(":"), aktualnaKomorka);
-
         }
       }
     })
@@ -126,7 +117,10 @@ function ZaznaczenieKomorek(poczatkowyPunkt, aktualnyPunkt){
 }
 
 function ZmienKolor(id){
-  document.getElementById(id).style.background = "yellow";
+  var element = document.getElementById(id);
+  if(element != null){
+    element.style.background = "yellow";
+  }
 }
 
 function WyczyscStyl(){
@@ -228,6 +222,47 @@ function ScalKomorki(){
   document.getElementById(xMin+":"+yMin).colSpan = yMax - yMin + 1;
   document.getElementById(xMin+":"+yMin).innerHTML = tekst;
 }
+
+function RozdzielKomorki(){
+  console.log("Rozdziel");
+  if(tabelaZaznaczonych.length > 0){
+    console.log("rozdziel zaznaczone komorki => zolty kolor");
+  }
+  else if(wybranaKomorka != null){
+    console.log("rozdziel wybrana komorke => zielony kolor");
+
+    var wiersze = document.getElementById(wybranaKomorka).rowSpan;
+    var kolumny = document.getElementById(wybranaKomorka).colSpan;
+    
+    var wartosciID = wybranaKomorka.split(":");
+
+    var tabela = document.getElementById("mainTable");
+
+    var tekst = document.getElementById(wybranaKomorka).innerHTML;
+
+    document.getElementById(wybranaKomorka).remove();
+
+    for (var i = wartosciID[0]; i < Number(wartosciID[0]) + Number(wiersze) ; i++) {
+      for (var j = wartosciID[1]; j < Number(wartosciID[1]) + Number(kolumny); j++){
+
+        var komorka = tabela.rows[i].insertCell(j);
+        komorka.id = i +":" + j;
+        komorka.style.background = "gray";
+        komorka.setAttribute("contenteditable","false");
+        komorka.onclick = function () {
+          if(myszNacisnieta != true){
+            WyczyscStyl();
+            ShowPosition(this.id);
+          }
+        }
+      }
+
+    }
+    document.getElementById(wybranaKomorka).innerHTML = tekst;
+    wybranaKomorka = null;
+  } 
+}
+
 
 function InsertColumn(side){
   //console.log();
