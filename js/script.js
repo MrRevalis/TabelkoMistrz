@@ -288,6 +288,7 @@ function AddPropertiesToCell(cell, i, j){
 }
 
 function InsertColumn(side){
+  if(wybranaKomorka == null) return;
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   let colID = parseInt(coords[1]);
@@ -319,7 +320,54 @@ function InsertColumn(side){
     cell.style.background = "gray";
     cell.setAttribute("contenteditable","false");
   }
+  wybranaKomorka = null;
+  WyczyscStyl();
+  AddFunction();
+}
 
+function InsertRow(side){
+  if(wybranaKomorka == null) return;
+  const coords = wybranaKomorka.split(":");
+  const table = document.getElementById("mainTable");
+  let rowID = parseInt(coords[0]);
+  if(side == 'd') rowID+=document.getElementById(wybranaKomorka).rowSpan;
+  //check merged cells
+  let mergeError = false;
+  if(side == "u" && rowID > 0){
+    for(let i=0;i<table.rows[rowID-1].cells.length;i++){
+      if(table.rows[rowID-1].cells[i].rowSpan > 1){
+        mergeError = true;
+        break;
+      }
+    }
+  } else if(side == "d" && rowID < table.rows.length){
+    for(let i=0;i<table.rows[rowID].cells.length;i++){
+      if(table.rows[rowID].cells[i].rowSpan > 1){
+        mergeError = true;
+        break;
+      }
+    }
+  }
+  if(mergeError){
+    alert("Error!");
+  }
+  //change ids
+  for (let i = rowID; i < table.rows.length; i++) {
+      for (let j = 0; j < table.rows[i].cells.length; j++)
+        table.rows[i].cells[j].id = (i+1)+":"+j;
+  }
+  table.insertRow(rowID);
+  let sampleRow = 0;
+  if(rowID == 0) sampleRow++;
+  //add cells
+  for(let i = 0; i < table.rows[sampleRow].cells.length; i++){
+    let cell = table.rows[rowID].insertCell(i);
+    cell.id = rowID + ":" + i;
+    cell.style.background = "gray";
+    cell.setAttribute("contenteditable","false");
+  }
+  wybranaKomorka = null;
+  WyczyscStyl();
   AddFunction();
 }
 
