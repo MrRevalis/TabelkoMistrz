@@ -182,7 +182,7 @@ function ScalKomorki(){
   /*document.getElementById(pierwszaKomorka).rowSpan = "2";
   document.getElementById(pierwszaKomorka).colSpan = "2";*/
 
-  if(pierwszaKomorka != null || ostatniaKomorka != null){
+  if(pierwszaKomorka != null && ostatniaKomorka != null){
     console.log(pierwszaKomorka);
     console.log(ostatniaKomorka);
   
