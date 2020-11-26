@@ -265,7 +265,6 @@ function RozdzielKomorki(){
 
 
 function InsertColumn(side){
-  //console.log();
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   let colID = parseInt(coords[1]);
@@ -277,21 +276,28 @@ function InsertColumn(side){
   }
   //add cell
   for(let i = 0; i < parseInt(coords[0]); i++){
+    //console.log("f:"+i);
     let cell = table.rows[i].insertCell(colID);
     cell.id = i +":" + colID;
     cell.style.background = "gray";
     cell.setAttribute("contenteditable","false");
   }
-  let ecell = table.rows[parseInt(coords[0])].insertCell(colID-1);
+
+  //console.log(coords[0] + " "+colID);
+  let ecell = table.rows[parseInt(coords[0])].insertCell(colID);
   ecell.id = parseInt(coords[0]) +":" + colID;
   ecell.style.background = "gray";
   ecell.setAttribute("contenteditable","false");
+
   for(let i = parseInt(coords[0])+1; i < table.rows.length; i++){
+    //console.log("l:"+i);
     let cell = table.rows[i].insertCell(colID);
     cell.id = i +":" + colID;
     cell.style.background = "gray";
     cell.setAttribute("contenteditable","false");
   }
+
+  AddFunction();
 }
 
 $(document).ready(function(){
