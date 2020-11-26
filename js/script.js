@@ -226,43 +226,60 @@ function ScalKomorki(){
 function RozdzielKomorki(){
   console.log("Rozdziel");
   if(tabelaZaznaczonych.length > 0){
+    //We are using here all highlighted cells (color yellow)
     console.log("rozdziel zaznaczone komorki => zolty kolor");
+    for(var i = 0; i < tabelaZaznaczonych.length; i++){
+      SplitCell(tabelaZaznaczonych[i]);
+    }
+    tabelaZaznaczonych = [];
   }
   else if(wybranaKomorka != null){
+    //We are using only one highlighted cell (color green)
     console.log("rozdziel wybrana komorke => zielony kolor");
-
-    var wiersze = document.getElementById(wybranaKomorka).rowSpan;
-    var kolumny = document.getElementById(wybranaKomorka).colSpan;
-    
-    var wartosciID = wybranaKomorka.split(":");
-
-    var tabela = document.getElementById("mainTable");
-
-    var tekst = document.getElementById(wybranaKomorka).innerHTML;
-
-    document.getElementById(wybranaKomorka).remove();
-
-    for (var i = wartosciID[0]; i < Number(wartosciID[0]) + Number(wiersze) ; i++) {
-      for (var j = wartosciID[1]; j < Number(wartosciID[1]) + Number(kolumny); j++){
-
-        var komorka = tabela.rows[i].insertCell(j);
-        komorka.id = i +":" + j;
-        komorka.style.background = "gray";
-        komorka.setAttribute("contenteditable","false");
-        komorka.onclick = function () {
-          if(myszNacisnieta != true){
-            WyczyscStyl();
-            ShowPosition(this.id);
-          }
-        }
-      }
-
-    }
-    document.getElementById(wybranaKomorka).innerHTML = tekst;
+    SplitCell(wybranaKomorka);
     wybranaKomorka = null;
   } 
 }
 
+function SplitCell(element){
+  //Get amount of rowsSpan and colSpan of this element
+  var rows = document.getElementById(element).rowSpan;
+  var cols = document.getElementById(element).colSpan;
+  //Split ID by ":" to array, easier to use
+  var elementID = element.split(":");
+  //Get mainTable 
+  var table = document.getElementById("mainTable");
+  //Get text of this element, to not lose him, during changes
+  var text = document.getElementById(element).innerHTML;
+  //Delete this element
+  document.getElementById(element).remove();
+
+  //Create new element from id of this element to id + rows and id + cols
+  //
+  for (var i = elementID[0]; i < Number(elementID[0]) + Number(rows) ; i++) {
+    for (var j = elementID[1]; j < Number(elementID[1]) + Number(cols); j++){
+      //Add new cell to specific index
+      var cell = table.rows[i].insertCell(j);
+      //Add style and functions to this cell
+      AddPropertiesToCell(cell, i, j);
+
+    }
+  }
+  //Write there text from element
+  document.getElementById(element).innerHTML = text;
+}
+
+function AddPropertiesToCell(cell, i, j){
+  cell.id = i +":" + j;
+  cell.style.background = "gray";
+  cell.setAttribute("contenteditable","false");
+  cell.onclick = function () {
+    if(myszNacisnieta != true){
+      WyczyscStyl();
+      ShowPosition(this.id);
+    }
+  }
+}
 
 function InsertColumn(side){
   const coords = wybranaKomorka.split(":");
