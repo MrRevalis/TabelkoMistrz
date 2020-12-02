@@ -291,12 +291,17 @@ function InsertColumn(side){
   if(wybranaKomorka == null) return;
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
+  //check collision
+  checkMergeCollide(coords[0], coords[1], side, table);
+
   let colID = parseInt(coords[1]);
-  if(side == 'p') colID+=document.getElementById(wybranaKomorka).colSpan;
+  if(side == 'r') colID+=document.getElementById(wybranaKomorka).colSpan;
   //change ids
   for (let i = 0; i < table.rows.length; i++) {
-      for (let j = colID; j < table.rows[i].cells.length; j++)
-        table.rows[i].cells[j].id = i+":"+(j+1);
+    for (let j = colID; j < table.rows[i].cells.length; j++){
+      let cCell = table.rows[i].cells[j].id.split(":");
+      table.rows[i].cells[j].id = i+":"+(parseInt(cCell[1])+2);
+    }
   }
   //add cell
   for(let i = 0; i < parseInt(coords[0]); i++){
@@ -332,29 +337,13 @@ function InsertRow(side){
   let rowID = parseInt(coords[0]);
   if(side == 'd') rowID+=document.getElementById(wybranaKomorka).rowSpan;
   //check merged cells
-  let mergeError = false;
-  if(side == "u" && rowID > 0){
-    for(let i=0;i<table.rows[rowID-1].cells.length;i++){
-      if(table.rows[rowID-1].cells[i].rowSpan > 1){
-        mergeError = true;
-        break;
-      }
-    }
-  } else if(side == "d" && rowID < table.rows.length){
-    for(let i=0;i<table.rows[rowID].cells.length;i++){
-      if(table.rows[rowID].cells[i].rowSpan > 1){
-        mergeError = true;
-        break;
-      }
-    }
-  }
-  if(mergeError){
-    alert("Error!");
-  }
+  checkMergeCollide(coords[0], coords[1], side, table);
   //change ids
   for (let i = rowID; i < table.rows.length; i++) {
-      for (let j = 0; j < table.rows[i].cells.length; j++)
-        table.rows[i].cells[j].id = (i+1)+":"+j;
+      for (let j = 0; j < table.rows[i].cells.length; j++){
+        let cCell = table.rows[i].cells[j].id.split(":");
+        table.rows[i].cells[j].id = (parseInt(cCell[0])+1)+":"+j;
+      }
   }
   table.insertRow(rowID);
   let sampleRow = 0;
@@ -369,6 +358,90 @@ function InsertRow(side){
   wybranaKomorka = null;
   WyczyscStyl();
   AddFunction();
+}
+
+function checkMergeCollide(row, col, side, table){
+  let errorCells = [];
+  let collision = false;
+
+  switch(side){
+    case "l":
+      //from row to 0
+      for(let i = row; i >=0; i--){
+        for(let j = col-1; j >= 0; j--){
+          let cell = document.getElementById(i+":"+j);
+          if(cell == null) continue;
+          if(cell.colSpan > 1){
+            if(j + cell.colSpan > col){
+              errorCells.push([i, j]);
+            }
+          }
+        }
+      }
+      //from row + 1 to rows.length
+      for(let i = row + 1; i < table.rows.length; i++){
+        for(let j = col-1; j >= 0; j--){
+          let cell = document.getElementById(i+":"+j);
+          if(cell == null) continue;
+          if(cell.colSpan > 1){
+            if(j + cell.colSpan > col){
+              errorCells.push([i, j]);
+            }
+          }
+        }
+      }
+    break;
+    case "r":
+      //from row to 0
+      for(let i = row - 1; i >=0; i--){
+        for(let j = 0; j < table.rows[i].cells.length; j++){
+          if(j <= col){
+            //console.log(i+":"+j);
+            if(table.rows[i].cells[j].colSpan > 1){
+              if(j + table.rows[i].cells[j].colSpan - 1 > col){
+                errorCells.push([i, j]);
+              }
+            }
+          }
+        }
+      }
+      //from row + 1 to rows.length
+      for(let i = row + 1; i < table.rows.length; i++){
+        for(let j = 0; j < table.rows[i].cells.length; j++){
+          if(j >= col){
+            if(table.rows[i].cells[j].colSpan > 1){
+              if(j + table.rows[i].cells[j].colSpan - 1 > col){
+                errorCells.push([i, j]);
+              }
+            }
+          }
+        }
+      }
+    break;
+    case "u":
+      for(let i = 0; i < row; i++){
+        for(let j = 0; j < table.rows[i].cells.length; j++){
+          if(table.rows[i].cells[j].rowSpan > 1){
+            if(table.rows[i].cells[j].rowSpan + i > row){
+              errorCells.push([i, j]);
+            }
+          }
+        }
+      }
+      // for(let j = 0; j < table.rows[0].cells.length; j++){
+      //   if(j == col) continue;
+      //   for(let i = 0; i < row; i++){
+      //     console.log(i+":"+j);
+      //     if(table.rows[i].cells[j].rowSpan > 1){
+      //       if(table.rows[i].cells[j].rowSpan + i > row){
+      //         errorCells.push([i, j]);
+      //       }
+      //     }
+      //   }
+      // }
+    break;
+  }
+  console.log(errorCells);
 }
 
 $(document).ready(function(){
