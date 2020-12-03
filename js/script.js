@@ -6,6 +6,14 @@ var ostatniaKomorka;
 var ostatniaEdytowana;
 
 function CreateTable(x, y){
+    //if user add smaller table
+    wybranaKomorka = null;
+    myszNacisnieta = false;
+    tabelaZaznaczonych = [];
+    pierwszaKomorka=null;
+    ostatniaKomorka=null;
+    ostatniaEdytowana=null;
+
     document.getElementById("body").innerHTML = "";
 
     var gdzieUmiescic = document.getElementById("body");
@@ -223,6 +231,7 @@ function ScalKomorki(){
     document.getElementById(xMin+":"+yMin).colSpan = yMax - yMin + 1;
     document.getElementById(xMin+":"+yMin).innerHTML = tekst;
     WyczyscStyl();
+    wybranaKomorka = null;
     tabelaZaznaczonych = [];
     pierwszaKomorka = null;
     ostatniaKomorka = null;
@@ -292,42 +301,50 @@ function InsertColumn(side){
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   //check collision
-  checkMergeCollide(coords[0], coords[1], side, table);
+  let collision = checkMergeCollide(coords[0], coords[1], side, table);
+  if(collision.length > 0){
+    if(!confirm("Wstawienie kolumny spowoduje rozdzielenie niektórych komórek! Kontunuować?")) return;
+    else {
+      for(let c = 0; c < collision.length; c++){
+        SplitCell(collision[c][0]+":"+collision[c][1]);
+      }
+    }
+  }
 
   let colID = parseInt(coords[1]);
   if(side == 'r') colID+=document.getElementById(wybranaKomorka).colSpan;
-  //change ids
-  for (let i = 0; i < table.rows.length; i++) {
-    for (let j = colID; j < table.rows[i].cells.length; j++){
-      let cCell = table.rows[i].cells[j].id.split(":");
-      table.rows[i].cells[j].id = i+":"+(parseInt(cCell[1])+2);
+
+  if(colID == getTableWidth(table)){
+    for(let i = 0; i < table.rows.length; i++){
+      let cell = table.rows[i].insertCell(table.rows[i].cells.length);
+      AddPropertiesToCell(cell, i, table.rows[i].cells.length-1);
+    }
+  } else {
+    //change ids
+    console.log("col:" + colID);
+    for (let i = 0; i < table.rows.length; i++) {
+      for (let j = 0; j < table.rows[i].cells.length; j++){
+        let cCell = table.rows[i].cells[j].id.split(":");
+        if(parseInt(cCell[1]) >= colID)
+          table.rows[i].cells[j].id = i+":"+(parseInt(cCell[1])+1);
+      }
+    }
+    //add cell
+    for(let i = 0; i < table.rows.length; i++){
+      for(let j = 0; j < table.rows[i].cells.length; j++){
+        let cCell = table.rows[i].cells[j].id.split(":");
+        if(parseInt(cCell[1]) > colID){
+          const nCell = table.rows[i].insertCell(j);
+          AddPropertiesToCell(nCell, i, colID);
+          break;
+        }
+      }
     }
   }
-  //add cell
-  for(let i = 0; i < parseInt(coords[0]); i++){
-    //console.log("f:"+i);
-    let cell = table.rows[i].insertCell(colID);
-    cell.id = i +":" + colID;
-    cell.style.background = "gray";
-    cell.setAttribute("contenteditable","false");
-  }
-
-  //console.log(coords[0] + " "+colID);
-  let ecell = table.rows[parseInt(coords[0])].insertCell(colID);
-  ecell.id = parseInt(coords[0]) +":" + colID;
-  ecell.style.background = "gray";
-  ecell.setAttribute("contenteditable","false");
-
-  for(let i = parseInt(coords[0])+1; i < table.rows.length; i++){
-    //console.log("l:"+i);
-    let cell = table.rows[i].insertCell(colID);
-    cell.id = i +":" + colID;
-    cell.style.background = "gray";
-    cell.setAttribute("contenteditable","false");
-  }
+  
   wybranaKomorka = null;
   WyczyscStyl();
-  AddFunction();
+  //AddFunction();
 }
 
 function InsertRow(side){
@@ -337,27 +354,33 @@ function InsertRow(side){
   let rowID = parseInt(coords[0]);
   if(side == 'd') rowID+=document.getElementById(wybranaKomorka).rowSpan;
   //check merged cells
-  checkMergeCollide(coords[0], coords[1], side, table);
+  let collision = checkMergeCollide(rowID, coords[1], side, table);
+  if(collision.length > 0){
+    if(!confirm("Wstawienie wiersza spowoduje rozdzielenie niektórych komórek! Kontunuować?")) return;
+    else {
+      for(let c = 0; c < collision.length; c++){
+        //console.log("Trza rozdzielić: " + collision[c][0]+":"+collision[c][1]);
+        SplitCell(collision[c][0]+":"+collision[c][1]);
+      }
+    }
+  }
   //change ids
   for (let i = rowID; i < table.rows.length; i++) {
       for (let j = 0; j < table.rows[i].cells.length; j++){
         let cCell = table.rows[i].cells[j].id.split(":");
-        table.rows[i].cells[j].id = (parseInt(cCell[0])+1)+":"+j;
+        table.rows[i].cells[j].id = (parseInt(cCell[0])+1)+":"+parseInt(cCell[1]);
       }
   }
+  const x = getTableWidth(table);
   table.insertRow(rowID);
-  let sampleRow = 0;
-  if(rowID == 0) sampleRow++;
   //add cells
-  for(let i = 0; i < table.rows[sampleRow].cells.length; i++){
+  for(let i = 0; i < x; i++){
     let cell = table.rows[rowID].insertCell(i);
-    cell.id = rowID + ":" + i;
-    cell.style.background = "gray";
-    cell.setAttribute("contenteditable","false");
+    AddPropertiesToCell(cell, rowID, i);
   }
   wybranaKomorka = null;
   WyczyscStyl();
-  AddFunction();
+  //AddFunction();
 }
 
 function checkMergeCollide(row, col, side, table){
@@ -366,53 +389,28 @@ function checkMergeCollide(row, col, side, table){
 
   switch(side){
     case "l":
-      //from row to 0
-      for(let i = row; i >=0; i--){
-        for(let j = col-1; j >= 0; j--){
+      for(let i = 0; i < table.rows.length; i++){
+        if(i == row) continue;
+        for(let j = 0; j < col; j++){
           let cell = document.getElementById(i+":"+j);
           if(cell == null) continue;
           if(cell.colSpan > 1){
             if(j + cell.colSpan > col){
-              errorCells.push([i, j]);
-            }
-          }
-        }
-      }
-      //from row + 1 to rows.length
-      for(let i = row + 1; i < table.rows.length; i++){
-        for(let j = col-1; j >= 0; j--){
-          let cell = document.getElementById(i+":"+j);
-          if(cell == null) continue;
-          if(cell.colSpan > 1){
-            if(j + cell.colSpan > col){
-              errorCells.push([i, j]);
+              errorCells.push([i,j]);
             }
           }
         }
       }
     break;
     case "r":
-      //from row to 0
-      for(let i = row - 1; i >=0; i--){
-        for(let j = 0; j < table.rows[i].cells.length; j++){
-          if(j <= col){
-            //console.log(i+":"+j);
-            if(table.rows[i].cells[j].colSpan > 1){
-              if(j + table.rows[i].cells[j].colSpan - 1 > col){
-                errorCells.push([i, j]);
-              }
-            }
-          }
-        }
-      }
-      //from row + 1 to rows.length
-      for(let i = row + 1; i < table.rows.length; i++){
-        for(let j = 0; j < table.rows[i].cells.length; j++){
-          if(j >= col){
-            if(table.rows[i].cells[j].colSpan > 1){
-              if(j + table.rows[i].cells[j].colSpan - 1 > col){
-                errorCells.push([i, j]);
-              }
+      for(let i = 0; i < table.rows.length; i++){
+        if(i == row) continue;
+        for(let j = 0; j <= col; j++){
+          let cell = document.getElementById(i+":"+j);
+          if(cell == null) continue;
+          if(cell.colSpan > 1){
+            if(j + cell.colSpan - 1 > col){
+              errorCells.push([i,j]);
             }
           }
         }
@@ -421,27 +419,41 @@ function checkMergeCollide(row, col, side, table){
     case "u":
       for(let i = 0; i < row; i++){
         for(let j = 0; j < table.rows[i].cells.length; j++){
-          if(table.rows[i].cells[j].rowSpan > 1){
-            if(table.rows[i].cells[j].rowSpan + i > row){
-              errorCells.push([i, j]);
+          let cell = table.rows[i].cells[j];
+          if(cell.rowSpan > 1){
+            if(cell.rowSpan + i > row){
+              errorCells.push([i, parseInt(cell.id.split(":")[1])]);
             }
           }
         }
       }
-      // for(let j = 0; j < table.rows[0].cells.length; j++){
-      //   if(j == col) continue;
-      //   for(let i = 0; i < row; i++){
-      //     console.log(i+":"+j);
-      //     if(table.rows[i].cells[j].rowSpan > 1){
-      //       if(table.rows[i].cells[j].rowSpan + i > row){
-      //         errorCells.push([i, j]);
-      //       }
-      //     }
-      //   }
-      // }
+    break;
+    case "d":
+      if(row < table.rows.length){
+        console.log("sprawdzam");
+        for(let i = 0; i <= row; i++){
+          for(let j = 0; j < table.rows[i].cells.length; j++){
+            let cell = table.rows[i].cells[j];
+            if(cell.rowSpan > 1){
+              if(cell.rowSpan + i > row){
+                errorCells.push([i, parseInt(cell.id.split(":")[1])]);
+              }
+            }
+          }
+        }
+      }
     break;
   }
   console.log(errorCells);
+  return errorCells;
+}
+
+function getTableWidth(table){
+  let ids = [];
+  for(let i = 0; i < table.rows.length; i++){
+    ids.push(parseInt(table.rows[i].cells[table.rows[i].cells.length - 1].id.split(":")[1]));
+  }
+  return Math.max(...ids)+1;
 }
 
 $(document).ready(function(){
