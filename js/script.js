@@ -245,10 +245,10 @@ function ManyCellsChange(attributeName, value1, value2){
 							console.log(element.getAttribute("style.border") + " bbbb");
 							
 							if(attribute == value1){
-								element.setAttributeNS("style.border", value2);
+								element.setAttribute("style.border", value2);
 							}
 							else{
-								element.setAttributeNS("style.border", value1);
+								element.setAttribute("style.border", value1);
 							}
 							//console.log(document.getElementById(x+":"+y).style.border + " bbbb");
 						}catch(error){}
