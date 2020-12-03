@@ -108,6 +108,7 @@ function AddFunction(){
 
 //Wykonuje zaznaczenie komórek,
 function ZaznaczenieKomorek(poczatkowyPunkt, aktualnyPunkt){
+	wybranaKomorka = null;
 
   var xMin = Math.min(poczatkowyPunkt[0], aktualnyPunkt[0]);
   var xMax = Math.max(poczatkowyPunkt[0], aktualnyPunkt[0]);
@@ -153,9 +154,15 @@ function ShowPosition(id){
 
 function AddBorder(){
     var table = document.getElementById("mainTable");
-    if(table != null){
-        table.style.border = "1px solid black";
+    if(table != null){		
+		if(table.style.border == "1px solid black"){
+			table.style.border = "0px solid black";
+		}
+		else{
+			table.style.border = "1px solid black";
+		}
     }
+	
 }
 
 function WybranaKomorka(){
@@ -163,10 +170,134 @@ function WybranaKomorka(){
 }
 
 function AddBorderCell(){
+	let color1 = "3px solid red";
+	let color2 = "0px solid black";
+	
     if(wybranaKomorka != null){
-        document.getElementById(wybranaKomorka).style.border = "3px solid red";
+		if(document.getElementById(wybranaKomorka).style.border == color1){
+			document.getElementById(wybranaKomorka).style.border = color2;
+		}
+		else{
+			document.getElementById(wybranaKomorka).style.border = color1;
+		}
     }
+	else if(tabelaZaznaczonych != null){	//zmiana stylu dla zaznaczonych komórek	
+		
+		let attribute = "style.border";
+			
+		//ManyCellsChange(attribute, color1, color2);   -- nie działa - problem z setAttribute ??
+		//FUNKACJA DZIAŁA!!! NA POTRZEBY TESTÓW JEST WYŁĄCZONA
+		if(pierwszaKomorka != null && ostatniaKomorka != null){
+			var text1 = pierwszaKomorka.split(":");
+			var text2 = ostatniaKomorka.split(":");
+  
+			var xMin = Math.min(text1[0], text2[0]);
+			var xMax = Math.max(text1[0], text2[0]);
+			var yMin = Math.min(text1[1], text2[1]);
+			var yMax = Math.max(text1[1], text2[1]);  
+  
+			var text1 = document.getElementById(pierwszaKomorka).innerHTML;
+  
+			for(var x = xMin; x <= xMax; x++){
+				for(var y = yMin; y <= yMax; y++){
+					try{ //potrzebny ze względu na scalone komórki
+						if(document.getElementById(x+":"+y).style.border == color1){
+							document.getElementById(x+":"+y).style.border = color2;
+						}
+						else{
+							document.getElementById(x+":"+y).style.border = color1;
+						}
+					}catch(error){}
+				}
+			}
+		}
+		
+		/*
+		WyczyscStyl();
+		wybranaKomorka = null;
+		tabelaZaznaczonych = [];
+		pierwszaKomorka = null;
+		ostatniaKomorka = null;*/
+		
+	}
+	
 }
+
+function ManyCellsChange(attributeName, value1, value2){	
+	
+	
+	if(pierwszaKomorka != null && ostatniaKomorka != null){
+			var text1 = pierwszaKomorka.split(":");
+			var text2 = ostatniaKomorka.split(":");
+  
+			var xMin = Math.min(text1[0], text2[0]);
+			var xMax = Math.max(text1[0], text2[0]);
+			var yMin = Math.min(text1[1], text2[1]);
+			var yMax = Math.max(text1[1], text2[1]);  
+  
+  
+			for(var x = xMin; x <= xMax; x++){
+					for(var y = yMin; y <= yMax; y++){
+						try{ //potrzebny ze względu na scalone komórki
+							element = document.getElementById(x+":"+y);
+							let attribute = element.getAttribute(attributeName);
+							console.log(attribute + " aaaa");
+							console.log(element.getAttribute("style.border") + " bbbb");
+							
+							if(attribute == value1){
+								element.setAttributeNS("style.border", value2);
+							}
+							else{
+								element.setAttributeNS("style.border", value1);
+							}
+							//console.log(document.getElementById(x+":"+y).style.border + " bbbb");
+						}catch(error){}
+					}
+				}
+			
+			//style.border
+			/*if(attributeName == "style.border"){
+				for(var x = xMin; x <= xMax; x++){
+					for(var y = yMin; y <= yMax; y++){
+						try{ //potrzebny ze względu na scalone komórki
+							let attribute = document.getElementById(x+":"+y).getAttribute(attributeName);
+							if(document.getElementById(x+":"+y).style.border == value1){
+								document.getElementById(x+":"+y).style.border = value2;
+							}
+							else{
+								document.getElementById(x+":"+y).style.border = value1;
+							}
+						}catch(error){}
+					}
+				}
+			}
+			else{
+				for(var x = xMin; x <= xMax; x++){
+					for(var y = yMin; y <= yMax; y++){
+						try{ //potrzebny ze względu na scalone komórki
+							let attribute = document.getElementById(x+":"+y).getAttribute(attributeName);
+							console.log(attribute + " aaaa");
+							console.log(document.getElementById(x+":"+y).style.border + " bbbb");
+						
+							if(attribute == value1){
+								document.getElementById(x+":"+y).setAttribute(attributeName,value2);
+							}
+							else{
+								document.getElementById(x+":"+y).setAttribute(attributeName,value1);
+							}
+							//console.log(document.getElementById(x+":"+y).style.border + " bbbb");
+						}catch(error){}
+					}
+				}
+			}*/
+			
+			
+	
+	}
+  
+			
+}
+
 
 function TextColor(){
     if(wybranaKomorka != null){
