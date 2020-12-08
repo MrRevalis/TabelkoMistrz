@@ -1,6 +1,7 @@
 var wybranaKomorka;
 var myszNacisnieta = false;
 var tabelaZaznaczonych = [];
+var cellsColorTable;
 var pierwszaKomorka;
 var ostatniaKomorka;
 var ostatniaEdytowana;
@@ -29,7 +30,9 @@ function CreateTable(x, y){
         for(var j=0; j<y; j++){
             var cell = document.createElement("td");
             cell.id = i +":" + j;
-            cell.style.background = "gray";
+            //cell.style.background = "gray";
+            cell.style.background = "white";
+            cell.style.border = "1px dashed black";
             cell.setAttribute("contenteditable","false");
 
             row.appendChild(cell)
@@ -37,8 +40,9 @@ function CreateTable(x, y){
         elemBody.appendChild(row);
     }
     elemTable.appendChild(elemBody);
+    elemTable.style.border = "1px dashed black";
     gdzieUmiescic.appendChild(elemTable);
-
+    SaveCellsColors();
     AddFunction();
 }
 
@@ -59,6 +63,8 @@ function AddFunction(){
     //Wykrycie czy lewy przycisk myszy został naciśnięty
     table.addEventListener("mousedown", function(event){
       console.log("Mysz nacisnieta");
+      WyczyscStyl();
+      SaveCellsColors()
       if(myszNacisnieta == false){
         if(event.target.id != "mainTable" && event.target.id){
           //Wyczyszczenie styli do podstawowych
@@ -79,7 +85,7 @@ function AddFunction(){
         console.log("Mysz sie porusza");
         //Jeśli target nie jest pusty oraz nie jest tabelką to wykonujemy zaznaczenie
         if(event.target.id != null && event.target.id != "mainTable"){
-            WyczyscStyl();
+            //WyczyscStyl();
             ostatniaKomorka = event.target.id;
             var aktualnaKomorka = event.target.id.split(":");
             ZaznaczenieKomorek(pierwszaKomorka.split(":"), aktualnaKomorka);
@@ -128,28 +134,40 @@ function ZaznaczenieKomorek(poczatkowyPunkt, aktualnyPunkt){
 function ZmienKolor(id){
   var element = document.getElementById(id);
   if(element != null){
-    element.style.background = "yellow";
+    element.style.background = "#BEF72C";
   }
 }
+
+/*function WyczyscStyl(){
+  var table = document.getElementById("mainTable");
+    for (var i = 0; i < table.rows.length; i++) {
+        for (var j = 0; j < table.rows[i].cells.length; j++){
+          //table.rows[i].cells[j].style.background = "gray";
+        }
+    }
+}*/
 
 function WyczyscStyl(){
   var table = document.getElementById("mainTable");
     for (var i = 0; i < table.rows.length; i++) {
-        for (var j = 0; j < table.rows[i].cells.length; j++)
-        table.rows[i].cells[j].style.background = "gray";
+        for (var j = 0; j < table.rows[i].cells.length; j++){
+          table.rows[i].cells[j].style.backgroundColor = cellsColorTable[i][j];
+          //console.log(cellsColorTable[i][j]);
+        }
     }
 }
 
 function ShowPosition(id){
 
     if(wybranaKomorka != null){
-        document.getElementById(wybranaKomorka).style.background = "gray";
+      var element = wybranaKomorka.split(":");
+      document.getElementById(wybranaKomorka).style.background = cellsColorTable[element[0]][element[1]];
     }
     var text = id;
     //alert(text.charAt(0) + ":" + text.charAt(2));
 
     wybranaKomorka = text;
-    document.getElementById(text).style.background = "green";
+    document.getElementById(text).style.background = "#BEF72C";
 }
 
 function AddBorder(){
@@ -318,13 +336,13 @@ function TextItalic(){
 }
 
 function ScalKomorki(){
-  /*document.getElementById(pierwszaKomorka).rowSpan = "2";
-  document.getElementById(pierwszaKomorka).colSpan = "2";*/
-
   if(pierwszaKomorka != null && ostatniaKomorka != null){
     console.log(pierwszaKomorka);
     console.log(ostatniaKomorka);
+
     //RozdzielKomorki()
+
+
     //Usuwanie komorek z roznicy pomiedzy pierwsza a ostatnia
     //Tekst pozostaje tylko w komorce startowej
     //Dodajemy rowspan i colspan w Math.abs(roznica ostatnia i pierwsza po x i y)
@@ -340,13 +358,7 @@ function ScalKomorki(){
     var yMin = Math.min(tekst[1], tekst2[1]);
     var yMax = Math.max(tekst[1], tekst2[1]);
   
-  
-  
     var tekst = document.getElementById(pierwszaKomorka).innerHTML;
-    /*console.log(xMin);
-    console.log(xMax);
-    console.log(yMin);
-    console.log(yMax);*/
   
     for(var x = xMin; x <= xMax; x++){
       for(var y = yMin; y <= yMax; y++){
@@ -355,13 +367,12 @@ function ScalKomorki(){
         }
       }
     }
-    console.log(xMax - xMin + 1);
-    console.log(yMax - yMin + 1);
-    console.log("skad zaczac "+ xMin+":"+yMin);
     document.getElementById(xMin+":"+yMin).rowSpan = xMax - xMin + 1;
     document.getElementById(xMin+":"+yMin).colSpan = yMax - yMin + 1;
     document.getElementById(xMin+":"+yMin).innerHTML = tekst;
+    
     WyczyscStyl();
+
     wybranaKomorka = null;
     tabelaZaznaczonych = [];
     pierwszaKomorka = null;
@@ -420,7 +431,7 @@ function SplitCell(element){
 
 function AddPropertiesToCell(cell, i, j){
   cell.id = i +":" + j;
-  cell.style.background = "gray";
+  //cell.style.background = "gray";
   cell.setAttribute("contenteditable","false");
   cell.onclick = function () {
     if(myszNacisnieta != true){
@@ -474,6 +485,7 @@ function InsertColumn(side){
         }
       }
     }
+    SaveCellsColors()
   }
   
   wybranaKomorka = null;
@@ -513,6 +525,7 @@ function InsertRow(side){
     AddPropertiesToCell(cell, rowID, i);
   }
   wybranaKomorka = null;
+  SaveCellsColors();
   WyczyscStyl();
   //AddFunction();
 }
@@ -671,10 +684,14 @@ window.onload = function(){
       var colorValue = this.value;
       if(wybranaKomorka != null){
         document.getElementById(wybranaKomorka).style.backgroundColor = colorValue;
+        var position = wybranaKomorka.split(":");
+        cellsColorTable[position[0]][position[1]] = colorValue;
       }
       if(tabelaZaznaczonych.length > 0){
         for(var i=0; i<tabelaZaznaczonych.length; i++){
           document.getElementById(tabelaZaznaczonych[i]).style.backgroundColor = colorValue;
+          var position = tabelaZaznaczonych[i].split(":");
+          cellsColorTable[position[0]][position[1]] = colorValue;
         }
       }
     }
@@ -682,4 +699,24 @@ window.onload = function(){
     mainContainer.appendChild(element);
   }
 
+}
+
+//Otwarcie jest burdel
+//Zaznaczenie zmienia kolor i należało by przywrócić do tego co było wcześniej
+//Dlatego przed pierwszym zaznaczeniem, funkcja będzie zapisywała w tabeli stan kolorów każdej z komórki
+//A po odznaczeniu wykorzystując funkcje "WyczyscStyl()" przywrócimy kolory do pierwotnego stanu
+function SaveCellsColors(){
+  var table = document.getElementById("mainTable");
+
+  cellsColorTable = new Array(table.rows.length);
+
+  for (var i = 0; i < table.rows.length; i++) {
+
+    cellsColorTable[i] = new Array(table.rows[i].cells.length);
+
+      for (var j = 0; j < table.rows[i].cells.length; j++){
+        //table.rows[i].cells[j].style.background = "gray";
+        cellsColorTable[i][j] = table.rows[i].cells[j].style.backgroundColor;
+      }
+  }
 }
