@@ -324,7 +324,7 @@ function ScalKomorki(){
   if(pierwszaKomorka != null && ostatniaKomorka != null){
     console.log(pierwszaKomorka);
     console.log(ostatniaKomorka);
-  
+    //RozdzielKomorki()
     //Usuwanie komorek z roznicy pomiedzy pierwsza a ostatnia
     //Tekst pozostaje tylko w komorce startowej
     //Dodajemy rowspan i colspan w Math.abs(roznica ostatnia i pierwsza po x i y)
@@ -369,6 +369,9 @@ function ScalKomorki(){
   }
 }
 
+
+//Wyjasnienie dlaczego są dwie funkcje o tej samej nazwie tylko w innym jezyku:
+//Generalnie poniższa funkcja decyduje czy mamy zaznaczone wiele komorek czy tylko jedna
 function RozdzielKomorki(){
   console.log("Rozdziel");
   if(tabelaZaznaczonych.length > 0){
@@ -649,4 +652,34 @@ function createAddTable(){
       $(item).append("<a class='cell' id ='aTBCx"+idx+"x"+i+"'></a>");
     }
   });
+}
+
+
+//Dodanie kolorow 
+window.onload = function(){
+  //Uchwyt do głownego elementu zawierajaca liste kolorow
+  var mainContainer = document.getElementById("cellColor");
+  //Tabela z kolorami, żeby jak chcemy w przyszłości mieć ich więcej wystarczy tu je dodać (petla dziala do rozmiaru tej tabeli)
+  var colorTable = ["#FF0000", "#0000FF", "#FFFF00", "#808080", "#008000"]
+  for(var i=0; i < colorTable.length; i++){
+    var element = document.createElement("a");
+    element.value = colorTable[i];
+    element.style.backgroundColor = colorTable[i];
+    element.classList.add("colorCellStyle");
+
+    element.onclick = function(){
+      var colorValue = this.value;
+      if(wybranaKomorka != null){
+        document.getElementById(wybranaKomorka).style.backgroundColor = colorValue;
+      }
+      if(tabelaZaznaczonych.length > 0){
+        for(var i=0; i<tabelaZaznaczonych.length; i++){
+          document.getElementById(tabelaZaznaczonych[i]).style.backgroundColor = colorValue;
+        }
+      }
+    }
+
+    mainContainer.appendChild(element);
+  }
+
 }

@@ -157,3 +157,11 @@ nav {
   color: gray;
   cursor: pointer;
 }
+
+
+.colorCellStyle{
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  margin: 2px;
+}
