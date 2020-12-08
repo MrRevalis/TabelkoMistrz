@@ -340,7 +340,7 @@ function ScalKomorki(){
     console.log(pierwszaKomorka);
     console.log(ostatniaKomorka);
 
-    //RozdzielKomorki()
+    RozdzielKomorki()
 
 
     //Usuwanie komorek z roznicy pomiedzy pierwsza a ostatnia
@@ -433,6 +433,7 @@ function AddPropertiesToCell(cell, i, j){
   cell.id = i +":" + j;
   //cell.style.background = "gray";
   cell.setAttribute("contenteditable","false");
+  cell.style.border = "1px dashed black";
   cell.onclick = function () {
     if(myszNacisnieta != true){
       WyczyscStyl();
