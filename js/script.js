@@ -85,7 +85,7 @@ function AddFunction(){
         console.log("Mysz sie porusza");
         //Jeśli target nie jest pusty oraz nie jest tabelką to wykonujemy zaznaczenie
         if(event.target.id != null && event.target.id != "mainTable"){
-            //WyczyscStyl();
+            WyczyscStyl();
             ostatniaKomorka = event.target.id;
             var aktualnaKomorka = event.target.id.split(":");
             ZaznaczenieKomorek(pierwszaKomorka.split(":"), aktualnaKomorka);
