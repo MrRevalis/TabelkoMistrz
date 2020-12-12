@@ -32,7 +32,11 @@ function CreateTable(x, y){
             cell.id = i +":" + j;
             //cell.style.background = "gray";
             cell.style.background = "white";
-            cell.style.border = "1px dashed black";
+            cell.style.borderTop = "1px dashed black";
+            cell.style.borderBottom = "1px dashed black";
+            cell.style.borderLeft = "1px dashed black";
+            cell.style.borderRight = "1px dashed black";
+
             cell.setAttribute("contenteditable","false");
 
             row.appendChild(cell)
@@ -719,5 +723,31 @@ function SaveCellsColors(){
         //table.rows[i].cells[j].style.background = "gray";
         cellsColorTable[i][j] = table.rows[i].cells[j].style.backgroundColor;
       }
+  }
+}
+
+//Funkcja odpowiedzialna za dodanie obramowania do wybranej komorki(tylko jedna => moze byc scalona)
+//Ponownie kliknięcie powoduje że dane obramowanie znika
+function AddBorderToCell(borderValue){
+
+  var element = document.getElementById(wybranaKomorka);
+
+  var tablePosition = ["Top", "Right", "Bottom", "Left"];
+
+  var bordersTable = tablePosition.map(function(x){
+    return element.style["border"+x+"Style"];
+  })
+
+  for(var i = 0 ; i < tablePosition.length; i++){
+
+    if(borderValue[i] == 1){
+      var position = "border"+tablePosition[i];
+      if(bordersTable[i] == "dashed"){
+        element.style[position] = "1px solid black";
+      }
+      else{
+        element.style[position] = "1px dashed black";
+      }
+    }
   }
 }

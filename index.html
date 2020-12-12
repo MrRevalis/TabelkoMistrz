@@ -68,6 +68,20 @@
 					</a>
 					<a class="tab-item" onclick="ScalKomorki()">Scal komorki</a>
 					<a class="tab-item" onclick="RozdzielKomorki()">Rozdziel komorki</a>
+					<a class="tab-item tooltip">Krawędzie komórki
+						<div class="tooltip-content">
+							<div id="borderCell">
+								<ul>
+									<!-- LEWO, GORA, PRAWO, DOL-->
+									<li onclick="AddBorderToCell(['1','1','1','1'])">Wszystkie krawędzie</li>
+									<li onclick="AddBorderToCell(['0','0','0','1'])">Dolna krawędź</li>
+									<li onclick="AddBorderToCell(['0','1','0','0'])">Gorna krawędź</li>
+									<li onclick="AddBorderToCell(['1','0','0','0'])">Lewa krawędź</li>
+									<li onclick="AddBorderToCell(['0','0','1','0'])">Prawa krawędź</li>
+								</ul>
+							</div>
+						</div>
+					</a>
 				</div>
 			</div>
 		</div>
