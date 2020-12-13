@@ -60,6 +60,7 @@ function AddFunction(){
           if(myszNacisnieta != true){
             WyczyscStyl();
             ShowPosition(this.id);
+            BorderViewFunction(this.id)
           }
         };
     }
@@ -728,26 +729,70 @@ function SaveCellsColors(){
 
 //Funkcja odpowiedzialna za dodanie obramowania do wybranej komorki(tylko jedna => moze byc scalona)
 //Ponownie kliknięcie powoduje że dane obramowanie znika
+//<!-- LEWO, GORA, PRAWO, DOL-->
 function AddBorderToCell(borderValue){
 
   var element = document.getElementById(wybranaKomorka);
 
-  var tablePosition = ["Top", "Right", "Bottom", "Left"];
+  var tablePosition = ["Left", "Top", "Right", "Bottom"];
 
   var bordersTable = tablePosition.map(function(x){
     return element.style["border"+x+"Style"];
   })
 
-  for(var i = 0 ; i < tablePosition.length; i++){
-
-    if(borderValue[i] == 1){
+  if(borderValue.every(function(x){return x == 1})){
+    for(var i = 0 ; i < tablePosition.length; i++){
       var position = "border"+tablePosition[i];
-      if(bordersTable[i] == "dashed"){
-        element.style[position] = "1px solid black";
-      }
-      else{
-        element.style[position] = "1px dashed black";
+      element.style[position] = "1px solid black";
+    }
+  }
+  else{
+    for(var i = 0 ; i < tablePosition.length; i++){
+
+      if(borderValue[i] == 1){
+        var position = "border"+tablePosition[i];
+        if(bordersTable[i] == "dashed"){
+          element.style[position] = "1px solid black";
+        }
+        else{
+          element.style[position] = "1px dashed black";
+        }
       }
     }
   }
+  BorderViewFunction(wybranaKomorka)
+}
+
+function BorderViewFunction(id){
+  ClearBorderView();
+  var element = document.getElementById(id);
+  var tablePosition = ["Top", "Right", "Bottom", "Left"];
+  var amount = 0;
+
+  var bordersTable = tablePosition.map(function(x){
+    return element.style["border"+x+"Style"];
+  })
+
+  for(var i = 0; i < tablePosition.length; i++){
+    if(bordersTable[i] == "solid"){
+      switch(tablePosition[i]){
+        case "Top": document.getElementById("topBorder").classList.add("borderChecked");break;
+        case "Right": document.getElementById("rightBorder").classList.add("borderChecked");break;
+        case "Bottom": document.getElementById("bottomBorder").classList.add("borderChecked");break;
+        case "Left": document.getElementById("leftBorder").classList.add("borderChecked");break;
+      }
+      amount++;
+    }
+  }
+  if(amount == 4){
+    document.getElementById("allBorders").classList.add("borderChecked");
+  }
+}
+
+function ClearBorderView(){
+  document.getElementById("allBorders").classList.remove("borderChecked");
+  document.getElementById("topBorder").classList.remove("borderChecked");
+  document.getElementById("rightBorder").classList.remove("borderChecked");
+  document.getElementById("bottomBorder").classList.remove("borderChecked");
+  document.getElementById("leftBorder").classList.remove("borderChecked");
 }

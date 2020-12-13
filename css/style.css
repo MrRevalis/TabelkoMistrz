@@ -170,16 +170,48 @@ nav {
   opacity: 0.7;
 }
 
+#borderCell{
+  width: max-content;
+}
 #borderCell > ul{
-  list-style-type: none;
   padding: 0;
   margin: 0;
 }
 
 #borderCell > ul > li{
-  padding: 0.5em;
+  list-style-type: none;
+  margin: 0.1em;
+  padding: 12px;
+  padding-left: 48px;
+  line-height: 100%;
+  background-repeat:no-repeat;
+  background-position: left center;
 }
 
 #borderCell>ul>li:hover{
-  background: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.borderChecked{
+  background-color: #add8e6 !important;
+}
+
+#bottomBorder{
+  background: url("/img/borderBottom.png");
+}
+
+#topBorder{
+  background: url("/img/borderTop.png");
+}
+
+#rightBorder{
+  background: url("/img/borderRight.png");
+}
+
+#leftBorder{
+  background: url("/img/borderLeft.png");
+}
+
+#allBorders{
+  background: url("/img/borderAll.png");
 }
