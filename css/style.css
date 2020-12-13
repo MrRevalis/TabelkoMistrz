@@ -197,21 +197,21 @@ nav {
 }
 
 #bottomBorder{
-  background: url("/img/borderBottom.png");
+  background: url("img/borderBottom.png");
 }
 
 #topBorder{
-  background: url("/img/borderTop.png");
+  background: url("img/borderTop.png");
 }
 
 #rightBorder{
-  background: url("/img/borderRight.png");
+  background: url("img/borderRight.png");
 }
 
 #leftBorder{
-  background: url("/img/borderLeft.png");
+  background: url("img/borderLeft.png");
 }
 
 #allBorders{
-  background: url("/img/borderAll.png");
+  background: url("img/borderAll.png");
 }
