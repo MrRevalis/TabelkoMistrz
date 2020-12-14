@@ -60,7 +60,8 @@ function AddFunction(){
             ShowPosition(this.id);
             BorderViewFunction(this.id);
             CheckFontSettings(this.id);
-            CheckTextAlignSettings(this.id)
+            CheckTextAlignSettings(this.id);
+            OptionChangeSize(this.id);
           }
         };
     }
@@ -786,6 +787,27 @@ window.onload = function(){
     secondContainer.appendChild(element);
   }
 
+  var textSizeElement = document.getElementById("fontSize");
+
+  for(var i = 8 ; i < 13 ; i++){
+    var element = document.createElement("option");
+    element.value=i;
+    var optionText = document.createTextNode(i+"px");
+    element.appendChild(optionText);
+    textSizeElement.appendChild(element);
+  }
+
+  for(var i = 14 ; i <= 28 ; i+=2){
+    var element = document.createElement("option");
+    element.value=i;
+    var optionText = document.createTextNode(i+"px");
+    if(i == 16){
+      element.selected = true;
+    }
+    element.appendChild(optionText);
+    textSizeElement.appendChild(element);
+  }
+
 }
 
 //Otwarcie jest burdel
@@ -935,66 +957,71 @@ function ClearTableBorder(){
 //Ustawienie aktualnie wpisywanej czcionki na BOLD
 //Potem można się pobawić że jak jest zaznaczony tekst i zostanie naciśnięty ten guzik do zmienia czcionke tego tekstu
 function FontBold(element){
-  var choosenCell = document.getElementById(wybranaKomorka);
-  var cellStyle = window.getComputedStyle(choosenCell);
-  //wybranaKomorka
-  var actualFontWeight = cellStyle.getPropertyValue("font-weight");
-  //Rodzic
-  var aElement = element.parentElement;
-  //400 oznacza normalną czcionke
-  if(actualFontWeight == 400){
+  if(wybranaKomorka != null){
+    var choosenCell = document.getElementById(wybranaKomorka);
+    var cellStyle = window.getComputedStyle(choosenCell);
+    //wybranaKomorka
+    var actualFontWeight = cellStyle.getPropertyValue("font-weight");
+    //Rodzic
+    var aElement = element.parentElement;
+    //400 oznacza normalną czcionke
+    if(actualFontWeight == 400){
 
-    aElement.classList.add("settingChoosen");
-    choosenCell.style.fontWeight = "bold";
+      aElement.classList.add("settingChoosen");
+      choosenCell.style.fontWeight = "bold";
 
-  }
-  else{
+    }
+    else{
 
-    aElement.classList.remove("settingChoosen");
-    choosenCell.style.fontWeight = "400";
-
+      aElement.classList.remove("settingChoosen");
+      choosenCell.style.fontWeight = "400";
+    }
   }
 }
 
 function ItalicFont(element){
-  var choosenCell = document.getElementById(wybranaKomorka);
-  var cellStyle = window.getComputedStyle(choosenCell);
-  //wybranaKomorka
-  var actualFontItalic = cellStyle.getPropertyValue("font-style");
-  //Rodzic
-  var aElement = element.parentElement;
-  if(actualFontItalic == "normal"){
-
-    aElement.classList.add("settingChoosen");
-    choosenCell.style.fontStyle = "italic";
-
-  }
-  else{
-
-    aElement.classList.remove("settingChoosen");
-    choosenCell.style.fontStyle = "normal";
-
+  if(wybranaKomorka != null){
+    var choosenCell = document.getElementById(wybranaKomorka);
+    var cellStyle = window.getComputedStyle(choosenCell);
+    //wybranaKomorka
+    var actualFontItalic = cellStyle.getPropertyValue("font-style");
+    //Rodzic
+    var aElement = element.parentElement;
+    if(actualFontItalic == "normal"){
+  
+      aElement.classList.add("settingChoosen");
+      choosenCell.style.fontStyle = "italic";
+  
+    }
+    else{
+  
+      aElement.classList.remove("settingChoosen");
+      choosenCell.style.fontStyle = "normal";
+  
+    }
   }
 }
 
 function UnderLineFont(element){
-  var choosenCell = document.getElementById(wybranaKomorka);
-  var cellStyle = window.getComputedStyle(choosenCell);
-  //wybranaKomorka
-  var actualFontUnderline = cellStyle.getPropertyValue("text-decoration");
-  //Rodzic
-  var aElement = element.parentElement;
+  if(wybranaKomorka != null){
+    var choosenCell = document.getElementById(wybranaKomorka);
+    var cellStyle = window.getComputedStyle(choosenCell);
+    //wybranaKomorka
+    var actualFontUnderline = cellStyle.getPropertyValue("text-decoration");
+    //Rodzic
+    var aElement = element.parentElement;
 
-  if(actualFontUnderline == "rgb(0, 0, 0)"){
-    aElement.classList.add("settingChoosen");
-    choosenCell.style.textDecoration = "underline";
+    if(actualFontUnderline == "rgb(0, 0, 0)"){
+      aElement.classList.add("settingChoosen");
+      choosenCell.style.textDecoration = "underline";
 
-  }
-  else{
+    }
+    else{
 
-    aElement.classList.remove("settingChoosen");
-    choosenCell.style.textDecoration = "none";
+      aElement.classList.remove("settingChoosen");
+      choosenCell.style.textDecoration = "none";
 
+    }
   }
 }
 
@@ -1031,40 +1058,42 @@ function CheckFontSettings(id){
 
 
 function ChangeTextAlign(alignSettings){
-  var position = alignSettings.indexOf("1",0);
-  var element = document.getElementById(wybranaKomorka);
+  if(wybranaKomorka != null){
+    var position = alignSettings.indexOf("1",0);
+    var element = document.getElementById(wybranaKomorka);
 
-  var leftButton = document.getElementsByClassName("fas fa-align-left")[0].parentElement;
-  var centerButton = document.getElementsByClassName("fa fa-align-center")[0].parentElement;
-  var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
-  var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
+    var leftButton = document.getElementsByClassName("fas fa-align-left")[0].parentElement;
+    var centerButton = document.getElementsByClassName("fa fa-align-center")[0].parentElement;
+    var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
+    var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
 
-  var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
+    var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
 
-  for(var i = 0 ; i < buttonArray.length ; i++){
-    buttonArray[i].classList.remove("settingChoosen");
-  }
+    for(var i = 0 ; i < buttonArray.length ; i++){
+      buttonArray[i].classList.remove("settingChoosen");
+    }
 
-  switch(position){
-    case 0 : 
-      element.style.textAlign = "left";
-      leftButton.classList.add("settingChoosen");
-      break;
+    switch(position){
+      case 0 : 
+        element.style.textAlign = "left";
+        leftButton.classList.add("settingChoosen");
+        break;
 
-    case 1 : 
-      element.style.textAlign = "center";
-      centerButton.classList.add("settingChoosen");
-      break;
+      case 1 : 
+        element.style.textAlign = "center";
+        centerButton.classList.add("settingChoosen");
+        break;
 
-    case 2 : 
-      element.style.textAlign = "right";
-      rightButton.classList.add("settingChoosen");
-      break;
+      case 2 : 
+        element.style.textAlign = "right";
+        rightButton.classList.add("settingChoosen");
+        break;
 
-    case 3 : 
-      element.style.textAlign = "justify";
-      justifyButton.classList.add("settingChoosen");
-      break;
+      case 3 : 
+        element.style.textAlign = "justify";
+        justifyButton.classList.add("settingChoosen");
+        break;
+    }
   }
 }
 
@@ -1102,5 +1131,30 @@ function CheckTextAlignSettings(id){
     case "justify":
       justifyButton.classList.add("settingChoosen");
       break;
+  }
+}
+
+
+function ChangeTextSize(){
+  var element = document.getElementById("fontSize");
+  var textSize = element.options[element.selectedIndex].text;
+  
+  if(wybranaKomorka != null){
+    var cell = document.getElementById(wybranaKomorka);
+    cell.style.fontSize = textSize;
+  }
+}
+
+function OptionChangeSize(id){
+  var element = document.getElementById(id);
+  var elementStyles = window.getComputedStyle(element);
+
+  var actualTextSize = elementStyles.getPropertyValue("font-size");
+  var options = document.getElementById("fontSize").options;
+  for(var i = 0; i < options.length ; i++){
+    if(options[i].text == actualTextSize){
+      document.getElementById("fontSize").selectedIndex = i;
+      break;
+    }
   }
 }
