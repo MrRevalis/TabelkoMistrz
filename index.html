@@ -6,8 +6,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" crossorigin="anonymous">
+	<link href="css/prism.css" rel="stylesheet" />
 	<link rel="stylesheet" href="css/style.css">
 	<script type="text/javascript" src="js/script.js" defer></script>
+	<script type="text/javascript" src="js/exporter.js" defer></script>
 	<title>TabelkoMistrz</title>
 	</head>
 
@@ -126,5 +128,9 @@
 
 	</div>
 
-
+	<div id="genCode">
+		<p style="padding-left: 20px;"><a>Generuj</a></p>
+		<pre style="display: none;"><code class="language-latex" id="latexCode"></code></pre>
+	</div>
+	<script src="js/prism.js"></script>
 </body>

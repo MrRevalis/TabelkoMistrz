@@ -45,6 +45,22 @@ table td{
     margin: 1em;
 }
 
+/* GEN CODE SECTION*/
+#genCode {
+  margin-top: 30px;
+}
+#genCode a {
+  padding: 10px;
+  background-color: #00DE00;
+  border: 1px solid green;
+  border-radius: 3px;
+  font-size: 20px;
+}
+#genCode a:hover {
+  cursor: pointer;
+  background-color: white;
+  color: green;
+}
 /*  NAVIGATION */
 nav {
   position: relative;
