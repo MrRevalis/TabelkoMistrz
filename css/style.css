@@ -203,39 +203,39 @@ nav {
 }
 
 #bottomBorder{
-  background: url("/img/borderBottom.png");
+  background: url("../img/borderBottom.PNG");
 }
 
 #topBorder{
-  background: url("/img/borderTop.png");
+  background: url("../img/borderTop.PNG");
 }
 
 #rightBorder{
-  background: url("/img/borderRight.png");
+  background: url("../img/borderRight.PNG");
 }
 
 #leftBorder{
-  background: url("/img/borderLeft.png");
+  background: url("../img/borderLeft.PNG");
 }
 
 #allBorders{
-  background: url("/img/borderAll.png");
+  background: url("../img/borderAll.PNG");
 }
 
 #allEdges{
-  background: url("/img/fullBorders.png");
+  background: url("../img/fullBorders.PNG");
 }
 
 #horizontalEdges{
-  background: url("/img/horizontalBorders.png");
+  background: url("../img/horizontalBorders.PNG");
 }
 
 #verticalEdges{
-  background: url("/img/verticalBorders.png");
+  background: url("../img/verticalBorders.PNG");
 }
 
 #clearEdges{
-  background: url("/img/noneBorder.png");
+  background: url("../img/noneBorder.PNG");
 }
 
 #borderColorText{
