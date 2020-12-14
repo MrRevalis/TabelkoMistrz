@@ -4,6 +4,8 @@ Exporter.Foo = function(){
 }
 
 Exporter.genLatexCode = function(){
+    wybranaKomorka = null;
+    WyczyscStyl();
     const table = document.getElementById("mainTable");
     const rows = table.rows.length;
 
@@ -13,7 +15,8 @@ Exporter.genLatexCode = function(){
     for(let i = 0; i < rows; i++){
         let row = [];
         for(let j = 0; j < tableCols; j++){
-            row.push(Exporter.priv.getCell(i,j));
+            const cell = Exporter.priv.getCell(i,j);
+            if(cell != null) row.push(cell);
         }
         code.push(row.join(" & ") + "\\\\");
     }
@@ -37,7 +40,7 @@ Exporter.priv.createTableHeader = function(cols){
 
 Exporter.priv.getCell = function(i, j){
     const cell = document.getElementById(i+":"+j);
-    if(cell == null) return "";
+    if(cell == null) return null;
     else {
         let result = cell.textContent;
         //check text color
@@ -47,6 +50,10 @@ Exporter.priv.getCell = function(i, j){
         //check cell color
         if(cell.style.backgroundColor != "white"){
             result = "\\cellcolor[RGB]{"+cell.style.backgroundColor.replace("rgb(","").replace(")","")+"}"+result;
+        }
+        //check multicol
+        if(cell.colSpan > 1){
+            result = "\\multicolumn{" + cell.colSpan + "}{l}{" + result + "}";
         }
         return result;
     }
