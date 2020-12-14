@@ -60,6 +60,7 @@ function AddFunction(){
             ShowPosition(this.id);
             BorderViewFunction(this.id);
             CheckFontSettings(this.id);
+            CheckTextAlignSettings(this.id)
           }
         };
     }
@@ -1025,5 +1026,81 @@ function CheckFontSettings(id){
     weightButton.classList.add("settingChoosen");
   }else{
     weightButton.classList.remove("settingChoosen");
+  }
+}
+
+
+function ChangeTextAlign(alignSettings){
+  var position = alignSettings.indexOf("1",0);
+  var element = document.getElementById(wybranaKomorka);
+
+  var leftButton = document.getElementsByClassName("fas fa-align-left")[0].parentElement;
+  var centerButton = document.getElementsByClassName("fa fa-align-center")[0].parentElement;
+  var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
+  var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
+
+  var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
+
+  for(var i = 0 ; i < buttonArray.length ; i++){
+    buttonArray[i].classList.remove("settingChoosen");
+  }
+
+  switch(position){
+    case 0 : 
+      element.style.textAlign = "left";
+      leftButton.classList.add("settingChoosen");
+      break;
+
+    case 1 : 
+      element.style.textAlign = "center";
+      centerButton.classList.add("settingChoosen");
+      break;
+
+    case 2 : 
+      element.style.textAlign = "right";
+      rightButton.classList.add("settingChoosen");
+      break;
+
+    case 3 : 
+      element.style.textAlign = "justify";
+      justifyButton.classList.add("settingChoosen");
+      break;
+  }
+}
+
+
+function CheckTextAlignSettings(id){
+  var element = document.getElementById(id);
+  var elementStyles = window.getComputedStyle(element);
+
+  var actualTextAlign = elementStyles.getPropertyValue("text-align");
+
+  var leftButton = document.getElementsByClassName("fas fa-align-left")[0].parentElement;
+  var centerButton = document.getElementsByClassName("fa fa-align-center")[0].parentElement;
+  var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
+  var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
+
+  var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
+
+  for(var i = 0 ; i < buttonArray.length ; i++){
+    buttonArray[i].classList.remove("settingChoosen");
+  }
+
+  switch(actualTextAlign){
+    case "left":
+      leftButton.classList.add("settingChoosen");
+      break;
+
+    case "center":
+      centerButton.classList.add("settingChoosen");
+      break;
+
+    case "right":
+      rightButton.classList.add("settingChoosen");
+      break;
+
+    case "justify":
+      justifyButton.classList.add("settingChoosen");
+      break;
   }
 }
