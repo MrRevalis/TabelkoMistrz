@@ -15,8 +15,37 @@ Exporter.genLatexCode = function(){
     for(let i = 0; i < rows; i++){
         let row = [];
         for(let j = 0; j < tableCols; j++){
-            const cell = Exporter.priv.getCell(i,j);
-            if(cell != null) row.push(cell);
+            const cell = document.getElementById(i+":"+j);
+            if(cell != null){
+                let result = cell.textContent;
+                //check text color
+                if(cell.style.color != ""){
+                    result = "\\textcolor[RGB]{"+cell.style.color.replace("rgb(","").replace(")","")+"}{"+result+"}";
+                }
+                //check cell color
+                if(cell.style.backgroundColor != "white"){
+                    result = "\\cellcolor[RGB]{"+cell.style.backgroundColor.replace("rgb(","").replace(")","")+"}"+result;
+                }
+                //check multirow
+                if(cell.rowSpan > 1){
+                    result = "\\multirow{" + cell.rowSpan + "}{*}{" + result + "}";
+                }
+                //check multicol
+                if(cell.colSpan > 1){
+                    result = "\\multicolumn{" + cell.colSpan + "}{l}{" + result + "}";
+                    j += cell.colSpan-1;
+                }
+                row.push(result);
+            } else {
+                const shift = Exporter.priv.getColsInMR(i, j);
+                if(shift != null){
+                    if(shift == 1){
+                        row.push("");
+                    } else{
+                        row.push("\\multicolumn{" + shift + "}{l}{}");
+                    }
+                }
+            }
         }
         code.push(row.join(" & ") + "\\\\");
     }
@@ -38,25 +67,16 @@ Exporter.priv.createTableHeader = function(cols){
     return code;
 }
 
-Exporter.priv.getCell = function(i, j){
-    const cell = document.getElementById(i+":"+j);
-    if(cell == null) return null;
-    else {
-        let result = cell.textContent;
-        //check text color
-        if(cell.style.color != ""){
-            result = "\\textcolor[RGB]{"+cell.style.color.replace("rgb(","").replace(")","")+"}{"+result+"}";
+Exporter.priv.getColsInMR = function(row, col){
+    for(let i = row - 1; i >= 0; i--){
+        const cell = document.getElementById(i+":"+col);
+        if(cell != null){
+            if(cell.rowSpan > 1){
+                return cell.colSpan;
+            }
         }
-        //check cell color
-        if(cell.style.backgroundColor != "white"){
-            result = "\\cellcolor[RGB]{"+cell.style.backgroundColor.replace("rgb(","").replace(")","")+"}"+result;
-        }
-        //check multicol
-        if(cell.colSpan > 1){
-            result = "\\multicolumn{" + cell.colSpan + "}{l}{" + result + "}";
-        }
-        return result;
     }
+    return null;
 }
 
 document.querySelector("#genCode a").addEventListener("click", Exporter.genLatexCode);
