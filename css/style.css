@@ -234,13 +234,8 @@ nav {
   background: url("/img/verticalBorders.png");
 }
 
-.colorCellStyleDiv{
-  display: inline-block;
-  margin: auto;
-  width: 40px;
-  height: 40px;
-  margin: 0.2em;
-  margin-bottom: 0;
+#clearEdges{
+  background: url("/img/noneBorder.png");
 }
 
 #borderColorText{
