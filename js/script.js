@@ -58,7 +58,8 @@ function AddFunction(){
           if(myszNacisnieta != true){
             WyczyscStyl();
             ShowPosition(this.id);
-            BorderViewFunction(this.id)
+            BorderViewFunction(this.id);
+            CheckFontSettings(this.id);
           }
         };
     }
@@ -928,4 +929,101 @@ function ClearTableBorder(){
   document.getElementById("horizontalEdges").classList.remove("borderChecked");
   document.getElementById("verticalEdges").classList.remove("borderChecked");
   document.getElementById("allEdges").classList.remove("borderChecked");
+}
+
+//Ustawienie aktualnie wpisywanej czcionki na BOLD
+//Potem można się pobawić że jak jest zaznaczony tekst i zostanie naciśnięty ten guzik do zmienia czcionke tego tekstu
+function FontBold(element){
+  var choosenCell = document.getElementById(wybranaKomorka);
+  var cellStyle = window.getComputedStyle(choosenCell);
+  //wybranaKomorka
+  var actualFontWeight = cellStyle.getPropertyValue("font-weight");
+  //Rodzic
+  var aElement = element.parentElement;
+  //400 oznacza normalną czcionke
+  if(actualFontWeight == 400){
+
+    aElement.classList.add("settingChoosen");
+    choosenCell.style.fontWeight = "bold";
+
+  }
+  else{
+
+    aElement.classList.remove("settingChoosen");
+    choosenCell.style.fontWeight = "400";
+
+  }
+}
+
+function ItalicFont(element){
+  var choosenCell = document.getElementById(wybranaKomorka);
+  var cellStyle = window.getComputedStyle(choosenCell);
+  //wybranaKomorka
+  var actualFontItalic = cellStyle.getPropertyValue("font-style");
+  //Rodzic
+  var aElement = element.parentElement;
+  if(actualFontItalic == "normal"){
+
+    aElement.classList.add("settingChoosen");
+    choosenCell.style.fontStyle = "italic";
+
+  }
+  else{
+
+    aElement.classList.remove("settingChoosen");
+    choosenCell.style.fontStyle = "normal";
+
+  }
+}
+
+function UnderLineFont(element){
+  var choosenCell = document.getElementById(wybranaKomorka);
+  var cellStyle = window.getComputedStyle(choosenCell);
+  //wybranaKomorka
+  var actualFontUnderline = cellStyle.getPropertyValue("text-decoration");
+  //Rodzic
+  var aElement = element.parentElement;
+
+  if(actualFontUnderline == "rgb(0, 0, 0)"){
+    aElement.classList.add("settingChoosen");
+    choosenCell.style.textDecoration = "underline";
+
+  }
+  else{
+
+    aElement.classList.remove("settingChoosen");
+    choosenCell.style.textDecoration = "none";
+
+  }
+}
+
+function CheckFontSettings(id){
+  var element = document.getElementById(id);
+  var elementStyles = window.getComputedStyle(element);
+
+  var actualFontUnderline = elementStyles.getPropertyValue("text-decoration");
+  var actualFontItalic = elementStyles.getPropertyValue("font-style");
+  var actualFontWeight = elementStyles.getPropertyValue("font-weight");
+
+  var underlineButton = document.getElementsByClassName("fas fa-underline")[0].parentElement;
+  var italicButton = document.getElementsByClassName("fas fa-italic")[0].parentElement;
+  var weightButton = document.getElementsByClassName("fas fa-bold")[0].parentElement;
+
+  if(actualFontUnderline == "underline rgb(0, 0, 0)"){
+    underlineButton.classList.add("settingChoosen");
+  }else{
+    underlineButton.classList.remove("settingChoosen");
+  }
+
+  if(actualFontItalic == "italic"){
+    italicButton.classList.add("settingChoosen");
+  }else{
+    italicButton.classList.remove("settingChoosen");
+  }
+
+  if(actualFontWeight == "700"){
+    weightButton.classList.add("settingChoosen");
+  }else{
+    weightButton.classList.remove("settingChoosen");
+  }
 }
