@@ -534,6 +534,72 @@ function InsertRow(side){
   //AddFunction();
 }
 
+function deleteColumn(){
+  if(wybranaKomorka == null) return;
+  const coords = wybranaKomorka.split(":");
+  const table = document.getElementById("mainTable");
+  const colID = parseInt(coords[1]);
+  //check collision
+  let collision = checkMergeCollide(coords[0], coords[1], "l", table);
+  collision = collision.concat(checkMergeCollide(coords[0], coords[1], "r", table));
+  if(collision.length > 0){
+    if(!confirm("Usunięcie kolumny spowoduje rozdzielenie niektórych komórek! Kontunuować?")) return;
+    else {
+      for(let c = 0; c < collision.length; c++){
+        SplitCell(collision[c][0]+":"+collision[c][1]);
+      }
+    }
+  }
+  //delete
+  for(let i = 0; i < table.rows.length; i++){
+    for(let j = 0; j < table.rows[i].cells.length; j++){
+      if(parseInt(table.rows[i].cells[j].id.split(":")[1]) == colID){
+        table.rows[i].deleteCell(j);
+      }
+    }
+  }
+  //change ids
+  for(let i = 0; i < table.rows.length; i++){
+    for(let j = 0; j < table.rows[i].cells.length; j++){
+      let cCell = table.rows[i].cells[j].id.split(":");
+      if(parseInt(cCell[1]) > colID){
+        table.rows[i].cells[j].id = parseInt(cCell[0])+":"+(parseInt(cCell[1]-1));
+      }
+    }
+  }
+  wybranaKomorka = null;
+  WyczyscStyl();
+}
+
+function deleteRow(){
+  if(wybranaKomorka == null) return;
+  const coords = wybranaKomorka.split(":");
+  const table = document.getElementById("mainTable");
+  let rowID = parseInt(coords[0]);
+  //check merged cells
+  let collision = checkMergeCollide(rowID, coords[1], "u", table);
+  collision = collision.concat(checkMergeCollide(rowID, coords[1], "d", table));
+  if(collision.length > 0){
+    if(!confirm("Usunięcie wiersza spowoduje rozdzielenie niektórych komórek! Kontunuować?")) return;
+    else {
+      for(let c = 0; c < collision.length; c++){
+        //console.log("Trza rozdzielić: " + collision[c][0]+":"+collision[c][1]);
+        SplitCell(collision[c][0]+":"+collision[c][1]);
+      }
+    }
+  }
+  table.deleteRow(rowID);
+  //change ids
+  for(let i = rowID; i < table.rows.length; i++){
+    for(let j = 0; j < table.rows[i].cells.length; j++){
+      let cCell = table.rows[i].cells[j].id.split(":");
+      table.rows[i].cells[j].id = (parseInt(cCell[0])-1)+":"+parseInt(cCell[1]);
+    }
+  }
+  wybranaKomorka = null;
+  WyczyscStyl();
+}
+
 function checkMergeCollide(row, col, side, table){
   let errorCells = [];
   let collision = false;
