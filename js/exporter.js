@@ -40,9 +40,13 @@ Exporter.priv.getCell = function(i, j){
     if(cell == null) return "";
     else {
         let result = cell.textContent;
-        //check color
+        //check text color
         if(cell.style.color != ""){
             result = "\\textcolor[RGB]{"+cell.style.color.replace("rgb(","").replace(")","")+"}{"+result+"}";
+        }
+        //check cell color
+        if(cell.style.backgroundColor != "white"){
+            result = "\\cellcolor[RGB]{"+cell.style.backgroundColor.replace("rgb(","").replace(")","")+"}"+result;
         }
         return result;
     }
