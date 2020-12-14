@@ -282,3 +282,13 @@ i{
   padding: 0 10px;
   cursor: pointer;
 }
+
+#textColorText{
+  display: inline-block;
+  font-size: 19px;
+  height: 100%;
+  padding: 0 10px;
+  pointer-events:none;
+  background-color: black;
+  color: black;
+}

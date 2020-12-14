@@ -6,8 +6,9 @@ var pierwszaKomorka;
 var ostatniaKomorka;
 var ostatniaEdytowana;
 
-//Zmienna odpowiedzialna za kolor obramowania tabelii
+//Zmienna odpowiedzialna za kolor obramowania tabelii i tekstu
 var borderColor = "#000000";
+var textColor = "#000000";
 
 function CreateTable(x, y){
     //if user add smaller table
@@ -62,6 +63,7 @@ function AddFunction(){
             CheckFontSettings(this.id);
             CheckTextAlignSettings(this.id);
             OptionChangeSize(this.id);
+            ChangeColorInBox(this.id);
           }
         };
     }
@@ -787,6 +789,23 @@ window.onload = function(){
     secondContainer.appendChild(element);
   }
 
+  var textColorContainer = document.getElementById("tableTextColors");
+  for(var i=0; i < colorTable.length; i++){
+    var element = document.createElement("div");
+    element.style.backgroundColor = colorTable[i];
+    element.id = colorTable[i];
+    element.classList.add("colorCellStyleDiv");
+
+    element.onclick = function(){
+      textColor = this.id;
+      document.getElementById("textColorText").style.color = textColor;
+      document.getElementById("textColorText").style.backgroundColor = textColor;
+      ChangeTextColors();
+    }
+    textColorContainer.appendChild(element);
+  }
+
+
   var textSizeElement = document.getElementById("fontSize");
 
   for(var i = 8 ; i < 13 ; i++){
@@ -1157,4 +1176,24 @@ function OptionChangeSize(id){
       break;
     }
   }
+}
+
+function ChangeTextColors(){
+  if(wybranaKomorka != null){
+    var element = document.getElementById(wybranaKomorka);
+    element.style.color = textColor;
+  }
+}
+
+function ChangeColorInBox(id){
+  var element = document.getElementById(id);
+  var elementStyles = window.getComputedStyle(element);
+
+  var actualTextColor = elementStyles.getPropertyValue("color");
+
+  var box = document.getElementById("textColorText");
+  box.style.background = actualTextColor;
+  box.style.color = actualTextColor;
+
+  textColor = actualTextColor;
 }
