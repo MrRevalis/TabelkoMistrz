@@ -13,7 +13,9 @@ html,body{
 }
 
 table{
-    width: 100%;
+  margin: auto;
+  width: 95%;
+  border-collapse: collapse;
 }
 
 table td{
@@ -158,7 +160,6 @@ nav {
   cursor: pointer;
 }
 
-
 .colorCellStyle{
   display: inline-block;
   height: 20px;
@@ -173,6 +174,7 @@ nav {
 #borderCell{
   width: max-content;
 }
+
 #borderCell > ul{
   padding: 0;
   margin: 0;
@@ -196,22 +198,57 @@ nav {
   background-color: #add8e6 !important;
 }
 
+.colorChoosen{
+  background-color: #add8e6 !important;
+}
+
 #bottomBorder{
-  background: url("img/borderBottom.png");
+  background: url("/img/borderBottom.png");
 }
 
 #topBorder{
-  background: url("img/borderTop.png");
+  background: url("/img/borderTop.png");
 }
 
 #rightBorder{
-  background: url("img/borderRight.png");
+  background: url("/img/borderRight.png");
 }
 
 #leftBorder{
-  background: url("img/borderLeft.png");
+  background: url("/img/borderLeft.png");
 }
 
 #allBorders{
-  background: url("img/borderAll.png");
+  background: url("/img/borderAll.png");
+}
+
+#allEdges{
+  background: url("/img/fullBorders.png");
+}
+
+#horizontalEdges{
+  background: url("/img/horizontalBorders.png");
+}
+
+#verticalEdges{
+  background: url("/img/verticalBorders.png");
+}
+
+.colorCellStyleDiv{
+  display: inline-block;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  margin: 0.2em;
+  margin-bottom: 0;
+}
+
+#borderColorText{
+  display: inline-block;
+  font-size: 19px;
+  height: 100%;
+  padding: 0 10px;
+  pointer-events:none;
+  background-color: black;
+  color: black;
 }

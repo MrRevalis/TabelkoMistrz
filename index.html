@@ -30,9 +30,7 @@
 							</div>
 						</div>
 					</div>
-					<a class="tab-item" onclick="AddBorder()">Dodaj obramówke do tabeli</a>
 					<a class="tab-item" onclick="WybranaKomorka()">Wybrana Komorka</a>
-					<a class="tab-item" onclick="AddBorderCell()">Dodaj obramowke</a>
 					<a class="tab-item" onclick="TextColor()">Zmień kolor tekstu</a>
 					<a class="tab-item" onclick="TextBold()">Pogrub tekst</a>
 					<a class="tab-item" onclick="TextItalic()">Kursywa</a>
@@ -83,6 +81,28 @@
 						</div>
 					</a>
 				</div>
+			</div>
+			<div class="tab">
+				<a class="tab-btn">Tabela</a>
+					<div class="tab-content">
+						<a class="tab-item tooltip">Obramowanie tabeli
+						<div class="tooltip-content">
+							<div id="borderCell">
+								<ul>
+									<li id="allEdges" onclick="TableBorderChange(['1','1'])">Wszystkie krawędzie</li>
+									<li id="horizontalEdges" onclick="TableBorderChange(['1','0'])">Poziome krawędzie</li>
+									<li id="verticalEdges" onclick="TableBorderChange(['0','1'])">Pionowe krawędzie</li>
+									<li id="clearEdges" onclick="ClearTableBorder()">Wyczyść obramowanie</li>
+								</ul>
+							</div>
+						</div>
+						<a class="tab-item tooltip">Kolor obramowania
+							<div class="tooltip-content">
+								<div id="tableBorderColors"></div>
+							</div>
+						</a>
+						<div id="borderColorText" onselectstart="return false">empty</div>
+					</div>
 			</div>
 		</div>
 	</nav>

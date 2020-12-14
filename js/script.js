@@ -6,6 +6,9 @@ var pierwszaKomorka;
 var ostatniaKomorka;
 var ostatniaEdytowana;
 
+//Zmienna odpowiedzialna za kolor obramowania tabelii
+var borderColor = "#000000";
+
 function CreateTable(x, y){
     //if user add smaller table
     wybranaKomorka = null;
@@ -30,12 +33,8 @@ function CreateTable(x, y){
         for(var j=0; j<y; j++){
             var cell = document.createElement("td");
             cell.id = i +":" + j;
-            //cell.style.background = "gray";
             cell.style.background = "white";
-            cell.style.borderTop = "1px dashed black";
-            cell.style.borderBottom = "1px dashed black";
-            cell.style.borderLeft = "1px dashed black";
-            cell.style.borderRight = "1px dashed black";
+            cell.style.border = "1px dashed "+borderColor;
 
             cell.setAttribute("contenteditable","false");
 
@@ -44,7 +43,6 @@ function CreateTable(x, y){
         elemBody.appendChild(row);
     }
     elemTable.appendChild(elemBody);
-    elemTable.style.border = "1px dashed black";
     gdzieUmiescic.appendChild(elemTable);
     SaveCellsColors();
     AddFunction();
@@ -705,6 +703,21 @@ window.onload = function(){
     mainContainer.appendChild(element);
   }
 
+  var secondContainer = document.getElementById("tableBorderColors");
+  for(var i=0; i < colorTable.length; i++){
+    var element = document.createElement("div");
+    element.style.backgroundColor = colorTable[i];
+    element.id = colorTable[i];
+    element.classList.add("colorCellStyleDiv");
+
+    element.onclick = function(){
+      borderColor = this.id;
+      document.getElementById("borderColorText").style.color = borderColor;
+      document.getElementById("borderColorText").style.backgroundColor = borderColor;
+    }
+    secondContainer.appendChild(element);
+  }
+
 }
 
 //Otwarcie jest burdel
@@ -743,7 +756,7 @@ function AddBorderToCell(borderValue){
   if(borderValue.every(function(x){return x == 1})){
     for(var i = 0 ; i < tablePosition.length; i++){
       var position = "border"+tablePosition[i];
-      element.style[position] = "1px solid black";
+      element.style[position] = "1px solid "+borderColor;
     }
   }
   else{
@@ -752,7 +765,7 @@ function AddBorderToCell(borderValue){
       if(borderValue[i] == 1){
         var position = "border"+tablePosition[i];
         if(bordersTable[i] == "dashed"){
-          element.style[position] = "1px solid black";
+          element.style[position] = "1px solid "+borderColor;
         }
         else{
           element.style[position] = "1px dashed black";
@@ -789,10 +802,64 @@ function BorderViewFunction(id){
   }
 }
 
+//Wyczyszczenie ustawien obramowania komorki
 function ClearBorderView(){
   document.getElementById("allBorders").classList.remove("borderChecked");
   document.getElementById("topBorder").classList.remove("borderChecked");
   document.getElementById("rightBorder").classList.remove("borderChecked");
   document.getElementById("bottomBorder").classList.remove("borderChecked");
   document.getElementById("leftBorder").classList.remove("borderChecked");
+}
+
+var horizontal = false;
+var vertical = false;
+function TableBorderChange(borderValues){
+  var mainTable = document.getElementById("mainTable");
+  var cells = mainTable.querySelectorAll("td");
+
+  ClearTableBorder();
+
+  if(borderValues[0] == 1){
+    for(var i = 0; i < cells.length ; i++){
+      cells[i].style.borderTop = "1px solid "+borderColor;
+      cells[i].style.borderBottom = "1px solid "+borderColor;
+    }
+    horizontal = true;
+    document.getElementById("horizontalEdges").classList.add("borderChecked");
+  }
+  else{
+    horizontal = false;
+    document.getElementById("horizontalEdges").classList.remove("borderChecked");
+  }
+
+  if(borderValues[1] == 1){
+    for(var i = 0; i < cells.length ; i++){
+      cells[i].style.borderLeft = "1px solid "+borderColor;
+      cells[i].style.borderRight = "1px solid "+borderColor;
+    }
+    vertical = true;
+    document.getElementById("verticalEdges").classList.add("borderChecked");
+  }
+  else{
+    vertical = false;
+    document.getElementById("verticalEdges").classList.remove("borderChecked");
+  }
+
+  if(horizontal == true && vertical == true){
+    document.getElementById("allEdges").classList.add("borderChecked");
+  }
+  else{
+    document.getElementById("allEdges").classList.remove("borderChecked");
+  }
+}
+
+function ClearTableBorder(){
+  var mainTable = document.getElementById("mainTable");
+  var cells = mainTable.querySelectorAll("td");
+  for(var i = 0; i < cells.length ; i++){
+    cells[i].style.border = "1px dashed black";
+  }
+  document.getElementById("horizontalEdges").classList.remove("borderChecked");
+  document.getElementById("verticalEdges").classList.remove("borderChecked");
+  document.getElementById("allEdges").classList.remove("borderChecked");
 }
