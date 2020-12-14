@@ -5,6 +5,7 @@ var cellsColorTable;
 var pierwszaKomorka;
 var ostatniaKomorka;
 var ostatniaEdytowana;
+let tableCols; //ilosc kolumn w tabeli
 
 //Zmienna odpowiedzialna za kolor obramowania tabelii i tekstu
 var borderColor = "#000000";
@@ -18,6 +19,7 @@ function CreateTable(x, y){
     pierwszaKomorka=null;
     ostatniaKomorka=null;
     ostatniaEdytowana=null;
+    tableCols = parseInt(y);
 
     document.getElementById("body").innerHTML = "";
 
@@ -468,7 +470,7 @@ function InsertColumn(side){
   let colID = parseInt(coords[1]);
   if(side == 'r') colID+=document.getElementById(wybranaKomorka).colSpan;
 
-  if(colID == getTableWidth(table)){
+  if(colID == tableCols){
     for(let i = 0; i < table.rows.length; i++){
       let cell = table.rows[i].insertCell(table.rows[i].cells.length);
       AddPropertiesToCell(cell, i, table.rows[i].cells.length-1);
@@ -496,7 +498,7 @@ function InsertColumn(side){
     }
     SaveCellsColors()
   }
-  
+  tableCols++;
   wybranaKomorka = null;
   WyczyscStyl();
   //AddFunction();
@@ -526,7 +528,7 @@ function InsertRow(side){
         table.rows[i].cells[j].id = (parseInt(cCell[0])+1)+":"+parseInt(cCell[1]);
       }
   }
-  const x = getTableWidth(table);
+  const x = tableCols;
   table.insertRow(rowID);
   //add cells
   for(let i = 0; i < x; i++){
@@ -572,6 +574,7 @@ function deleteColumn(){
       }
     }
   }
+  tableCols--;
   wybranaKomorka = null;
   WyczyscStyl();
 }
@@ -668,14 +671,6 @@ function checkMergeCollide(row, col, side, table){
   }
   console.log(errorCells);
   return errorCells;
-}
-
-function getTableWidth(table){
-  let ids = [];
-  for(let i = 0; i < table.rows.length; i++){
-    ids.push(parseInt(table.rows[i].cells[table.rows[i].cells.length - 1].id.split(":")[1]));
-  }
-  return Math.max(...ids)+1;
 }
 
 $(document).ready(function(){
