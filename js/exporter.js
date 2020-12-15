@@ -8,17 +8,20 @@ Exporter.genLatexCode = function(){
     WyczyscStyl();
     const table = document.getElementById("mainTable");
     const rows = table.rows.length;
+    
+    const allBorders = Exporter.priv.CheckTableBorders("allEdges");
+    const horizontalBorders = Exporter.priv.CheckTableBorders("horizontalEdges");
+    const verticalBorders = Exporter.priv.CheckTableBorders("verticalEdges");
 
     let code = [];
     code.push("\\begin{table}");
-    code.push(Exporter.priv.createTableHeader(tableCols));
+    code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders));
     for(let i = 0; i < rows; i++){
         let row = [];
         for(let j = 0; j < tableCols; j++){
             const cell = document.getElementById(i+":"+j);
             if(cell != null){
                 let result = cell.textContent;
-
                 //check font weight XD
                 if(cell.style.fontWeight == "bold"){
                     result = "\\textbf{"+result+"}";
@@ -33,8 +36,8 @@ Exporter.genLatexCode = function(){
                 }
                 
                 //Rozwala całkowicie widok :)
-                let fontType = Exporter.priv.getTextSize(cell.style.fontSize);
-                result = "{\\fontsize{"+fontType+"}{"+fontType+"}\\selectfont "+result+"}";
+                /*let fontType = Exporter.priv.getTextSize(cell.style.fontSize);
+                result = "{\\fontsize{"+fontType+"}{"+fontType+"}\\selectfont "+result+"}";*/
 
                 //check text color
                 if(cell.style.color != ""){
@@ -65,7 +68,11 @@ Exporter.genLatexCode = function(){
                 }
             }
         }
-        code.push(row.join(" & ") + "\\\\");
+        if(allBorders == true || horizontalBorders == true){
+            code.push(row.join(" & ") + "\\\\" + "\\hline");
+        }
+        else
+            code.push(row.join(" & ") + "\\\\");
     }
     code.push("\\end{tabular}", "\\end{table}");
     console.log(code.join("\n"));
@@ -78,10 +85,17 @@ Exporter.genLatexCode = function(){
 
 Exporter.priv = function(){}
 
-Exporter.priv.createTableHeader = function(cols){
+Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, horizontalBorders){
     let code = "\\begin{tabular}{";
-    for(let i = 0; i < cols; i++) code += "l";
+    var text = "l";
+    if(allBorders == true || verticalBorders == true) text = "|l";
+    for(let i = 0; i < cols; i++) code += text;
+
+    if(allBorders==true || verticalBorders == true)code+="|";
     code += "}";
+
+    if(allBorders == true || horizontalBorders == true) code+="\\hline";
+
     return code;
 }
 
@@ -101,6 +115,10 @@ Exporter.priv.getTextSize = function(size){
     var fontSize = size.replace("px","");
     var fontSizePT = (fontSize / .75).toFixed(2);
     return fontSizePT+"pt";
+}
+
+Exporter.priv.CheckTableBorders = function(id){
+    return document.getElementById(id).classList.contains("borderChecked");
 }
 
 document.querySelector("#genCode a").addEventListener("click", Exporter.genLatexCode);
