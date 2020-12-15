@@ -31,6 +31,10 @@ Exporter.genLatexCode = function(){
                 if(cell.style.textDecoration == "underline"){
                     result = "\\underline{"+result+"}";
                 }
+                
+                //Rozwala całkowicie widok :)
+                let fontType = Exporter.priv.getTextSize(cell.style.fontSize);
+                result = "{\\fontsize{"+fontType+"}{"+fontType+"}\\selectfont "+result+"}";
 
                 //check text color
                 if(cell.style.color != ""){
@@ -91,6 +95,12 @@ Exporter.priv.getColsInMR = function(row, col){
         }
     }
     return null;
+}
+
+Exporter.priv.getTextSize = function(size){
+    var fontSize = size.replace("px","");
+    var fontSizePT = (fontSize / .75).toFixed(2);
+    return fontSizePT+"pt";
 }
 
 document.querySelector("#genCode a").addEventListener("click", Exporter.genLatexCode);
