@@ -38,7 +38,7 @@ function CreateTable(x, y){
             cell.id = i +":" + j;
             cell.style.background = "white";
             cell.style.border = "1px dashed "+borderColor;
-
+            cell.style.fontSize = "16px";
             cell.setAttribute("contenteditable","false");
 
             row.appendChild(cell)

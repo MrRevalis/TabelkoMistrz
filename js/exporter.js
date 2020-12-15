@@ -18,6 +18,20 @@ Exporter.genLatexCode = function(){
             const cell = document.getElementById(i+":"+j);
             if(cell != null){
                 let result = cell.textContent;
+
+                //check font weight XD
+                if(cell.style.fontWeight == "bold"){
+                    result = "\\textbf{"+result+"}";
+                }
+
+                if(cell.style.fontStyle == "italic"){
+                    result = "\\emph{"+result+"}";
+                }
+
+                if(cell.style.textDecoration == "underline"){
+                    result = "\\underline{"+result+"}";
+                }
+
                 //check text color
                 if(cell.style.color != ""){
                     result = "\\textcolor[RGB]{"+cell.style.color.replace("rgb(","").replace(")","")+"}{"+result+"}";
