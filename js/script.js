@@ -466,7 +466,7 @@ function InsertColumn(side){
       }
     }
   }
-
+  WyczyscStyl();
   let colID = parseInt(coords[1]);
   if(side == 'r') colID+=document.getElementById(wybranaKomorka).colSpan;
 
@@ -521,6 +521,7 @@ function InsertRow(side){
       }
     }
   }
+  WyczyscStyl();
   //change ids
   for (let i = rowID; i < table.rows.length; i++) {
       for (let j = 0; j < table.rows[i].cells.length; j++){
