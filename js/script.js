@@ -501,6 +501,7 @@ function InsertColumn(side){
   tableCols++;
   wybranaKomorka = null;
   WyczyscStyl();
+  ChangeBorderColor();
   //AddFunction();
 }
 
@@ -539,6 +540,7 @@ function InsertRow(side){
   wybranaKomorka = null;
   SaveCellsColors();
   WyczyscStyl();
+  ChangeBorderColor();
   //AddFunction();
 }
 
@@ -781,6 +783,8 @@ window.onload = function(){
       borderColor = this.id;
       document.getElementById("borderColorText").style.color = borderColor;
       document.getElementById("borderColorText").style.backgroundColor = borderColor;
+      //Zmiana koloru obramowania istniejącego
+      ChangeBorderColor();
     }
     secondContainer.appendChild(element);
   }
@@ -1192,4 +1196,24 @@ function ChangeColorInBox(id){
   box.style.color = actualTextColor;
 
   textColor = actualTextColor;
+}
+
+
+function ChangeBorderColor(){
+  var mainTable = document.getElementById("mainTable");
+  var cells = mainTable.querySelectorAll("td");
+
+  if(horizontal == true){
+    for(var i = 0; i < cells.length ; i++){
+      cells[i].style.borderTop = "1px solid "+borderColor;
+      cells[i].style.borderBottom = "1px solid "+borderColor;
+    }
+  }
+
+  if(vertical == true){
+    for(var i = 0; i < cells.length ; i++){
+      cells[i].style.borderLeft = "1px solid "+borderColor;
+      cells[i].style.borderRight = "1px solid "+borderColor;
+    }
+  }
 }
