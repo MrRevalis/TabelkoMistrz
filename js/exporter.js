@@ -44,7 +44,7 @@ Exporter.genLatexCode = function(){
                     result = "\\textcolor[RGB]{"+cell.style.color.replace("rgb(","").replace(")","")+"}{"+result+"}";
                 }
                 //check cell color
-                if(cell.style.backgroundColor != "white"){
+                if(cell.style.backgroundColor != "white" && cell.style.backgroundColor != ""){
                     result = "\\cellcolor[RGB]{"+cell.style.backgroundColor.replace("rgb(","").replace(")","")+"}"+result;
                 }
                 //check multirow
