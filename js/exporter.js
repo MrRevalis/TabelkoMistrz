@@ -53,7 +53,9 @@ Exporter.genLatexCode = function(){
                 }
                 //check multicol
                 if(cell.colSpan > 1){
-                    result = "\\multicolumn{" + cell.colSpan + "}{l}{" + result + "}";
+                    let border = "l";
+                    if(allBorders || verticalBorders) if(j == 0) border = "|l|"; else border = "l|";
+                    result = "\\multicolumn{" + cell.colSpan + "}{" + border + "}{" + result + "}";
                     j += cell.colSpan-1;
                 }
                 row.push(result);
@@ -63,7 +65,9 @@ Exporter.genLatexCode = function(){
                     if(shift == 1){
                         row.push("");
                     } else{
-                        row.push("\\multicolumn{" + shift + "}{l}{}");
+                        let border = "l";
+                    if(allBorders || verticalBorders) if(j == 0) border = "|l|"; else border = "l|";
+                        row.push("\\multicolumn{" + shift + "}{" + border + "}{}");
                     }
                 }
             }
@@ -99,6 +103,7 @@ Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, ho
     return code;
 }
 
+//return value of colspan in multirow merger cell (for merged cells which do not exist in html)
 Exporter.priv.getColsInMR = function(row, col){
     for(let i = row - 1; i >= 0; i--){
         const cell = document.getElementById(i+":"+col);
