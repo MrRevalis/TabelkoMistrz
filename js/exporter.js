@@ -12,6 +12,8 @@ Exporter.genLatexCode = function(){
     const allBorders = Exporter.priv.CheckTableBorders("allEdges");
     const horizontalBorders = Exporter.priv.CheckTableBorders("horizontalEdges");
     const verticalBorders = Exporter.priv.CheckTableBorders("verticalEdges");
+    let noHorizontalLines = [];
+    if(horizontalBorders) noHorizontalLines = Exporter.priv.checkRowSpan(table);
 
     let code = [];
     code.push("\\begin{table}");
@@ -72,8 +74,14 @@ Exporter.genLatexCode = function(){
                 }
             }
         }
-        if(allBorders == true || horizontalBorders == true){
+        if((allBorders == true || horizontalBorders == true) && !noHorizontalLines.includes(i)){
             code.push(row.join(" & ") + "\\\\" + "\\hline");
+        }
+        else if(noHorizontalLines.includes(i)){
+            let clines = "";
+            const clinesTab = Exporter.priv.getClines(i);
+            for(let c = 0; c < clinesTab.length; c++) clines += "\\cline{"+clinesTab[c]+"}";
+            code.push(row.join(" & ") + "\\\\" + clines);
         }
         else
             code.push(row.join(" & ") + "\\\\");
@@ -124,6 +132,51 @@ Exporter.priv.getTextSize = function(size){
 
 Exporter.priv.CheckTableBorders = function(id){
     return document.getElementById(id).classList.contains("borderChecked");
+}
+
+//return table with rows id that are in rowspan somewhere and \hline can not be used
+Exporter.priv.checkRowSpan = function(table){
+    let noLine = [];
+    for(let i = 0; i < table.rows.length; i++){
+        for(let j = 0; j < tableCols; j++){
+            if(this.isPartOfRowSpan(i,j)){
+                noLine.push(i);
+                break;
+            }
+        }
+    }
+    return noLine;
+}
+
+Exporter.priv.getClines = function(i){
+    let clines = [];
+    let first = null;
+    for(let j = 0; j <= tableCols; j++){
+        const cell = document.getElementById(i+":"+j);
+        if(cell == null){
+            if(first != null){
+                clines.push((first+1)+"-"+(j));
+                first = null;
+            }
+        } else if(cell.rowSpan < 2 && first == null){
+            first = j;
+        } else if(cell.rowSpan > 1 && first != null){
+            clines.push((first+1)+"-"+(j));
+            first = null;
+        }
+    }
+    return clines;
+}
+
+Exporter.priv.isPartOfRowSpan = function(i, j){
+    for(let r = 0; r <= i; r++){
+        const cell = document.getElementById(r+":"+j);
+        if(cell == null) continue;
+        if(cell.rowSpan > 1){
+            if(r + cell.rowSpan - 1 > i) return true;
+        }
+    }
+    return false;
 }
 
 document.querySelector("#genCode a").addEventListener("click", Exporter.genLatexCode);
