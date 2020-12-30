@@ -7,9 +7,12 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" crossorigin="anonymous">
 	<link href="css/prism.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/tingle.css">
 	<link rel="stylesheet" href="css/style.css">
+
 	<script type="text/javascript" src="js/script.js" defer></script>
 	<script type="text/javascript" src="js/exporter.js" defer></script>
+	<script type="text/javascript" src="js/importer.js" defer></script>
 	<title>TabelkoMistrz</title>
 	</head>
 
@@ -19,7 +22,11 @@
 			<div class="tab">
 				<a class="tab-btn active">Plik</a>
 				<div class="tab-content" style="display:block">
-					<a class="tab-item">Otwórz</a>
+					<div class="tab-item tooltip">Otwórz
+						<div class="tooltip-content">
+							<a class="tab-item" onclick="Importer.openCsvModal()">Z pliku .csv</a>
+						</div>
+					</div>
 					<a class="tab-item">Zapisz</a>
 					<div class="divider"></div>
 					<div class="tab-item tooltip">Utworz tabele
@@ -132,5 +139,7 @@
 		<p style="padding-left: 20px;"><a>Generuj</a></p>
 		<pre style="display: none;"><code class="language-latex" id="latexCode"></code></pre>
 	</div>
+
 	<script src="js/prism.js"></script>
+	<script src="js/tingle.js"></script>
 </body>
