@@ -41,6 +41,9 @@ function CreateTable(x, y){
             cell.style.fontSize = "16px";
             cell.setAttribute("contenteditable","false");
 
+            //Testowe, zeby zobaczyc ID => latwiej mi się kontroluje 
+            cell.innerHTML = cell.id;
+
             row.appendChild(cell)
         }
         elemBody.appendChild(row);
@@ -253,7 +256,6 @@ function AddBorderCell(){
 
 function ManyCellsChange(attributeName, value1, value2){	
 	
-	
 	if(pierwszaKomorka != null && ostatniaKomorka != null){
 			var text1 = pierwszaKomorka.split(":");
 			var text2 = ostatniaKomorka.split(":");
@@ -358,10 +360,11 @@ function ScalKomorki(){
     //Dodajemy rowspan i colspan w Math.abs(roznica ostatnia i pierwsza po x i y)
     var tekst = pierwszaKomorka.split(":");
     var tekst2 = ostatniaKomorka.split(":");
-    var table = document.getElementById("mainTable");
+
+    /*var table = document.getElementById("mainTable");
   
     var roznicaX = Math.abs(tekst[0] - tekst2[0]);
-    var roznicaY = Math.abs(tekst[1] - tekst2[1]);
+    var roznicaY = Math.abs(tekst[1] - tekst2[1]);*/
   
     var xMin = Math.min(tekst[0], tekst2[0]);
     var xMax = Math.max(tekst[0], tekst2[0]);
@@ -377,8 +380,8 @@ function ScalKomorki(){
         }
       }
     }
-    document.getElementById(xMin+":"+yMin).rowSpan = xMax - xMin + 1;
-    document.getElementById(xMin+":"+yMin).colSpan = yMax - yMin + 1;
+    document.getElementById(xMin+":"+yMin).rowSpan = Math.abs(xMax - xMin + 1);
+    document.getElementById(xMin+":"+yMin).colSpan = Math.abs(yMax - yMin + 1);
     document.getElementById(xMin+":"+yMin).innerHTML = tekst;
     
     WyczyscStyl();
@@ -399,16 +402,30 @@ function RozdzielKomorki(){
     //We are using here all highlighted cells (color yellow)
     console.log("rozdziel zaznaczone komorki => zolty kolor");
     for(var i = 0; i < tabelaZaznaczonych.length; i++){
-      SplitCell(tabelaZaznaczonych[i]);
+      if(CheckSpans(tabelaZaznaczonych[i])){
+        SplitCell(tabelaZaznaczonych[i]);
+      }
     }
     tabelaZaznaczonych = [];
   }
   else if(wybranaKomorka != null){
     //We are using only one highlighted cell (color green)
     console.log("rozdziel wybrana komorke => zielony kolor");
-    SplitCell(wybranaKomorka);
-    wybranaKomorka = null;
+    if(CheckSpans(wybranaKomorka)){
+      SplitCell(wybranaKomorka);
+      wybranaKomorka = null;
+    }
   } 
+}
+
+function CheckSpans(elementID){
+  var element = document.getElementById(elementID);
+  if(element.colSpan > 1 || element.rowSpan > 1){
+    return true;
+  }
+  else{
+    return false;
+  }
 }
 
 function SplitCell(element){
@@ -429,20 +446,26 @@ function SplitCell(element){
   for (var i = elementID[0]; i < Number(elementID[0]) + Number(rows) ; i++) {
     for (var j = elementID[1]; j < Number(elementID[1]) + Number(cols); j++){
       //Add new cell to specific index
-      var cell = table.rows[i].insertCell(j);
-      //Add style and functions to this cell
+      //https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/insertCell
+      if(j > table.rows[i].childElementCount){
+        var cell = table.rows[i].insertCell(-1);
+      }
+      else{
+        var cell = table.rows[i].insertCell(j);
+      }
       AddPropertiesToCell(cell, i, j);
-
     }
   }
   //Write there text from element
-  document.getElementById(element).innerHTML = text;
+  //Wyrzucam tekst, żeby było widać ID 
+  //document.getElementById(element).innerHTML = text;
 }
 
 function AddPropertiesToCell(cell, i, j){
   cell.id = i +":" + j;
   //cell.style.background = "gray";
   cell.setAttribute("contenteditable","false");
+  cell.innerHTML = cell.id;
   cell.style.border = "1px dashed black";
   cell.onclick = function () {
     if(myszNacisnieta != true){
@@ -1215,5 +1238,13 @@ function ChangeBorderColor(){
       cells[i].style.borderLeft = "1px solid "+borderColor;
       cells[i].style.borderRight = "1px solid "+borderColor;
     }
+  }
+}
+
+function ChangeBorderCollapse(variable){
+  var table = document.getElementsByTagName("table")[0];
+  switch(variable){
+    case 0 : table.style.borderCollapse = "collapse"; break;
+    case 1 : table.style.borderCollapse = "separate"; break;
   }
 }
