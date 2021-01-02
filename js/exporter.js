@@ -15,9 +15,12 @@ Exporter.genLatexCode = function(){
     let noHorizontalLines = [];
     if(horizontalBorders) noHorizontalLines = Exporter.priv.checkRowSpan(table);
 
+    let hlines = [];
+    if(!allBorders || !horizontalBorders) hlines = Exporter.priv.getBorders(table.rows.length, tableCols);
+
     let code = [];
     code.push("\\begin{table}");
-    code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders));
+    code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0]));
     for(let i = 0; i < rows; i++){
         let row = [];
         for(let j = 0; j < tableCols; j++){
@@ -74,12 +77,17 @@ Exporter.genLatexCode = function(){
                 }
             }
         }
-        if((allBorders == true || horizontalBorders == true) && !noHorizontalLines.includes(i)){
+        if((allBorders == true || horizontalBorders == true) && !noHorizontalLines.includes(i) || hlines[i+1].countElement(1) == tableCols){
             code.push(row.join(" & ") + "\\\\" + "\\hline");
         }
         else if(noHorizontalLines.includes(i)){
             let clines = "";
             const clinesTab = Exporter.priv.getClines(i);
+            for(let c = 0; c < clinesTab.length; c++) clines += "\\cline{"+clinesTab[c]+"}";
+            code.push(row.join(" & ") + "\\\\" + clines);
+        } else if(hlines[i+1].includes(1)){
+            let clines = "";
+            const clinesTab = Exporter.priv.getClinesFromArray(hlines[i+1]);
             for(let c = 0; c < clinesTab.length; c++) clines += "\\cline{"+clinesTab[c]+"}";
             code.push(row.join(" & ") + "\\\\" + clines);
         }
@@ -97,7 +105,7 @@ Exporter.genLatexCode = function(){
 
 Exporter.priv = function(){}
 
-Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, horizontalBorders){
+Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, horizontalBorders, borderRow){
     let code = "\\begin{tabular}{";
     var text = "l";
     if(allBorders == true || verticalBorders == true) text = "|l";
@@ -106,7 +114,13 @@ Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, ho
     if(allBorders==true || verticalBorders == true)code+="|";
     code += "}";
 
-    if(allBorders == true || horizontalBorders == true) code+="\\hline";
+    if(allBorders == true || horizontalBorders == true || borderRow.countElement(1) == tableCols) code+="\\hline";
+    else if(borderRow.includes(1)){
+        let clines = "";
+        const clinesTab = Exporter.priv.getClinesFromArray(borderRow);
+        for(let c = 0; c < clinesTab.length; c++) clines += "\\cline{"+clinesTab[c]+"}";
+        code += clines;
+    }
 
     return code;
 }
@@ -168,6 +182,20 @@ Exporter.priv.getClines = function(i){
     return clines;
 }
 
+Exporter.priv.getClinesFromArray = function(row){
+    let clines = [];
+    let first = null;
+    for(let j = 0; j <= tableCols; j++){
+        if(row[j] != 1 && first != null){
+            clines.push((first+1)+"-"+(j));
+            first = null;
+        } else if(row[j] == 1 && first == null){
+            first = j;
+        }
+    }
+    return clines;
+}
+
 Exporter.priv.isPartOfRowSpan = function(i, j){
     for(let r = 0; r <= i; r++){
         const cell = document.getElementById(r+":"+j);
@@ -177,6 +205,32 @@ Exporter.priv.isPartOfRowSpan = function(i, j){
         }
     }
     return false;
+}
+
+Exporter.priv.getBorders = function(rows, cols){
+    //initialize array
+    const hlines = new Array(rows + 1);
+    for(let i = 0; i < rows + 1; i++){
+        hlines[i] = new Array(cols);
+    }
+    //check cells
+    for(let i = 0; i < rows; i++){
+        for(let j = 0; j < cols; j++){
+            const cell = document.getElementById(i+":"+j);
+            if(cell != null){
+                for(let m = 0; m < cell.colSpan; m++){
+                    if(cell.style.borderTopStyle == "solid"){
+                        hlines[i][j+m] = 1;
+                    }
+                    if(cell.style.borderBottomStyle == "solid"){
+                        hlines[i+cell.rowSpan][j+m] = 1;
+                    }
+                }
+            }
+        }
+    }
+    //console.log(hlines);
+    return hlines;
 }
 
 document.querySelector("#genCode a").addEventListener("click", Exporter.genLatexCode);

@@ -1137,3 +1137,11 @@ function ClearCheckMerged(id){
   var button = document.getElementById("mergeCells");
   button.classList.remove("buttonChecked");
 }
+
+//zlicza wystepowanie elementu
+Array.prototype.countElement = function(element){
+  let count = 0;
+  for(let i = 0; i < this.length; i++)
+    if(this[i] == element) count++;
+  return count;
+}
