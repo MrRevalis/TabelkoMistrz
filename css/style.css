@@ -238,6 +238,10 @@ nav {
   background-color: #add8e6 !important;
 }
 
+.buttonChecked{
+  background-color: #add8e6 !important;
+}
+
 #bottomBorder{
   background: url("../img/borderBottom.png");
 }
