@@ -52,6 +52,9 @@ function CreateTable(x, y){
     gdzieUmiescic.appendChild(elemTable);
     SaveCellsColors();
     AddFunction();
+
+
+    GenerateToolBar();
 }
 
 
@@ -348,6 +351,8 @@ function InsertColumn(side){
   let colID = parseInt(coords[1]);
   if(side == 'r') colID+=document.getElementById(wybranaKomorka).colSpan;
 
+  AddToToolBar(colID);
+
   if(colID == tableCols){
     for(let i = 0; i < table.rows.length; i++){
       let cell = table.rows[i].insertCell(table.rows[i].cells.length);
@@ -455,6 +460,7 @@ function deleteColumn(){
       }
     }
   }
+  RemoveFromToolBar(colID);
   tableCols--;
   wybranaKomorka = null;
   WyczyscStyl();
@@ -707,7 +713,6 @@ window.onload = function(){
 
 }
 
-//Otwarcie jest burdel
 //Zaznaczenie zmienia kolor i należało by przywrócić do tego co było wcześniej
 //Dlatego przed pierwszym zaznaczeniem, funkcja będzie zapisywała w tabeli stan kolorów każdej z komórki
 //A po odznaczeniu wykorzystując funkcje "WyczyscStyl()" przywrócimy kolory do pierwotnego stanu
@@ -1115,7 +1120,7 @@ function ChangeBorderColor(){
 }
 
 function ChangeBorderCollapse(variable){
-  var table = document.getElementsByTagName("table")[0];
+  var table = document.getElementById("mainTable");
   switch(variable){
     case 0 : table.style.borderCollapse = "collapse"; break;
     case 1 : table.style.borderCollapse = "separate"; break;
@@ -1144,4 +1149,63 @@ Array.prototype.countElement = function(element){
   for(let i = 0; i < this.length; i++)
     if(this[i] == element) count++;
   return count;
+}
+
+
+//Zawiera listę wszystkich opcji co do kolumn
+var contentToolBar = [];
+//Czesc do generowania paska z specyfikacja kolumn
+function GenerateToolBar(){
+  var amountColumns = tableCols || 0;
+  if(amountColumns == 0) return;
+  var container = document.getElementById("toolBarContainer");
+  var table = document.createElement("table");
+  table.id = "toolBarTable";
+  var tbody = document.createElement("tbody");
+  var row = document.createElement("tr");
+
+  contentToolBar = [];
+  for(var i = 0; i < amountColumns; i++){
+    contentToolBar[i] = "l";
+    var cell = document.createElement("td");
+    cell.innerHTML = contentToolBar[i];
+    cell.id = i;
+    cell.setAttribute("contenteditable","true");
+    
+    row.appendChild(cell);
+  }
+  tbody.appendChild(row);
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function AddToToolBar(index){
+  var tempArray = [];
+  for(var i = 0; i < contentToolBar.length + 1; i++){
+    if(i == index){
+      tempArray.push("l");
+    }
+    tempArray.push(contentToolBar[i]);
+  }
+  contentToolBar = tempArray;
+
+  var table = document.getElementById("toolBarTable");
+  var cell = table.rows[0].insertCell(index);
+  cell.innerHTML = contentToolBar[index];
+  cell.id = i;
+  cell.setAttribute("contenteditable","true");
+}
+
+function RemoveFromToolBar(index){
+  var table = document.getElementById("toolBarTable");
+  table.rows[0].deleteCell(index);
+  contentToolBar.splice(index, 1);
+}
+
+function ToolBarEntry(text){
+
+}
+
+function ChangeID(){
+
 }

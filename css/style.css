@@ -317,3 +317,15 @@ i{
   background-color: black;
   color: black;
 }
+
+/* Style do paska */
+#toolBarContainer{
+  margin-bottom: 1em;
+}
+
+#toolBarContainer > table > tbody > tr > td{
+  border: 1px solid white;
+  background-color: #add8e6;
+  color: white;
+  padding: 1em;
+}
