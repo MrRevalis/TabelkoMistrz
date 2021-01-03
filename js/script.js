@@ -1172,6 +1172,10 @@ function GenerateToolBar(){
     cell.id = i;
     cell.setAttribute("contenteditable","true");
     
+    cell.addEventListener("input", function(event){
+      alert(this.id);
+    })
+
     row.appendChild(cell);
   }
   tbody.appendChild(row);
@@ -1192,14 +1196,17 @@ function AddToToolBar(index){
   var table = document.getElementById("toolBarTable");
   var cell = table.rows[0].insertCell(index);
   cell.innerHTML = contentToolBar[index];
-  cell.id = i;
+  cell.id = index;
   cell.setAttribute("contenteditable","true");
+
+  ChangeID();
 }
 
 function RemoveFromToolBar(index){
   var table = document.getElementById("toolBarTable");
   table.rows[0].deleteCell(index);
   contentToolBar.splice(index, 1);
+  ChangeID();
 }
 
 function ToolBarEntry(text){
@@ -1207,5 +1214,9 @@ function ToolBarEntry(text){
 }
 
 function ChangeID(){
-
+  var table = document.getElementById("toolBarTable");
+  var elements = table.rows[0].cells;
+  for(var i = 0; i < elements.length; i++){
+    elements[i].id = i;
+  }
 }
