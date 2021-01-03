@@ -16,11 +16,18 @@ Exporter.genLatexCode = function(){
     if(horizontalBorders) noHorizontalLines = Exporter.priv.checkRowSpan(table);
 
     let hlines = [];
-    if(!allBorders || !horizontalBorders) hlines = Exporter.priv.getBorders(table.rows.length, tableCols);
+    let vlines = [];
+    let vheader = []; //wher to put | when generating header
+    if(!allBorders || !horizontalBorders || !verticalBorders){
+        const borders = Exporter.priv.getBorders(table.rows.length, tableCols);
+        hlines = borders[0];
+        vlines = borders[1];
+        vheader = Exporter.priv.mergeVlines(vlines);
+    }
 
     let code = [];
     code.push("\\begin{table}");
-    code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0]));
+    code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0], vheader));
     for(let i = 0; i < rows; i++){
         let row = [];
         for(let j = 0; j < tableCols; j++){
@@ -60,8 +67,16 @@ Exporter.genLatexCode = function(){
                 if(cell.colSpan > 1){
                     let border = "l";
                     if(allBorders || verticalBorders) if(j == 0) border = "|l|"; else border = "l|";
+                    else if(vheader[j + cell.colSpan] == 1) border = "l|";
                     result = "\\multicolumn{" + cell.colSpan + "}{" + border + "}{" + result + "}";
                     j += cell.colSpan-1;
+                } else if(vlines[i][j] == 1){
+                    if(j+1 == tableCols && (vlines[i][tableCols] == 1 || vheader[tableCols] == 1)){
+                        //last cell
+                        result = "\\multicolumn{1}{|l|}{"+result+"}";
+                    } else {
+                        result = "\\multicolumn{1}{|l}{"+result+"}";
+                    }
                 }
                 row.push(result);
             } else {
@@ -105,13 +120,18 @@ Exporter.genLatexCode = function(){
 
 Exporter.priv = function(){}
 
-Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, horizontalBorders, borderRow){
+Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, horizontalBorders, borderRow, vlines){
     let code = "\\begin{tabular}{";
     var text = "l";
     if(allBorders == true || verticalBorders == true) text = "|l";
-    for(let i = 0; i < cols; i++) code += text;
+    for(let i = 0; i < cols; i++){
+        if(!verticalBorders){
+            if(vlines[i] == 1) code += "|"+text;
+            else code += text;
+        } else code += text;
+    }
 
-    if(allBorders==true || verticalBorders == true)code+="|";
+    if(allBorders==true || verticalBorders == true || vlines[cols] == 1)code+="|";
     code += "}";
 
     if(allBorders == true || horizontalBorders == true || borderRow.countElement(1) == tableCols) code+="\\hline";
@@ -208,10 +228,14 @@ Exporter.priv.isPartOfRowSpan = function(i, j){
 }
 
 Exporter.priv.getBorders = function(rows, cols){
-    //initialize array
+    //initialize arrays
     const hlines = new Array(rows + 1);
+    const vlines = new Array(rows);
     for(let i = 0; i < rows + 1; i++){
         hlines[i] = new Array(cols);
+    }
+    for(let i = 0; i < rows; i++){
+        vlines[i] = new Array(cols + 1);
     }
     //check cells
     for(let i = 0; i < rows; i++){
@@ -219,6 +243,7 @@ Exporter.priv.getBorders = function(rows, cols){
             const cell = document.getElementById(i+":"+j);
             if(cell != null){
                 for(let m = 0; m < cell.colSpan; m++){
+                    //horizontal
                     if(cell.style.borderTopStyle == "solid"){
                         hlines[i][j+m] = 1;
                     }
@@ -226,11 +251,40 @@ Exporter.priv.getBorders = function(rows, cols){
                         hlines[i+cell.rowSpan][j+m] = 1;
                     }
                 }
+                //vertical
+                if(cell.style.borderLeftStyle == "solid"){
+                    vlines[i][j] = 1;
+                }
+                if(cell.style.borderRightStyle == "solid"){
+                    vlines[i][j+cell.colSpan] = 1;
+                }
             }
         }
     }
     //console.log(hlines);
-    return hlines;
+    //console.log(vlines);
+    return [hlines, vlines];
+}
+
+//modify array with id of lines witch can be replaced with | in header
+Exporter.priv.mergeVlines = function(vlines){
+    const header = new Array(vlines[0].length);
+    for(let j = 0; j < vlines[0].length; j++){
+        let merge = true;
+        for(let i = 0; i < vlines.length; i++){
+            if(vlines[i][j] != 1){
+                merge = false;
+                break;
+            }
+        }
+        if(merge){
+            header[j] = 1;
+            for(let i = 0; i < vlines.length; i++){
+                vlines[i][j] = 0;
+            }
+        }
+    }
+    return header;
 }
 
 document.querySelector("#genCode a").addEventListener("click", Exporter.genLatexCode);
