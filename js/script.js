@@ -1154,6 +1154,8 @@ Array.prototype.countElement = function(element){
 
 //Zawiera listę wszystkich opcji co do kolumn
 var contentToolBar = [];
+
+var withWidth = false;
 //Czesc do generowania paska z specyfikacja kolumn
 function GenerateToolBar(){
   var amountColumns = tableCols || 0;
@@ -1173,7 +1175,98 @@ function GenerateToolBar(){
     cell.setAttribute("contenteditable","true");
     
     cell.addEventListener("input", function(event){
-      alert(this.id);
+      var patternFirst = new RegExp("^[lcr]");
+      var patternSecond = new RegExp("^[pmb]");
+      var patternThird = new RegExp("^[pmb]{.*}$");
+
+      var text  = this.innerHTML;
+      var firstLetter = text[0];
+
+      if(firstLetter == null) return;
+      if(firstLetter.match(patternFirst)){
+        this.innerHTML = firstLetter;
+        withWidth = false;
+        SetCarretPosition(this, 1)
+        contentToolBar[this.id] = firstLetter;
+      }
+      else if(firstLetter.match(patternSecond) && withWidth == false){
+        withWidth = true;
+        this.innerHTML = firstLetter + "{}";
+        SetCarretPosition(this, this.innerHTML.length - 1)
+      }
+      else if(withWidth == false){
+        this.innerHTML = "";
+      }
+
+      if(withWidth == true){
+        if(!text.match(patternThird)){
+          this.innerHTML = firstLetter + "{}";
+          SetCarretPosition(this, this.innerHTML.length - 1)
+        }
+      }
+    });
+
+    cell.addEventListener("focusout", function(event){
+
+      var text = this.innerHTML;
+      text = text.replace(",",".");
+      this.innerHTML = text;
+
+      if(text.length == 0){
+        this.innerHTML = "l";
+        contentToolBar[this.id] = this.innerHTML;
+      }
+      else if(text.length == 1) {
+        contentToolBar[this.id] = this.innerHTML;
+      }
+      else{
+        var textWidth = this.innerHTML.substr(2, this.innerHTML.length - 3).replace(" ","");
+        var width = Number(textWidth.substr(0, textWidth.length - 2));
+        var unit = textWidth.substr(textWidth.length - 2, 2);
+        if(textWidth.includes("\textwidth")){
+          contentToolBar[this.id] = this.innerHTML;
+        }
+        else{
+          var unitsArray = ["in", "mm", "cm", "pt", "em" ,"ex"];
+          console.log(unitsArray.includes(unit));
+          console.log(Number.isFinite(width));
+          if(unitsArray.includes(unit) && Number.isFinite(width)){
+            contentToolBar[this.id] = this.innerHTML;
+          }
+          else{
+            this.innerHTML = "l";
+            contentToolBar[this.id] = this.innerHTML;
+          }
+        }
+      }
+    });
+
+    cell.addEventListener("keydown", function(event){
+      var key = event.key;
+
+      if(key === "Backspace") { 
+        var carretIndex = getCaretCharacterOffsetWithin(this);
+        var text = this.innerHTML;
+        if(text[carretIndex - 1] == "{" || text[carretIndex - 1] == "}"){
+          event.preventDefault();
+          this.innerHTML = text[0];
+          SetCarretPosition(this, 1);
+        }
+      }
+
+      if(key === "Enter") { 
+        event.preventDefault();
+      }
+
+      if(key === "Tab"){
+        event.preventDefault();
+        var fieldID = Number(this.id);
+        document.getElementById((Number(fieldID) + 1 < contentToolBar.length) ? Number(fieldID) + 1 : 0).focus();
+      }
+    });
+
+    cell.addEventListener("focus", function(event){
+      SetCarretPosition(this, this.innerHTML.length);
     })
 
     row.appendChild(cell);
@@ -1209,14 +1302,46 @@ function RemoveFromToolBar(index){
   ChangeID();
 }
 
-function ToolBarEntry(text){
-
-}
-
 function ChangeID(){
   var table = document.getElementById("toolBarTable");
   var elements = table.rows[0].cells;
   for(var i = 0; i < elements.length; i++){
     elements[i].id = i;
   }
+}
+
+
+function getCaretCharacterOffsetWithin(element) {
+  var caretOffset = 0;
+  var doc = element.ownerDocument || element.document;
+  var win = doc.defaultView || doc.parentWindow;
+  var sel;
+  if (typeof win.getSelection != "undefined") {
+      sel = win.getSelection();
+      if (sel.rangeCount > 0) {
+          var range = win.getSelection().getRangeAt(0);
+          var preCaretRange = range.cloneRange();
+          preCaretRange.selectNodeContents(element);
+          preCaretRange.setEnd(range.endContainer, range.endOffset);
+          caretOffset = preCaretRange.toString().length;
+      }
+  } else if ( (sel = doc.selection) && sel.type != "Control") {
+      var textRange = sel.createRange();
+      var preCaretTextRange = doc.body.createTextRange();
+      preCaretTextRange.moveToElementText(element);
+      preCaretTextRange.setEndPoint("EndToEnd", textRange);
+      caretOffset = preCaretTextRange.text.length;
+  }
+  return caretOffset;
+}
+
+function SetCarretPosition(element, position){
+  var range = document.createRange();
+  var sel = window.getSelection();
+  
+  range.setStart(element.childNodes[0], position);
+  range.collapse(true);
+  
+  sel.removeAllRanges();
+  sel.addRange(range);
 }
