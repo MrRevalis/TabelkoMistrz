@@ -746,6 +746,7 @@ function AddBorderToCell(borderValue){
       AddingBorder(document.getElementById(tabelaZaznaczonych[i]), borderValue);
     }
   }
+  CheckTableBorder();
 }
 
 function AddingBorder(element, borderValue){
@@ -755,13 +756,13 @@ function AddingBorder(element, borderValue){
     return element.style["border"+x+"Style"];
   })
 
-  if(borderValue.every(function(x){return x == 1})){
+  /*if(borderValue.every(function(x){return x == 1})){
     for(var i = 0 ; i < tablePosition.length; i++){
       var position = "border"+tablePosition[i];
       element.style[position] = "1px solid "+borderColor;
     }
   }
-  else{
+  else{*/
     for(var i = 0 ; i < tablePosition.length; i++){
 
       if(borderValue[i] == 1){
@@ -773,7 +774,7 @@ function AddingBorder(element, borderValue){
           element.style[position] = "1px dashed black";
         }
       }
-    }
+    //}
   }
   BorderViewFunction(element.id);
 }
@@ -1344,4 +1345,53 @@ function SetCarretPosition(element, position){
   
   sel.removeAllRanges();
   sel.addRange(range);
+}
+
+
+function CheckTableBorder(){
+  var table = document.getElementById("mainTable");
+
+  var allHorizontal = true;
+  var allVertical = true;
+
+  for(var i = 0; i < table.rows.length; i++){
+    for(var j = 0; j < table.rows[i].cells.length; j++){
+
+      var element = table.rows[i].cells[j];
+
+      var tablePosition = ["Left", "Top", "Right", "Bottom"];
+
+      var bordersTable = tablePosition.map(function(x){
+        return element.style["border"+x+"Style"];
+      })
+
+      if(bordersTable[0] == "dashed" || bordersTable[2] == "dashed"){
+        allVertical = false;
+      }
+
+      if(bordersTable[1] == "dashed" || bordersTable[3] == "dashed"){
+        allHorizontal = false;
+      }
+
+    }
+  }
+  
+
+  document.getElementById("allEdges").classList.remove("borderChecked");
+  document.getElementById("verticalEdges").classList.remove("borderChecked");
+  document.getElementById("horizontalEdges").classList.remove("borderChecked");
+
+  
+  if(allHorizontal == true && allVertical == true){
+    document.getElementById("allEdges").classList.add("borderChecked");
+  }
+
+  if(allHorizontal == true){
+    document.getElementById("horizontalEdges").classList.add("borderChecked");
+  }
+
+  if(allVertical == true){
+    document.getElementById("verticalEdges").classList.add("borderChecked");
+  }
+
 }
