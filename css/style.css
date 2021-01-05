@@ -20,7 +20,7 @@ html,body{
 
 table{
   margin: auto;
-  width: 95%;
+  width: 90%;
   border-collapse: collapse;
 }
 
@@ -48,6 +48,9 @@ table td{
 /* GEN CODE SECTION*/
 #genCode {
   margin-top: 30px;
+  float:left; 
+  clear: left;
+  width: 100%;
 }
 #genCode a {
   padding: 10px;
@@ -321,6 +324,7 @@ i{
 /* Style do paska */
 #toolBarContainer{
   margin-bottom: 1em;
+  width: 90%;
 }
 
 #toolBarContainer > table > tbody > tr > td{
@@ -328,4 +332,55 @@ i{
   background-color: #add8e6;
   color: white;
   padding: 1em;
+}
+
+#heightToolBar{
+  width: 10%;
+  float: right;
+}
+
+#body{
+  width: 90%;
+  float: left;
+}
+
+#container{
+  width: 100%;
+}
+
+#heightToolBar > table > tbody > tr > td{
+  border: 1px solid white;
+  background-color: #add8e6;
+  color: white;
+  padding-left: 1em;
+}
+
+#heightToolBar > table > tbody > tr > td > label{
+  text-decoration: none;
+  user-select: none;
+  display:inline-block;
+}
+
+select{
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.select {
+  width: 90%;
+  border: 1px solid white;
+  border-radius: 0.25em;
+  padding: 0.25em;
+  cursor: pointer;
+  background-color: white;
+  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
 }

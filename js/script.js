@@ -19,10 +19,14 @@ function CreateTable(x, y){
     pierwszaKomorka = null;
     ostatniaKomorka = null;
     ostatniaEdytowana = null;
+    contentToolBar = [];
+    heightTooBarArray = [];
+    withWidth = false;
     tableCols = parseInt(y);
 
     document.getElementById("body").innerHTML = "";
-
+    document.getElementById("toolBarContainer").innerHTML = "";
+    document.getElementById("heightToolBar").innerHTML = "";
     var gdzieUmiescic = document.getElementById("body");
 
     var elemTable = document.createElement("table");
@@ -39,6 +43,7 @@ function CreateTable(x, y){
             cell.style.background = "white";
             cell.style.border = "1px dashed "+borderColor;
             cell.style.fontSize = "16px";
+            cell.style.textAlign = "left";
             cell.setAttribute("contenteditable","false");
 
             //Testowe, zeby zobaczyc ID => latwiej mi się kontroluje 
@@ -52,13 +57,12 @@ function CreateTable(x, y){
     gdzieUmiescic.appendChild(elemTable);
     SaveCellsColors();
     AddFunction();
-
-
     GenerateToolBar();
+    GenerateHeightToolBar(x);
 }
 
 
-
+//Dodanie funkcjonalności do komórki tabeli
 function AddFunction(){
     var table = document.getElementById("mainTable");
     for (var i = 0; i < table.rows.length; i++) {
@@ -146,7 +150,7 @@ function ZaznaczenieKomorek(poczatkowyPunkt, aktualnyPunkt){
     }
   }
 }
-
+//Zmiana koloru zaznaczonej/zaznaczonych komórek (żółtawy kolor)
 function ZmienKolor(id){
   var element = document.getElementById(id);
   if(element != null){
@@ -154,7 +158,7 @@ function ZmienKolor(id){
   }
 }
 
-
+//Przywrócenie starych kolorów, po zakończeniu zaznaczania (usuwamy kolor zaznaczenia)
 function WyczyscStyl(){
   var table = document.getElementById("mainTable");
     for (var i = 0; i < table.rows.length; i++) {
@@ -165,17 +169,14 @@ function WyczyscStyl(){
     }
 }
 
+//Aktualnie wybrana komórka
 function ShowPosition(id){
-
     if(wybranaKomorka != null){
       var element = wybranaKomorka.split(":");
       document.getElementById(wybranaKomorka).style.background = cellsColorTable[element[0]][element[1]];
     }
-    var text = id;
-    //alert(text.charAt(0) + ":" + text.charAt(2));
-
-    wybranaKomorka = text;
-    document.getElementById(text).style.background = "#BEF72C";
+    wybranaKomorka = id;
+    document.getElementById(id).style.background = "#BEF72C";
 }
 
 function AddBorder(){
@@ -756,13 +757,13 @@ function AddingBorder(element, borderValue){
     return element.style["border"+x+"Style"];
   })
 
-  /*if(borderValue.every(function(x){return x == 1})){
+  if(borderValue.every(function(x){return x == 1})){
     for(var i = 0 ; i < tablePosition.length; i++){
       var position = "border"+tablePosition[i];
       element.style[position] = "1px solid "+borderColor;
     }
   }
-  else{*/
+  else{
     for(var i = 0 ; i < tablePosition.length; i++){
 
       if(borderValue[i] == 1){
@@ -774,9 +775,35 @@ function AddingBorder(element, borderValue){
           element.style[position] = "1px dashed black";
         }
       }
-    //}
+    }
   }
   BorderViewFunction(element.id);
+}
+
+function DecideCellsToClear(){
+  var element = document.getElementById(wybranaKomorka);
+  if(element != null){
+    ClearBorderFromCell(element);
+  }
+  else if(tabelaZaznaczonych.length > 0){
+    for(var i = 0; i < tabelaZaznaczonych.length ; i++){
+      ClearBorderFromCell(document.getElementById(tabelaZaznaczonych[i]));
+    }
+  }
+}
+
+function ClearBorderFromCell(element){
+  var tablePosition = ["Left", "Top", "Right", "Bottom"];
+
+  var bordersTable = tablePosition.map(function(x){
+    return element.style["border"+x+"Style"];
+  })
+
+  for(var i = 0; i < tablePosition.length; i++){
+    var position = "border"+tablePosition[i];
+    element.style[position] = "1px dashed black";
+    BorderViewFunction(element.id);
+  }
 }
 
 function BorderViewFunction(id){
@@ -991,21 +1018,25 @@ function ChangeTextAlign(alignSettings){
     switch(position){
       case 0 : 
         element.style.textAlign = "left";
+        element.style.verticalAlign = "baseline";
         leftButton.classList.add("settingChoosen");
         break;
 
       case 1 : 
         element.style.textAlign = "center";
+        element.style.verticalAlign = "baseline";
         centerButton.classList.add("settingChoosen");
         break;
 
       case 2 : 
         element.style.textAlign = "right";
+        element.style.verticalAlign = "baseline";
         rightButton.classList.add("settingChoosen");
         break;
 
       case 3 : 
         element.style.textAlign = "justify";
+        element.style.verticalAlign = "baseline";
         justifyButton.classList.add("settingChoosen");
         break;
     }
@@ -1022,7 +1053,7 @@ function CheckTextAlignSettings(id){
   var leftButton = document.getElementsByClassName("fas fa-align-left")[0].parentElement;
   var centerButton = document.getElementsByClassName("fa fa-align-center")[0].parentElement;
   var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
-  var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
+  //var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
 
   var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
 
@@ -1378,8 +1409,6 @@ function CheckTableBorder(){
 
     }
   }
-  
-
   document.getElementById("allEdges").classList.remove("borderChecked");
   document.getElementById("verticalEdges").classList.remove("borderChecked");
   document.getElementById("horizontalEdges").classList.remove("borderChecked");
@@ -1416,7 +1445,6 @@ function ChangeCellsTextAlign(column, text){
     }
   })(text);
   var table = document.getElementById("mainTable");
-  //Chyba przy rozdzielaniu komorek trzeba bedzie tu wrocic
   for(var i = 0; i < table.rows.length; i++){
       var element = document.getElementById(i+":"+column) || null;
       if(element != null){
@@ -1429,4 +1457,63 @@ function ChangeCellsTextAlign(column, text){
         }
       }
   }
+}
+
+var heightTooBarArray = [];
+function GenerateHeightToolBar(height){
+  if(height == 0) return;
+
+  var container = document.getElementById("heightToolBar");
+  var table = document.createElement("table");
+  table.id = "heightToolBarTable";
+  var tbody = document.createElement("tbody");
+  heightTooBarArray = [];
+
+
+
+
+
+  for(var i = 0; i < height; i++){
+    var row = document.createElement("tr");
+    var cell = document.createElement("td");
+
+    heightTooBarArray[i] = "0"
+    cell.id = "h:"+i;
+    cell.innerHTML = "0";
+
+    cell.setAttribute("contenteditable","true");
+
+    cell.addEventListener("input",CellInput, false);
+
+    row.appendChild(cell);
+
+    var unitCell = document.createElement("td");
+
+    //Brak weny wiec bedzie select xD
+    var select = document.createElement("select");
+    select.classList.add("select");
+    var optionEX = document.createElement("option");
+    optionEX.text = "ex";
+    var optionPT = document.createElement("option");
+    optionPT.text = "pt";
+
+    select.appendChild(optionEX);
+    select.appendChild(optionPT);
+
+    unitCell.appendChild(select);
+
+    row.appendChild(unitCell);
+
+    tbody.appendChild(row);
+  }
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function CellInput(event){
+  var regex = new RegExp("/^-?\d+\.?\d*$/");
+  /*var text= this.innerHTML.substr(0, this.innerHTML.length-2);
+  this.innerHTML = text;
+  SetCarretPosition(this, this.innerHTML.length);*/
+
 }

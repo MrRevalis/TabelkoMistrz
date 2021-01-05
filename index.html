@@ -51,7 +51,7 @@
 					<a class="tab-item"><i class="fas fa-align-left" onclick="ChangeTextAlign(['1','0','0','0'])"></i></a>
 					<a class="tab-item"><i class="fa fa-align-center" onclick="ChangeTextAlign(['0','1','0','0'])"></i></a>
 					<a class="tab-item"><i class="fa fa-align-right" onclick="ChangeTextAlign(['0','0','1','0'])"></i></a>
-					<a class="tab-item"><i class="fas fa-align-justify" onclick="ChangeTextAlign(['0','0','0','1'])"></i></a>
+					<!--<a class="tab-item"><i class="fas fa-align-justify" onclick="ChangeTextAlign(['0','0','0','1'])"></i></a>-->
 					<div class="divider"></div>
 					<a class="tab-item">
 						<select name="fontSize" id="fontSize" onchange="ChangeTextSize()"></select>
@@ -100,6 +100,7 @@
 									<li onclick="AddBorderToCell(['0','1','0','0'])" id="topBorder">Gorna krawędź</li>
 									<li onclick="AddBorderToCell(['1','0','0','0'])" id="leftBorder">Lewa krawędź</li>
 									<li onclick="AddBorderToCell(['0','0','1','0'])" id="rightBorder">Prawa krawędź</li>
+									<li onclick="DecideCellsToClear()" id="clearEdges">Wyczysc obramowanie</li>
 								</ul>
 							</div>
 						</div>
@@ -130,10 +131,12 @@
 			</div>
 		</div>
 	</nav>
-	<div id="toolBarContainer"></div>
-	<div id="body">
-
+	<div id="container">
+		<div id="toolBarContainer"></div>
 	</div>
+	<div id="body"></div>
+	<div id="heightToolBar"></div>
+
 
 	<div id="genCode">
 		<p style="padding-left: 20px;"><a>Generuj</a></p>

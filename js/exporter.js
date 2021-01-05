@@ -72,7 +72,7 @@ Exporter.genLatexCode = function(){
                 var id = cell.id.split(":")[1];
                 var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[id]);
                 var cellTextAlign = cell.style.textAlign;
-                let border = (columnTextAlign == cellTextAlign) ? specificColumns[id] : Exporter.priv.TextInCell(cellTextAlign);
+                let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[id];
 
                 if(cell.colSpan > 1){
                     //let border = "l";
@@ -81,7 +81,6 @@ Exporter.genLatexCode = function(){
                     result = "\\multicolumn{" + cell.colSpan + "}{" + border + "}{" + result + "}";
                     j += cell.colSpan-1;
                 } 
-                //No generalnie to p,m,b jest undefined
                 else if(vlines.length > 0){
                     if(vlines[i][j] == 1){
                         if(j+1 == tableCols && (vlines[i][tableCols] == 1 || vheader[tableCols] == 1)){
@@ -91,7 +90,14 @@ Exporter.genLatexCode = function(){
                             result = "\\multicolumn{1}{|"+border+"}{"+result+"}";
                         }
                     }
+
                 }
+                //funkcja odpowiedzialna za zmianę justowania tekstu w komórce => jeśli text align w komórce jest inny niż w górnym pasku
+                if(cellTextAlign != columnTextAlign && !result.includes("\\multicolumn")){
+                    //wywala sie gdy mamy ustawione p, m, b 
+                    result = "\\multicolumn{1}{"+Exporter.priv.TextInCell(cellTextAlign)+"}{"+result+"}";
+                }
+
                 row.push(result);
             } else {
                 const shift = Exporter.priv.getColsInMR(i, j);
