@@ -72,7 +72,7 @@ Exporter.genLatexCode = function(){
                 var id = cell.id.split(":")[1];
                 var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[id]);
                 var cellTextAlign = cell.style.textAlign;
-                let border = (columnTextAlign == cellTextAlign) ? specificColumns[id] : Exporter.priv.TextInCell(columnTextAlign);
+                let border = (columnTextAlign == cellTextAlign) ? specificColumns[id] : Exporter.priv.TextInCell(cellTextAlign);
 
                 if(cell.colSpan > 1){
                     //let border = "l";
