@@ -123,7 +123,7 @@ Exporter.priv = function(){}
 Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, horizontalBorders, borderRow, vlines){
     let code = "\\begin{tabular}{";
     var text = "l";
-    var specificColumns = contentToolBar;
+    var specificColumns = [...contentToolBar];
     if(allBorders == true || verticalBorders == true){
         for(var i = 0 ; i < specificColumns.length; i++){
             specificColumns[i] = "|" + specificColumns[i];

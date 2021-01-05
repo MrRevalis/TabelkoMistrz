@@ -865,6 +865,8 @@ function ClearTableBorder(){
   document.getElementById("horizontalEdges").classList.remove("borderChecked");
   document.getElementById("verticalEdges").classList.remove("borderChecked");
   document.getElementById("allEdges").classList.remove("borderChecked");
+  vertical = false;
+  horizontal = false;
 }
 
 //Ustawienie aktualnie wpisywanej czcionki na BOLD
@@ -1380,7 +1382,8 @@ function CheckTableBorder(){
   document.getElementById("allEdges").classList.remove("borderChecked");
   document.getElementById("verticalEdges").classList.remove("borderChecked");
   document.getElementById("horizontalEdges").classList.remove("borderChecked");
-
+  vertical = false;
+  horizontal = false;
   
   if(allHorizontal == true && allVertical == true){
     document.getElementById("allEdges").classList.add("borderChecked");
@@ -1388,10 +1391,12 @@ function CheckTableBorder(){
 
   if(allHorizontal == true){
     document.getElementById("horizontalEdges").classList.add("borderChecked");
+    horizontal = true;
   }
 
   if(allVertical == true){
     document.getElementById("verticalEdges").classList.add("borderChecked");
+    vertical = true;
   }
 
 }
