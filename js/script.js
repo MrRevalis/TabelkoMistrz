@@ -1242,6 +1242,7 @@ function GenerateToolBar(){
           }
         }
       }
+      ChangeCellsTextAlign(this.id, this.innerHTML[0]);
     });
 
     cell.addEventListener("keydown", function(event){
@@ -1399,4 +1400,30 @@ function CheckTableBorder(){
     vertical = true;
   }
 
+}
+//https://tex.stackexchange.com/questions/35293/p-m-and-b-columns-in-tables
+function ChangeCellsTextAlign(column, text){
+  var patternFirst = new RegExp("^[lcr]");
+  var patternSecond = new RegExp("^[pmb]");
+  var textAlign = (function(text){
+    switch(text){
+      case "l" : return "left";
+      case "c" : return "center";
+      case "r" : return "right";
+      case "p" : return "bottom";
+      case "m" : return "middle";
+      case "b" : return "top";
+    }
+  })(text);
+  var table = document.getElementById("mainTable");
+
+  for(var i = 0; i < table.rows.length; i++){
+      var element = table.rows[i].cells[column];
+      if(text.match(patternFirst)){
+        element.style.textAlign = textAlign;
+      }
+      else if(text.match(patternSecond)){
+        element.style.verticalAlign = textAlign;
+      }
+  }
 }
