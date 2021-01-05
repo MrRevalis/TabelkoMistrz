@@ -1423,6 +1423,7 @@ function ChangeCellsTextAlign(column, text){
         element.style.textAlign = textAlign;
       }
       else if(text.match(patternSecond)){
+        element.style.textAlign = "center";
         element.style.verticalAlign = textAlign;
       }
   }
