@@ -8,7 +8,7 @@ Exporter.genLatexCode = function(){
     WyczyscStyl();
     const table = document.getElementById("mainTable");
     const rows = table.rows.length;
-    
+
     const allBorders = Exporter.priv.CheckTableBorders("allEdges");
     const horizontalBorders = Exporter.priv.CheckTableBorders("horizontalEdges");
     const verticalBorders = Exporter.priv.CheckTableBorders("verticalEdges");
@@ -123,12 +123,17 @@ Exporter.priv = function(){}
 Exporter.priv.createTableHeader = function(cols, allBorders, verticalBorders, horizontalBorders, borderRow, vlines){
     let code = "\\begin{tabular}{";
     var text = "l";
-    if(allBorders == true || verticalBorders == true) text = "|l";
+    var specificColumns = contentToolBar;
+    if(allBorders == true || verticalBorders == true){
+        for(var i = 0 ; i < specificColumns.length; i++){
+            specificColumns[i] = "|" + specificColumns[i];
+        }
+    }
     for(let i = 0; i < cols; i++){
         if(!verticalBorders){
-            if(vlines[i] == 1) code += "|"+text;
-            else code += text;
-        } else code += text;
+            if(vlines[i] == 1) code += "|"+specificColumns[i];
+            else code += specificColumns[i];
+        } else code += specificColumns[i];
     }
 
     if(allBorders==true || verticalBorders == true || vlines[cols] == 1)code+="|";
