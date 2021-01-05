@@ -1416,15 +1416,17 @@ function ChangeCellsTextAlign(column, text){
     }
   })(text);
   var table = document.getElementById("mainTable");
-
+  //Chyba przy rozdzielaniu komorek trzeba bedzie tu wrocic
   for(var i = 0; i < table.rows.length; i++){
-      var element = table.rows[i].cells[column];
-      if(text.match(patternFirst)){
-        element.style.textAlign = textAlign;
-      }
-      else if(text.match(patternSecond)){
-        element.style.textAlign = "center";
-        element.style.verticalAlign = textAlign;
+      var element = document.getElementById(i+":"+column) || null;
+      if(element != null){
+        if(text.match(patternFirst)){
+          element.style.textAlign = textAlign;
+        }
+        else if(text.match(patternSecond)){
+          element.style.textAlign = "center";
+          element.style.verticalAlign = textAlign;
+        }
       }
   }
 }

@@ -25,6 +25,9 @@ Exporter.genLatexCode = function(){
         vheader = Exporter.priv.mergeVlines(vlines);
     }
 
+    var specificColumns = [...contentToolBar];
+
+
     let code = [];
     code.push("\\begin{table}");
     code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0], vheader));
@@ -32,6 +35,7 @@ Exporter.genLatexCode = function(){
         let row = [];
         for(let j = 0; j < tableCols; j++){
             const cell = document.getElementById(i+":"+j);
+
             if(cell != null){
                 let result = cell.textContent;
                 //check font weight XD
@@ -64,18 +68,28 @@ Exporter.genLatexCode = function(){
                     result = "\\multirow{" + cell.rowSpan + "}{*}{" + result + "}";
                 }
                 //check multicol
+
+                var id = cell.id.split(":")[1];
+                var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[id]);
+                var cellTextAlign = cell.style.textAlign;
+                let border = (columnTextAlign == cellTextAlign) ? specificColumns[id] : Exporter.priv.TextInCell(columnTextAlign);
+
                 if(cell.colSpan > 1){
-                    let border = "l";
-                    if(allBorders || verticalBorders) if(j == 0) border = "|l|"; else border = "l|";
-                    else if(vheader[j + cell.colSpan] == 1) border = "l|";
+                    //let border = "l";
+                    if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
+                    else if(vheader[j + cell.colSpan] == 1) border = border + "|";
                     result = "\\multicolumn{" + cell.colSpan + "}{" + border + "}{" + result + "}";
                     j += cell.colSpan-1;
-                } else if(vlines[i][j] == 1){
-                    if(j+1 == tableCols && (vlines[i][tableCols] == 1 || vheader[tableCols] == 1)){
-                        //last cell
-                        result = "\\multicolumn{1}{|l|}{"+result+"}";
-                    } else {
-                        result = "\\multicolumn{1}{|l}{"+result+"}";
+                } 
+                //No generalnie to p,m,b jest undefined
+                else if(vlines.length > 0){
+                    if(vlines[i][j] == 1){
+                        if(j+1 == tableCols && (vlines[i][tableCols] == 1 || vheader[tableCols] == 1)){
+                            //last cell
+                            result = "\\multicolumn{1}{|"+border+"|}{"+result+"}";
+                        } else {
+                            result = "\\multicolumn{1}{|"+border+"}{"+result+"}";
+                        }
                     }
                 }
                 row.push(result);
@@ -293,3 +307,22 @@ Exporter.priv.mergeVlines = function(vlines){
 }
 
 document.querySelector("#genCode a").addEventListener("click", Exporter.genLatexCode);
+
+Exporter.priv.TextAlignInColumn = function(text){
+    switch(text){
+        case "l" : return "left";
+        case "c" : return "center";
+        case "r" : return "right";
+        case "p" : return "bottom";
+        case "m" : return "middle";
+        case "b" : return "top";
+    }
+}
+
+Exporter.priv.TextInCell = function(char){
+    switch(char){
+        case "left" : return "l";
+        case "center" : return "c";
+        case "right" : return "r";
+    }
+}
