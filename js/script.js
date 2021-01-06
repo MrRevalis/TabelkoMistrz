@@ -27,6 +27,7 @@ function CreateTable(x, y){
     document.getElementById("body").innerHTML = "";
     document.getElementById("toolBarContainer").innerHTML = "";
     document.getElementById("heightToolBar").innerHTML = "";
+
     var gdzieUmiescic = document.getElementById("body");
 
     var elemTable = document.createElement("table");
@@ -59,6 +60,10 @@ function CreateTable(x, y){
     AddFunction();
     GenerateToolBar();
     GenerateHeightToolBar(x);
+
+    document.getElementById("textContainer").style.display = "block";
+    document.getElementById("caption").value = "";
+    document.getElementById("label").value = "";
 }
 
 
@@ -1055,8 +1060,9 @@ function CheckTextAlignSettings(id){
   var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
   //var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
 
-  var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
+  //var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
 
+  var buttonArray = Array.of(leftButton, centerButton, rightButton)
   for(var i = 0 ; i < buttonArray.length ; i++){
     buttonArray[i].classList.remove("settingChoosen");
   }

@@ -341,7 +341,7 @@ i{
 
 #body{
   width: 90%;
-  float: left;
+  display:inline-block;
 }
 
 #container{
@@ -359,4 +359,33 @@ i{
   text-decoration: none;
   user-select: none;
   display:inline-block;
+}
+
+#textContainer{
+  display: none;
+  clear: both;
+  margin-top: 1em;
+}
+
+#textContainer > table > tbody > tr > td{
+  border: 1px solid white;
+  background-color: #add8e6;
+  color: white;
+  padding-left: 1em;
+}
+
+#textContainer > table{
+  width: 50%;
+}
+
+input[type="text"]{
+  width: 90%;
+  padding: .5em;
+  border: 1px solid white;
+}
+
+label{
+  padding: 1em;
+  width: 100%;
+  display: block;
 }
