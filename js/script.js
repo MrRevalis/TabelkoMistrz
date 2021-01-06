@@ -1469,40 +1469,19 @@ function GenerateHeightToolBar(height){
   var tbody = document.createElement("tbody");
   heightTooBarArray = [];
 
-
-
-
-
   for(var i = 0; i < height; i++){
     var row = document.createElement("tr");
     var cell = document.createElement("td");
-
-    heightTooBarArray[i] = "0"
+    heightTooBarArray[i] = "[0ex]"
     cell.id = "h:"+i;
-    cell.innerHTML = "0";
-
+    cell.innerHTML = "0ex";
     cell.setAttribute("contenteditable","true");
 
-    cell.addEventListener("input",CellInput, false);
+    cell.addEventListener("input", CellInput, false);
+    cell.addEventListener("focusin", RemoveUnit, false);
+    cell.addEventListener("focusout", AddUnit, false);
 
     row.appendChild(cell);
-
-    var unitCell = document.createElement("td");
-
-    //Brak weny wiec bedzie select xD
-    var select = document.createElement("select");
-    select.classList.add("select");
-    var optionEX = document.createElement("option");
-    optionEX.text = "ex";
-    var optionPT = document.createElement("option");
-    optionPT.text = "pt";
-
-    select.appendChild(optionEX);
-    select.appendChild(optionPT);
-
-    unitCell.appendChild(select);
-
-    row.appendChild(unitCell);
 
     tbody.appendChild(row);
   }
@@ -1512,8 +1491,38 @@ function GenerateHeightToolBar(height){
 
 function CellInput(event){
   var regex = new RegExp("/^-?\d+\.?\d*$/");
-  /*var text= this.innerHTML.substr(0, this.innerHTML.length-2);
-  this.innerHTML = text;
-  SetCarretPosition(this, this.innerHTML.length);*/
+  var text = this.innerHTML;
 
+  if(text.length == 2 && text[0] === "0" && !isNaN(parseInt(text[1]))){
+    text = text.substr(1, text.length - 1);
+    this.innerHTML = text;
+  }
+
+  if(!text.match(regex)){
+    var newString = text.replace(/[^-?\d+\.?\d*$/]/, "");
+    this.innerHTML = newString;
+    if(newString.length > 0){
+      SetCarretPosition(this, newString.length);
+    }
+  }
+}
+
+const unit = "ex";
+function RemoveUnit(event){
+  this.innerHTML = this.innerHTML.substr(0, this.innerHTML.length-2);
+}
+
+function AddUnit(event){
+  if(this.innerHTML.length == 0){
+    this.innerHTML = "0";
+  }
+  this.innerHTML = this.innerHTML + unit;
+
+  var cellID = this.id.split(":")[1];
+  heightTooBarArray[cellID] = "["+this.innerHTML+"]";
+}
+
+function isNumber(value) 
+{
+   return typeof value === 'number' && isFinite(value);
 }

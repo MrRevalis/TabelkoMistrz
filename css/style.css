@@ -360,27 +360,3 @@ i{
   user-select: none;
   display:inline-block;
 }
-
-select{
-  appearance: none;
-  background-color: transparent;
-  border: none;
-  padding: 0 1em 0 0;
-  margin: 0;
-  width: 100%;
-  font-family: inherit;
-  font-size: inherit;
-  cursor: inherit;
-  line-height: inherit;
-  outline: none;
-}
-
-.select {
-  width: 90%;
-  border: 1px solid white;
-  border-radius: 0.25em;
-  padding: 0.25em;
-  cursor: pointer;
-  background-color: white;
-  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
-}
