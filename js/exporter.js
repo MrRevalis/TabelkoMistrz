@@ -38,6 +38,10 @@ Exporter.genLatexCode = function(){
 
             if(cell != null){
                 let result = cell.textContent;
+				
+				//check special characters / symbols
+				result = Exporter.priv.specialCharacters(result);
+				
                 //check font weight XD
                 if(cell.style.fontWeight == "bold"){
                     result = "\\textbf{"+result+"}";
@@ -331,4 +335,24 @@ Exporter.priv.TextInCell = function(char){
         case "center" : return "c";
         case "right" : return "r";
     }
+}
+
+Exporter.priv.specialCharacters = function(result){
+	let specialCharacters = "";
+	for(let i=0; i < result.length; i++){
+		if(result[i] == "$" || result[i] == "&" || result[i] == "%" || result[i] == "#" || 
+			result[i] == "_" || result[i] == "{" || result[i] == "}"){
+			specialCharacters += "\\" + result[i];
+		}
+		else if(result[i] == "^" || result[i] == "~"){
+			specialCharacters += "\\" + result[i] + "{}";
+		}
+		else if(result[i] == "\\"){
+			specialCharacters += "$\\backslash$";
+		}
+		else{
+			specialCharacters += result[i];
+		}
+	}
+	return specialCharacters;
 }
