@@ -133,8 +133,18 @@ Exporter.genLatexCode = function(){
         else
             code.push(row.join(" & ") + "\\\\");
     }
-    code.push("\\end{tabular}", "\\end{table}");
+    code.push("\\end{tabular}");	
+	//dopisanie caption i label na końcu
+	if(document.getElementById("caption").value.length > 0){
+		code.push("\\caption{" + document.getElementById("caption").value + "}");
+	}
+	if(document.getElementById("label").value.length > 0){
+		code.push("\\label{" + document.getElementById("label").value + "}");
+	}
+    code.push("\\end{table}");
     console.log(code.join("\n"));
+	
+	Exporter.priv
 
     //show
     document.querySelector("#latexCode").textContent = code.join("\n");
