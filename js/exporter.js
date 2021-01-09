@@ -336,6 +336,8 @@ Exporter.priv.TextAlignInColumn = function(text){
         case "p" : return "bottom";
         case "m" : return "middle";
         case "b" : return "top";
+        default:
+            alert("Przekazany tekst: "+text);
     }
 }
 
@@ -344,6 +346,8 @@ Exporter.priv.TextInCell = function(char){
         case "left" : return "l";
         case "center" : return "c";
         case "right" : return "r";
+        default:
+            alert("Przekazany znak: "+char);
     }
 }
 

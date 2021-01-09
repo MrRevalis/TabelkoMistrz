@@ -330,6 +330,7 @@ function AddPropertiesToCell(cell, i, j){
   cell.setAttribute("contenteditable","false");
   cell.innerHTML = cell.id;
   cell.style.border = "1px dashed black";
+  cell.style.textAlign = "left";
   cell.onclick = function () {
     if(myszNacisnieta != true){
       WyczyscStyl();
