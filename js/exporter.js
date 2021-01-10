@@ -116,8 +116,23 @@ Exporter.genLatexCode = function(){
                     if(shift == 1){
                         row.push("");
                     } else{
-                        let border = "l";
-                    if(allBorders || verticalBorders) if(j == 0) border = "|l|"; else border = "l|";
+                        var element = null;
+                        var a = 1;
+                        while(!element){
+                            var tempElement = document.getElementById(Number(i)-a+":"+j);
+                            if(tempElement !== null){
+                                if(tempElement.rowSpan > 1){
+                                    element = tempElement;
+                                }
+                            }
+                            a++;
+                            console.log("here");
+                        }
+                        var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[element.id.split(":")[0]][0]);
+                        var cellTextAlign = element.style.verticalAlign != "" ? element.style.verticalAlign : element.style.textAlign;
+                        let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[element.id.split(":")[0]];
+                        //let border = "l";
+                    if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
                         row.push("\\multicolumn{" + shift + "}{" + border + "}{}");
                     }
                 }
