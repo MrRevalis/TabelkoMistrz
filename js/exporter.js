@@ -29,6 +29,20 @@ Exporter.genLatexCode = function(){
 
 
     let code = [];
+    var colorName = (function(text){
+        switch(text){
+          case "#000000" : return "black";
+          case "#FF0000" : return "red";
+          case "#0000FF" : return "blue";
+          case "#FFFF00" : return "yellow";
+          case "#808080" : return "gray";
+          case "#008000" : return "green";
+        }
+      })(borderColor);
+
+    if(colorName != "black"){
+        code.push("\\arrayrulecolor{"+colorName+"}");
+    }
     code.push("\\begin{table}");
     code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0], vheader));
     for(let i = 0; i < rows; i++){

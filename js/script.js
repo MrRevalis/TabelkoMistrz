@@ -645,7 +645,7 @@ window.onload = function(){
   //Uchwyt do głownego elementu zawierajaca liste kolorow
   var mainContainer = document.getElementById("cellColor");
   //Tabela z kolorami, żeby jak chcemy w przyszłości mieć ich więcej wystarczy tu je dodać (petla dziala do rozmiaru tej tabeli)
-  var colorTable = ["#FF0000", "#0000FF", "#FFFF00", "#808080", "#008000"]
+  var colorTable = ["#000000", "#FF0000", "#0000FF", "#FFFF00", "#808080", "#008000"]
   for(var i=0; i < colorTable.length; i++){
     var element = document.createElement("a");
     element.value = colorTable[i];
