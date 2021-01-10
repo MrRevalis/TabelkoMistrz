@@ -1021,10 +1021,10 @@ function ChangeTextAlign(alignSettings){
     var leftButton = document.getElementsByClassName("fas fa-align-left")[0].parentElement;
     var centerButton = document.getElementsByClassName("fa fa-align-center")[0].parentElement;
     var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
-    var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
+    //var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
 
-    var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
-
+    //var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
+    var buttonArray = Array.of(leftButton, centerButton, rightButton);
     for(var i = 0 ; i < buttonArray.length ; i++){
       buttonArray[i].classList.remove("settingChoosen");
     }
@@ -1032,27 +1032,27 @@ function ChangeTextAlign(alignSettings){
     switch(position){
       case 0 : 
         element.style.textAlign = "left";
-        element.style.verticalAlign = "baseline";
+        element.style.verticalAlign = "";
         leftButton.classList.add("settingChoosen");
         break;
 
       case 1 : 
         element.style.textAlign = "center";
-        element.style.verticalAlign = "baseline";
+        element.style.verticalAlign = "";
         centerButton.classList.add("settingChoosen");
         break;
 
       case 2 : 
         element.style.textAlign = "right";
-        element.style.verticalAlign = "baseline";
+        element.style.verticalAlign = "";
         rightButton.classList.add("settingChoosen");
         break;
 
-      case 3 : 
+      /*case 3 : 
         element.style.textAlign = "justify";
         element.style.verticalAlign = "baseline";
         justifyButton.classList.add("settingChoosen");
-        break;
+        break;*/
     }
   }
 }
@@ -1089,9 +1089,9 @@ function CheckTextAlignSettings(id){
       rightButton.classList.add("settingChoosen");
       break;
 
-    case "justify":
+    /*case "justify":
       justifyButton.classList.add("settingChoosen");
-      break;
+      break;*/
   }
 }
 

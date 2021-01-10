@@ -74,9 +74,13 @@ Exporter.genLatexCode = function(){
                 //check multicol
 
                 var id = cell.id.split(":")[1];
-                var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[id]);
-                var cellTextAlign = cell.style.textAlign;
+                var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[id][0]);
+
+                var cellTextAlign = cell.style.verticalAlign != ""? cell.style.verticalAlign : cell.style.textAlign;
+
+
                 let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[id];
+                
 
                 if(cell.colSpan > 1){
                     //let border = "l";
@@ -98,7 +102,10 @@ Exporter.genLatexCode = function(){
                 }
                 //funkcja odpowiedzialna za zmianę justowania tekstu w komórce => jeśli text align w komórce jest inny niż w górnym pasku
                 if(cellTextAlign != columnTextAlign && !result.includes("\\multicolumn")){
-                    //wywala sie gdy mamy ustawione p, m, b 
+                    //wywala sie gdy mamy ustawione p, m, b
+                    /*var cellAlign = cell.style.verticalAlign;
+                    console.log(cellTextAlign);
+                    alert(cellAlign);*/
                     result = "\\multicolumn{1}{"+Exporter.priv.TextInCell(cellTextAlign)+"}{"+result+"}";
                 }
 
@@ -346,6 +353,9 @@ Exporter.priv.TextInCell = function(char){
         case "left" : return "l";
         case "center" : return "c";
         case "right" : return "r";
+        case "bottom" : return "p";
+        case "middle" : return "m";
+        case "top" : return "b";
         default:
             alert("Przekazany znak: "+char);
     }
