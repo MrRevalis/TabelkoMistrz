@@ -63,8 +63,8 @@ Exporter.genLatexCode = function(){
                 }
                 
                 //Rozwala całkowicie widok :)
-                /*let fontType = Exporter.priv.getTextSize(cell.style.fontSize);
-                result = "{\\fontsize{"+fontType+"}{"+fontType+"}\\selectfont "+result+"}";*/
+                let fontType = Exporter.priv.getTextSize(cell.style.fontSize);
+                result = fontType+"{"+result+"}";
 
                 //check text color
                 if(cell.style.color != ""){
@@ -227,9 +227,19 @@ Exporter.priv.getColsInMR = function(row, col){
 }
 
 Exporter.priv.getTextSize = function(size){
-    var fontSize = size.replace("px","");
-    var fontSizePT = (fontSize / .75).toFixed(2);
-    return fontSizePT+"pt";
+    switch(size){
+        case "8px": return "\\tiny";
+        case "11px": return "\\scriptsize";
+        case "12px": return "\\footnotesize";
+        case "13px": return "\\small";
+        case "15px": return "\\normalsize";
+        case "16px": return "\\large";
+        case "19px": return "\\Large";
+        case "23px": return "\\LARGE";
+        case "26px": return "\\huge";
+        case "33px": return "\\Huge";
+        default: return "\\scriptsize";
+    }
 }
 
 Exporter.priv.CheckTableBorders = function(id){

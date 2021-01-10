@@ -6,7 +6,7 @@ var pierwszaKomorka;
 var ostatniaKomorka;
 var ostatniaEdytowana;
 let tableCols; //ilosc kolumn w tabeli
-
+const fontSizeTable = ["6","8","9","10","11","12","14","17","20","25"];
 //Zmienna odpowiedzialna za kolor obramowania tabelii i tekstu
 var borderColor = "#000000";
 var textColor = "#000000";
@@ -43,7 +43,7 @@ function CreateTable(x, y){
             cell.id = i +":" + j;
             cell.style.background = "white";
             cell.style.border = "1px dashed "+borderColor;
-            cell.style.fontSize = "16px";
+            cell.style.fontSize = Converter_pt_px("11pt");
             cell.style.textAlign = "left";
             cell.setAttribute("contenteditable","false");
 
@@ -704,28 +704,19 @@ window.onload = function(){
     textColorContainer.appendChild(element);
   }
 
-
+  //Tworzenia listy z wielkością czcionek
   var textSizeElement = document.getElementById("fontSize");
-
-  for(var i = 8 ; i < 13 ; i++){
+  for(var i = 0; i < fontSizeTable.length; i++){
     var element = document.createElement("option");
-    element.value=i;
-    var optionText = document.createTextNode(i+"px");
+    element.value=fontSizeTable[i];
+    var optionText = document.createTextNode(fontSizeTable[i]+"pt");
     element.appendChild(optionText);
     textSizeElement.appendChild(element);
-  }
 
-  for(var i = 14 ; i <= 28 ; i+=2){
-    var element = document.createElement("option");
-    element.value=i;
-    var optionText = document.createTextNode(i+"px");
-    if(i == 16){
+    if(fontSizeTable[i] == 11){
       element.selected = true;
     }
-    element.appendChild(optionText);
-    textSizeElement.appendChild(element);
   }
-
 }
 
 //Zaznaczenie zmienia kolor i należało by przywrócić do tego co było wcześniej
@@ -1102,15 +1093,15 @@ function ChangeTextSize(){
   
   if(wybranaKomorka != null){
     var cell = document.getElementById(wybranaKomorka);
-    cell.style.fontSize = textSize;
+    cell.style.fontSize = Converter_pt_px(textSize);
   }
 }
-
+ /////HEEREREERRE
 function OptionChangeSize(id){
   var element = document.getElementById(id);
   var elementStyles = window.getComputedStyle(element);
-
-  var actualTextSize = elementStyles.getPropertyValue("font-size");
+  var fontSize = elementStyles.getPropertyValue("font-size");
+  var actualTextSize = Converter_px_pt(fontSize);
   var options = document.getElementById("fontSize").options;
   for(var i = 0; i < options.length ; i++){
     if(options[i].text == actualTextSize){
@@ -1540,4 +1531,36 @@ function AddUnit(event){
 function isNumber(value) 
 {
    return typeof value === 'number' && isFinite(value);
+}
+
+function Converter_pt_px(value){
+  switch(value){
+    case "6pt": return "8px";
+    case "8pt": return "11px";
+    case "9pt": return "12px";
+    case "10pt": return "13px";
+    case "11pt": return "15px";
+    case "12pt": return "16px";
+    case "14pt": return "19px";
+    case "17pt": return "23px";
+    case "20pt": return "26px";
+    case "25pt": return "33px";
+    default: return "15px";
+  }
+}
+
+function Converter_px_pt(value){
+  switch(value){
+    case "8px": return "6pt";
+    case "11px": return "8pt";
+    case "12px": return "9pt";
+    case "13px": return "10pt";
+    case "15px": return "11pt";
+    case "16px": return "12pt";
+    case "19px": return "14pt";
+    case "23px": return "17pt";
+    case "26px": return "20pt";
+    case "33px": return "25pt";
+    default: return "11pt";
+  }
 }
