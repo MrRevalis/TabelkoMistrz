@@ -33,6 +33,13 @@ Exporter.genLatexCode = function(){
     code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0], vheader));
     for(let i = 0; i < rows; i++){
         let row = [];
+
+        //Wysokosc wiersza tabeli => 0ex to domyślna wartość wysokości
+        var heightValue = "";
+        if(heightTooBarArray[i] != "[0ex]"){
+            heightValue = heightTooBarArray[i];
+        }
+
         for(let j = 0; j < tableCols; j++){
             const cell = document.getElementById(i+":"+j);
 
@@ -139,21 +146,21 @@ Exporter.genLatexCode = function(){
             }
         }
         if((allBorders == true || horizontalBorders == true) && !noHorizontalLines.includes(i) || (hlines.length > 1 && hlines[i+1].countElement(1) == tableCols)){
-            code.push(row.join(" & ") + "\\\\" + "\\hline");
+            code.push(row.join(" & ") + "\\\\"+ heightValue + "\\hline");
         }
         else if(noHorizontalLines.includes(i)){
             let clines = "";
             const clinesTab = Exporter.priv.getClines(i);
             for(let c = 0; c < clinesTab.length; c++) clines += "\\cline{"+clinesTab[c]+"}";
-            code.push(row.join(" & ") + "\\\\" + clines);
+            code.push(row.join(" & ") + "\\\\"+ heightValue + clines);
         } else if(hlines[i+1].includes(1)){
             let clines = "";
             const clinesTab = Exporter.priv.getClinesFromArray(hlines[i+1]);
             for(let c = 0; c < clinesTab.length; c++) clines += "\\cline{"+clinesTab[c]+"}";
-            code.push(row.join(" & ") + "\\\\" + clines);
+            code.push(row.join(" & ") + "\\\\"+ heightValue + clines );
         }
         else
-            code.push(row.join(" & ") + "\\\\");
+            code.push(row.join(" & ") + "\\\\" + heightValue);
     }
     code.push("\\end{tabular}");	
 	//dopisanie caption i label na końcu
