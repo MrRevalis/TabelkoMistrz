@@ -426,3 +426,41 @@ Exporter.priv.specialCharacters = function(result){
 	}
 	return specialCharacters;
 }
+
+Exporter.saveLatexCode = function(){
+    var latexCode = document.querySelector("#latexCode").textContent;
+    if(latexCode.length > 0){
+        var file = new Blob([latexCode], {type: "text/plain"});
+        var element = document.createElement("a");
+        element.href = URL.createObjectURL(file);
+        var caption = document.getElementById("caption").value.length > 0 ? "_"+document.getElementById("caption").value.replace(" ", "_") : "";
+        element.download = "tabela_latex"+caption+".tex";
+        element.click();
+        element.href = URL.revokeObjectURL(file);
+        element.remove();
+    }
+}
+
+Exporter.saveHTMLCode = function(){
+    var table = document.getElementById("mainTable") ? document.getElementById("mainTable").outerHTML : "";
+    if(table.length > 0){
+
+        var tableText = "";
+        for(var i = 0; i < table.length; i++){
+            tableText += table[i];
+            if(table[i] == ">"){
+                tableText += "\n";
+            }
+            if(table[i + 1] == "<" && table[i + 2] == "/"){
+                tableText += "\n";
+            }
+        }
+        var file = new Blob([tableText], {type: "text/plain"});
+        var element = document.createElement("a");
+        element.href = URL.createObjectURL(file);
+        element.download = "tabela_latex_HTML.txt";
+        element.click();
+        element.href = URL.revokeObjectURL(file);
+        element.remove();
+    }
+}
