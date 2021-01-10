@@ -80,6 +80,8 @@ Importer.loadLatex = function(){
     CreateTable(rowsCount, cols);
     const table = document.getElementById("mainTable");
 
+    Importer.insertColSpec(colsSpec, colsExtras);
+
     if(!vlines.includes(0)){
         TableBorderChange(['0', '1']);
     }
@@ -283,4 +285,20 @@ Importer.getIdFromCline = function(code){
         }
     }
     return ids;
+}
+//ustawia specyfikacje kolumn
+Importer.insertColSpec = function(spec, extras){
+    let e = 0;
+    const useExtra = ['m','p','b'];
+    const toolbar = document.querySelectorAll("#toolBarTable tr > td");
+    for(let i = 0; i<spec.length; i++){
+        if(useExtra.includes(spec[i])){
+            const val = spec[i]+"{"+extras[e++]+"}";
+            toolbar.item(i).textContent = val;
+            contentToolBar[i] = val;
+        } else {
+            toolbar.item(i).textContent = spec[i];
+            contentToolBar[i] = spec[i];
+        }
+    }
 }
