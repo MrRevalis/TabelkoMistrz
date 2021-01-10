@@ -238,7 +238,9 @@ function ScalKomorki(){
     for(var x = xMin; x <= xMax; x++){
       for(var y = yMin; y <= yMax; y++){
         if(x+":"+y != xMin+":"+yMin){
-          document.getElementById(x+":"+y).remove();
+          //document.getElementById(x+":"+y).remove();
+          document.getElementById(x+":"+y).style.display = "none";
+          document.getElementById(x+":"+y).id = "";
         }
       }
     }
@@ -301,9 +303,12 @@ function SplitCell(element){
   //Get mainTable 
   var table = document.getElementById("mainTable");
   //Get text of this element, to not lose him, during changes
-  var text = document.getElementById(element).innerHTML;
+  //var text = document.getElementById(element).innerHTML;
   //Delete this element
-  document.getElementById(element).remove();
+  //document.getElementById(element).remove();
+
+  document.getElementById(element).rowSpan = 1;
+  document.getElementById(element).colSpan = 1;
 
   //Create new element from id of this element to id + rows and id + cols
   //
@@ -311,13 +316,16 @@ function SplitCell(element){
     for (var j = elementID[1]; j < Number(elementID[1]) + Number(cols); j++){
       //Add new cell to specific index
       //https://developer.mozilla.org/en-US/docs/Web/API/HTMLTableRowElement/insertCell
-      if(j > table.rows[i].childElementCount){
+      /*if(j > table.rows[i].childElementCount){
         var cell = table.rows[i].insertCell(-1);
       }
       else{
         var cell = table.rows[i].insertCell(j);
       }
-      AddPropertiesToCell(cell, i, j);
+      AddPropertiesToCell(cell, i, j);*/
+      table.rows[i].cells[j].style.display = "";
+      table.rows[i].cells[j].id = i+":"+j;
+      table.rows[i].cells[j].innerHTML = i+":"+j;
     }
   }
   //Write there text from element

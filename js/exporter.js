@@ -116,7 +116,7 @@ Exporter.genLatexCode = function(){
                 }
             }
         }
-        if((allBorders == true || horizontalBorders == true) && !noHorizontalLines.includes(i) || hlines[i+1].countElement(1) == tableCols){
+        if((allBorders == true || horizontalBorders == true) && !noHorizontalLines.includes(i) || (hlines.length > 1 && hlines[i+1].countElement(1) == tableCols)){
             code.push(row.join(" & ") + "\\\\" + "\\hline");
         }
         else if(noHorizontalLines.includes(i)){
