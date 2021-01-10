@@ -82,8 +82,10 @@ Importer.loadLatex = function(){
 
     Importer.insertColSpec(colsSpec, colsExtras);
 
+    let allVLines = false;
     if(!vlines.includes(0)){
         TableBorderChange(['0', '1']);
+        allVLines = true;
     }
 
     for(let i = 0; i < table.rows.length; i++){
@@ -102,17 +104,61 @@ Importer.loadLatex = function(){
         }
         
         //loop throunght cells in row
-        for(let j = 0; j < cols; j++){
-            const cell = document.getElementById(i+":"+j);
-            cell.textContent = thisRow[j].replace("<,UMPERDAND.>", "&");
-            //set top border
-            if(tborders.includes(j)){
-                wybranaKomorka = i+":"+j;
-                AddBorderToCell(['0','1','0','0']);
-                wybranaKomorka = (i-1)+":"+j;
-                AddBorderToCell(['0','0','0','1']);
-                wybranaKomorka = null;
+        let col = 0;
+        for(let j = 0; j < thisRow.length; j++){
+            const cell = document.getElementById(i+":"+col);
+            let colspan = 1;
+            if(cell){
+                let cellContent = thisRow[j].replace("<,UMPERDAND.>", "&");
+                //check for multi -column and -row
+                const cmd = Importer.getCommand(cellContent.trim(), 1);
+                if(cmd[0] == "multicolumn"){
+                    colspan = parseInt(cmd[1][0]);
+                    pierwszaKomorka = i+":"+col;
+                    ostatniaKomorka = i+":"+(col+colspan-1);
+                    wybranaKomorka = i+":"+col;
+                    ScalKomorki();
+                    cellContent = cmd[1][2];
+                    //set right border
+                    if(vlines[col+colspan] == 1 || cmd[1][1][cmd[1][1].length-1] == '|'){
+                        wybranaKomorka = i+":"+col;
+                        AddBorderToCell(['0','0','1','0']);
+                    }
+                    //set left border
+                    if(cmd[1][1][0] == '|' && cell.style.borderLeftStyle == "dashed"){
+                        wybranaKomorka = i+":"+col;
+                        AddBorderToCell(['1','0','0','0']);
+                        wybranaKomorka = i+":"+(col-1); //and right of col - 1
+                        AddBorderToCell(['0','0','1','0']);
+                    }
+                }
+                
+                cell.textContent = cellContent;
+                
+                //set top border
+                if(tborders.includes(col)){
+                    wybranaKomorka = i+":"+col;
+                    AddBorderToCell(['0','1','0','0']);
+                    wybranaKomorka = (i-1)+":"+col; //and bottom in i-1 row
+                    AddBorderToCell(['0','0','0','1']);
+                    wybranaKomorka = null;
+                }
+                if(!allVLines){
+                    //set left border
+                    if(vlines[col] == 1){
+                        wybranaKomorka = i+":"+col;
+                        AddBorderToCell(['1','0','0','0']);
+                        wybranaKomorka = i+":"+(col-1); //and right of col - 1
+                        AddBorderToCell(['0','0','1','0']);
+                    }
+                    //set right border on last col
+                    if(col == cols - 1 && vlines[cols] == 1){
+                        wybranaKomorka = i+":"+col;
+                        AddBorderToCell(['0','0','1','0']);
+                    }
+                }
             }
+            col+=colspan;
         }
 
         //set row height
@@ -120,6 +166,29 @@ Importer.loadLatex = function(){
             document.getElementById("h:"+(i-1)).textContent = rowSpec[1].replaceAll(" ", "");
             heightTooBarArray[i-1] = "["+rowSpec[1].replaceAll(" ", "")+"]";
         }
+    }
+    //last row ending hline
+    const rowSpec = Importer.manageFirstCell(rows[rowsCount]);
+    let tborders = [];
+    if(rowSpec[0]){
+        if(rowSpec[0][0] != -1){
+            tborders = Importer.getIdFromCline(rowSpec[0]);
+            for(let i=0;i<tborders.length;i++){
+                wybranaKomorka = (rowsCount-1)+":"+tborders[i];
+                AddBorderToCell(['0','0','0','1']);
+            }
+        } else {
+            for(let i=0;i<cols;i++){
+                wybranaKomorka = (rowsCount-1)+":"+i;
+                AddBorderToCell(['0','0','0','1']);
+            }
+        }
+        wybranaKomorka = null;
+    }
+    //set last row height
+    if(rowSpec[1]){
+        document.getElementById("h:"+(rowsCount-1)).textContent = rowSpec[1].replaceAll(" ", "");
+        heightTooBarArray[rowsCount-1] = "["+rowSpec[1].replaceAll(" ", "")+"]";
     }
 }
 //zwraca caly tekst az do zamkniecia klamerek
@@ -200,9 +269,12 @@ Importer.manageHeader = function(code){
 Importer.getCommand = function(code, idx){
     const knownCommandsNA = ["hline"];
     const knownCommandsWA = ["cline", "textbf"];
+    const knownCommandsTA = ["multicolumn", "multirow"];
     let cmd = "";
     let arg = "";
     let cmdReady = false;
+    let moreArgs = false; // 1<x<4
+    const args = [];
 
     for(let i = idx; i < code.length; i++){
         if(!cmdReady){
@@ -211,11 +283,21 @@ Importer.getCommand = function(code, idx){
                 return [cmd, null];
             } else if(knownCommandsWA.includes(cmd)){
                 cmdReady = true;
+            } else if(knownCommandsTA.includes(cmd)){
+                cmdReady = true;
+                moreArgs = true;
             }
         } else {
             if(code[i] == '{'){
-                const arg = Importer.getToEnd(code, i+1);
-                return [cmd, arg];
+                if(moreArgs){
+                    arg = Importer.getToEnd(code, i+1);
+                    args.push(arg);
+                    i+=arg.length;
+                    if(args.length == 3) return [cmd, args];
+                } else {
+                    arg = Importer.getToEnd(code, i+1);
+                    return [cmd, arg];
+                }
             }
         }
     }
