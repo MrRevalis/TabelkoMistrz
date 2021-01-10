@@ -120,7 +120,7 @@ Importer.loadLatex = function(){
                     ScalKomorki();
                     cellContent = cmd[1][2];
                     //set right border
-                    if(vlines[col+colspan] == 1 || cmd[1][1][cmd[1][1].length-1] == '|'){
+                    if(!allVLines && (vlines[col+colspan] == 1 || cmd[1][1][cmd[1][1].length-1] == '|')){
                         wybranaKomorka = i+":"+col;
                         AddBorderToCell(['0','0','1','0']);
                     }
