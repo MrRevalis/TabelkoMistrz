@@ -114,11 +114,19 @@ Importer.loadLatex = function(){
                 const cmd = Importer.getCommand(cellContent.trim(), 1);
                 if(cmd[0] == "multicolumn"){
                     colspan = parseInt(cmd[1][0]);
+                    let rowspan = 1;
+                    const interCmd = Importer.getCommand(cmd[1][2].trim(), 1);
+                    if(interCmd[0] == "multirow"){
+                        rowspan = parseInt(interCmd[1][0]);
+                        cellContent = interCmd[1][2];
+                    } else {
+                        cellContent = cmd[1][2];
+                    }
                     pierwszaKomorka = i+":"+col;
-                    ostatniaKomorka = i+":"+(col+colspan-1);
+                    ostatniaKomorka = (i+rowspan-1)+":"+(col+colspan-1);
                     wybranaKomorka = i+":"+col;
                     ScalKomorki();
-                    cellContent = cmd[1][2];
+                    
                     //set right border
                     if(!allVLines && (vlines[col+colspan] == 1 || cmd[1][1][cmd[1][1].length-1] == '|')){
                         wybranaKomorka = i+":"+col;
@@ -131,6 +139,13 @@ Importer.loadLatex = function(){
                         wybranaKomorka = i+":"+(col-1); //and right of col - 1
                         AddBorderToCell(['0','0','1','0']);
                     }
+                } else if(cmd[0] == "multirow"){
+                    const rowspan = parseInt(cmd[1][0]);
+                    pierwszaKomorka = i + ":" + col;
+                    ostatniaKomorka = (i+rowspan-1) + ":" + col;
+                    wybranaKomorka = i + ":" + col;
+                    ScalKomorki();
+                    cellContent = cmd[1][2];
                 }
                 
                 cell.textContent = cellContent;
@@ -156,6 +171,13 @@ Importer.loadLatex = function(){
                         wybranaKomorka = i+":"+col;
                         AddBorderToCell(['0','0','1','0']);
                     }
+                }
+            } else{ //move current col id when it is multirowed cell in multirow
+                let cellContent = thisRow[j].replace("<,UMPERDAND.>", "&");
+                //check for multicolumn
+                const cmd = Importer.getCommand(cellContent.trim(), 1);
+                if(cmd[0] == "multicolumn"){
+                    colspan = parseInt(cmd[1][0]);
                 }
             }
             col+=colspan;
