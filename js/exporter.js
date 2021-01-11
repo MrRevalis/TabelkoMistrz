@@ -27,6 +27,8 @@ Exporter.genLatexCode = function(){
 
     var specificColumns = [...contentToolBar];
 
+    var multiRowPackage = false;
+    var cellColorPackage = false;
 
     let code = [];
     var colorName = (function(text){
@@ -87,10 +89,12 @@ Exporter.genLatexCode = function(){
                 //check cell color
                 if(cell.style.backgroundColor != "white" && cell.style.backgroundColor != ""){
                     result = "\\cellcolor[RGB]{"+cell.style.backgroundColor.replace("rgb(","").replace(")","")+"}"+result;
+                    cellColorPackage = true;
                 }
                 //check multirow
                 if(cell.rowSpan > 1){
                     result = "\\multirow{" + cell.rowSpan + "}{*}{" + result + "}";
+                    multiRowPackage = true;
                 }
                 //check multicol
 
@@ -186,11 +190,13 @@ Exporter.genLatexCode = function(){
 	}
     code.push("\\end{table}");
     console.log(code.join("\n"));
-	
+
+    var preambule = Exporter.priv.packagesInfo(multiRowPackage,cellColorPackage);
+    var newCode = preambule + code.join("\n");
 	Exporter.priv
 
     //show
-    document.querySelector("#latexCode").textContent = code.join("\n");
+    document.querySelector("#latexCode").textContent = newCode;
     Prism.highlightElement(document.querySelector("#latexCode"));
     document.querySelector("#latexCode").parentElement.style.display = "block";
 }
@@ -463,4 +469,20 @@ Exporter.saveHTMLCode = function(){
         element.href = URL.revokeObjectURL(file);
         element.remove();
     }
+}
+
+Exporter.priv.packagesInfo = function(multiRowPackage,cellColorPackage){
+    var tableInfo = [];
+    if(multiRowPackage || cellColorPackage){
+        tableInfo.push("% Dodaj poniższe, wymagane pakiety do preambuły pliku:")
+        if(multiRowPackage){
+            tableInfo.push("% \\usepackage{multirow}");
+        }
+        if(cellColorPackage){
+            tableInfo.push("% \\usepackage[table,xcdraw]{xcolor}");
+            tableInfo.push("% Jeśli używasz klasy Beamer, przekaż tylko \"xcolor=table\", czyli \\documentclass[xcolor=table]{beamer}");
+        }
+        tableInfo.push("");
+    }
+    return tableInfo.join("\n")
 }

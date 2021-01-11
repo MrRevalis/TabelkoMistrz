@@ -7,6 +7,10 @@ var ostatniaKomorka;
 var ostatniaEdytowana;
 let tableCols; //ilosc kolumn w tabeli
 const fontSizeTable = ["6","8","9","10","11","12","14","17","20","25"];
+
+//Tabela z kolorami, żeby jak chcemy w przyszłości mieć ich więcej wystarczy tu je dodać (petla dziala do rozmiaru tej tabeli)
+var colorTable = ["#000000", "#FF0000", "#0000FF", "#FFFF00", "#808080", "#008000"]
+
 //Zmienna odpowiedzialna za kolor obramowania tabelii i tekstu
 var borderColor = "#000000";
 var textColor = "#000000";
@@ -644,8 +648,6 @@ function createAddTable(){
 window.onload = function(){
   //Uchwyt do głownego elementu zawierajaca liste kolorow
   var mainContainer = document.getElementById("cellColor");
-  //Tabela z kolorami, żeby jak chcemy w przyszłości mieć ich więcej wystarczy tu je dodać (petla dziala do rozmiaru tej tabeli)
-  var colorTable = ["#000000", "#FF0000", "#0000FF", "#FFFF00", "#808080", "#008000"]
   for(var i=0; i < colorTable.length; i++){
     var element = document.createElement("a");
     element.value = colorTable[i];
