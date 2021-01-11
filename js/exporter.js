@@ -44,6 +44,9 @@ Exporter.genLatexCode = function(){
         cellColorPackage = true;
     }
     code.push("\\begin{table}");
+    if(document.getElementById("caption").value.length > 0 && titlePlace == "top"){
+		code.push("\\caption{" + document.getElementById("caption").value + "}");
+	}
     code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0], vheader));
     for(let i = 0; i < rows; i++){
         let row = [];
@@ -181,7 +184,7 @@ Exporter.genLatexCode = function(){
     }
     code.push("\\end{tabular}");	
 	//dopisanie caption i label na końcu
-	if(document.getElementById("caption").value.length > 0){
+	if(document.getElementById("caption").value.length > 0 && titlePlace == "bottom"){
 		code.push("\\caption{" + document.getElementById("caption").value + "}");
 	}
 	if(document.getElementById("label").value.length > 0){

@@ -65,7 +65,8 @@ function CreateTable(x, y){
     GenerateToolBar();
     GenerateHeightToolBar(x);
 
-    document.getElementById("textContainer").style.display = "block";
+    document.getElementById("textContainerTop").style.display = "block";
+    document.getElementById("textContainerBottom").style.display = "block";
     document.getElementById("caption").value = "";
     document.getElementById("label").value = "";
 }
@@ -1709,4 +1710,50 @@ function RGBToHex(rgb) {
     b = "0" + b;
 
   return "#" + r + g + b;
+}
+var titlePlace = "bottom";
+var parentID;
+function onDragOver(event){
+  event.preventDefault();
+}
+
+function onDrop(ev){
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  if(ev.target.id != parentID){
+    if(ev.target.id == "textContainerBottom"){
+      var parent = document.getElementById("bottom");
+      parent.prepend(document.getElementById(data));
+      parentID = "";
+      titlePlace = "bottom";
+    }
+    else if(ev.target.id == "textContainerTop"){
+      var element = ev.target;
+      element.innerHTML = "";
+      var table = document.createElement("table");
+      var tbody = document.createElement("tbody");
+      tbody.appendChild(document.getElementById(data));
+      table.appendChild(tbody);
+      element.appendChild(table);
+      parentID = "";
+      titlePlace = "top";
+    }
+  }
+  document.getElementById("textContainerBottom").classList.remove("dropzone");
+  document.getElementById("textContainerTop").classList.remove("dropzone");
+}
+
+function onDrag(event){
+  event.dataTransfer.setData("text", event.target.id);
+  parentID = document.getElementById(event.target.id).parentNode.parentNode.parentNode.id;
+  if(parentID == "textContainerBottom"){
+    document.getElementById("textContainerTop").classList.add("dropzone");
+  }else if(parentID == "textContainerTop"){
+    document.getElementById("textContainerBottom").classList.add("dropzone");
+  }
+}
+
+function onDragEnd(event){
+  document.getElementById("textContainerBottom").classList.remove("dropzone");
+  document.getElementById("textContainerTop").classList.remove("dropzone");
 }
