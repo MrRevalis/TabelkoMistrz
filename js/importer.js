@@ -129,7 +129,7 @@ Importer.loadLatex = function(){
             if(cell){
                 let cellContent = thisRow[j].replace("<,UMPERDAND.>", "&");
                 //check for multi -column and -row
-                const cmd = Importer.getCommand(cellContent.trim(), 1);
+                let cmd = Importer.getCommand(cellContent.trim(), 1);
                 if(cmd[0] == "multicolumn"){
                     colspan = parseInt(cmd[1][0]);
                     let rowspan = 1;
@@ -166,6 +166,13 @@ Importer.loadLatex = function(){
                     cellContent = cmd[1][2];
                 }
                 
+                //manage colours
+                cmd = Importer.getCommand(cellContent.trim(), 1);
+                if(cmd[0] == "cellcolor"){
+                    const replaceCellColorVal = Importer.setCellColor(cmd[1], i, col);
+                    cellContent = cellContent.replace(replaceCellColorVal, "");
+                    cellContent.trim();
+                }
                 cell.textContent = cellContent;
                 
                 //set top border
@@ -307,13 +314,15 @@ Importer.manageHeader = function(code){
 }
 //zwraca komende w podanym kodzie na podanym miejscu oraz argument
 Importer.getCommand = function(code, idx){
-    const knownCommandsNA = ["hline"];
-    const knownCommandsWA = ["cline", "textbf"];
-    const knownCommandsTA = ["multicolumn", "multirow"];
+    const knownCommandsNA = ["hline"]; //brak argumentow
+    const knownCommandsWA = ["cline", "textbf"]; //jeden argument
+    const knownCommandsTA = ["multicolumn", "multirow"]; //3 argumenty
+    const knownCommandsWO = ["cellcolor"]; //1 arg z opcjami
     let cmd = "";
     let arg = "";
     let cmdReady = false;
     let moreArgs = false; // 1<x<4
+    let extraOptions = false;
     const args = [];
 
     for(let i = idx; i < code.length; i++){
@@ -326,6 +335,9 @@ Importer.getCommand = function(code, idx){
             } else if(knownCommandsTA.includes(cmd)){
                 cmdReady = true;
                 moreArgs = true;
+            } else if(knownCommandsWO.includes(cmd)){
+                cmdReady = true;
+                extraOptions = true;
             }
         } else {
             if(code[i] == '{'){
@@ -336,8 +348,18 @@ Importer.getCommand = function(code, idx){
                     if(args.length == 3) return [cmd, args];
                 } else {
                     arg = Importer.getToEnd(code, i+1);
-                    return [cmd, arg];
+                    if(extraOptions){
+                        args.push(arg);
+                        return [cmd, args];
+                    } else return [cmd, arg];
                 }
+            } else if(code[i] == '[' && args.length == 0){
+                let option = "";
+                let j = i+1;
+                while(code[j] != ']'){
+                    option += code[j++];
+                }
+                args.push(option);
             }
         }
     }
@@ -422,5 +444,90 @@ Importer.insertColSpec = function(spec, extras){
             toolbar.item(i).textContent = spec[i];
             contentToolBar[i] = spec[i];
         }
+    }
+}
+
+const colorNames = ["red", "green", "blue", "cyan", "magenta", "yellow", "orange", "violet", "purple", "brown", "pink", "olive", "black", "darkgray", "gray", "lightgray"];
+const colorHTMLCodes = ["FF0000", "00FF00", "0000FF", "00FFFFFF", "FF00FF", "FFFF00", "FF8000", "800080", "BF0040", "BF8040", "FFBFBF", "808000", "000000", "404040", "808080", "BFBFBF"];
+const colorRGBCodes = ["1,0,0", "0,1,0", "0,0,1", "0,1,1", "1,0,1", "1,1,0", "1,0.5,0", "0.5,0,0.5", "0.75,0,0.25", "0.75,0.5,0.25", "1,0.75,0.75", "0.5,0.5,0", "0,0,0", "0.25,0.25,0.25", "0.5,0.5,0.5", "0.75,0.75,0.75"];
+const colorCmykCodes = ["0,1,1,0", "1,0,1,0", "1,1,0,0", "1,0,0,0", "0,1,0,0", "0,0,1,0", "0,0.5,1,0", "0,0.5,0,0.5", "0,0.75,0.5,0.25", "0,0.25,0.5,0.25", "0,0.25,0.25,0", "0,0,1,0.5", "0,0,0,1", "0,0,0,0.75", "0,0,0,0.5", "0,0,0,0.25"];
+
+Importer.setCellColor = function(args, row, col){
+    let option = null;
+    let color;
+    let returnVal = "\\cellcolor";
+    if(args.length > 1){
+        option = args[0];
+        color = args[1];
+        returnVal += "["+option+"]{"+color+"}";
+        switch(option){
+            case "HTML":
+            case 'html':
+                color = "#"+color;   
+            break;
+            case 'rgb':
+                let resultR = [];
+                let valuesR = color.split(',');
+                valuesR.forEach(element => {
+                    resultR.push(parseInt(element)*255);
+                });
+                color = "rgb("+resultR.join(',') + ")";
+            break;
+            case 'RGB':
+                color = "rgb("+color+")";
+            break;
+            case "CMYK":
+            case 'cmyk':
+                let valuesC = color.split(',');
+                let resultC = [];
+                valuesC.forEach(element => {
+                    resultC.push(element.trim()); 
+                });
+                const idx = colorCmykCodes.indexOf(resultC.join(','));
+                if(idx >= 0){
+                    color = "#"+colorHTMLCodes[idx];
+                } else color = undefined;
+            break;
+        }
+    } else {
+        returnVal += "{"+args[0]+"}";
+        color = Importer.translateColor(args[0]);
+    }
+    
+    console.log(color);
+    //set color
+    if(color){
+        cellsColorTable[row][col] = color;
+        document.getElementById(row+":"+col).style.backgroundColor = color;
+    }
+    return returnVal;
+}
+
+Importer.translateColor = function(color){
+    let aColor;
+    let transparency;
+    if(color.includes('!')){
+        const tab = color.split('!');
+        aColor = tab[0];
+        transparency = tab[1];
+    } else {
+        aColor = color;
+    }
+    
+    if(transparency){
+        const idx = colorNames.indexOf(aColor);
+        if(idx >= 0){
+            let result = "";
+            const values = colorRGBCodes[idx].split(',');
+            values.forEach(element => {
+                result += (parseInt(element)*255) + ',';
+            });
+            return "rgba("+result+"0."+transparency+")";
+        } else return undefinied;
+    } else {
+        const idx = colorNames.indexOf(aColor);
+        if(idx >= 0){
+            return "#"+colorHTMLCodes[idx];
+        } else return undefinied;
     }
 }
