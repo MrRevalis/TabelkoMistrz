@@ -9,7 +9,7 @@ let tableCols; //ilosc kolumn w tabeli
 const fontSizeTable = ["6","8","9","10","11","12","14","17","20","25"];
 
 //Tabela z kolorami, żeby jak chcemy w przyszłości mieć ich więcej wystarczy tu je dodać (petla dziala do rozmiaru tej tabeli)
-var colorTable = ["#000000", "#FF0000", "#0000FF", "#FFFF00", "#808080", "#008000"]
+var colorTable = ["#FF0000", "#00FF00", "#0000FF", "#00FFFF", "#FF00FF", "#FFFF00", "#FF8000", "#800080", "#BF0040", "#BF8040", "#FFBFBF", "#808000", "#000000", "#404040", "#808080", "#BFBFBF", "#008080", "#BFFF00"];
 
 //Zmienna odpowiedzialna za kolor obramowania tabelii i tekstu
 var borderColor = "#000000";
@@ -652,8 +652,8 @@ window.onload = function(){
     var element = document.createElement("a");
     element.value = colorTable[i];
     element.style.backgroundColor = colorTable[i];
-    element.classList.add("colorCellStyle");
-
+    //element.classList.add("colorCellStyle");
+    element.classList.add("colorCellStyleDiv");
     element.onclick = function(){
       var colorValue = this.value;
       if(wybranaKomorka != null){
@@ -668,10 +668,18 @@ window.onload = function(){
           cellsColorTable[position[0]][position[1]] = colorValue;
         }
       }
+      
+      document.getElementById("cellColorText").style.backgroundColor = colorValue;
+      document.getElementById("cellColorText").style.color = colorValue;
+
+      document.getElementById("cellColorWriter").value = colorValue;
+      document.getElementById("cellColorPicker").value = colorValue;
+      
     }
 
     mainContainer.appendChild(element);
   }
+  CreateColorCreator(mainContainer, "cell");
 
   var secondContainer = document.getElementById("tableBorderColors");
   for(var i=0; i < colorTable.length; i++){
@@ -690,6 +698,10 @@ window.onload = function(){
     secondContainer.appendChild(element);
   }
 
+  CreateColorCreator(secondContainer, "border");
+
+
+
   var textColorContainer = document.getElementById("tableTextColors");
   for(var i=0; i < colorTable.length; i++){
     var element = document.createElement("div");
@@ -699,12 +711,14 @@ window.onload = function(){
 
     element.onclick = function(){
       textColor = this.id;
-      document.getElementById("textColorText").style.color = textColor;
-      document.getElementById("textColorText").style.backgroundColor = textColor;
+      document.getElementById("textColorText").style.color = borderColor;
+      document.getElementById("textColorText").style.backgroundColor = borderColor;
       ChangeTextColors();
     }
     textColorContainer.appendChild(element);
   }
+
+  CreateColorCreator(textColorContainer, "text");
 
   //Tworzenia listy z wielkością czcionek
   var textSizeElement = document.getElementById("fontSize");
@@ -1098,7 +1112,7 @@ function ChangeTextSize(){
     cell.style.fontSize = Converter_pt_px(textSize);
   }
 }
- /////HEEREREERRE
+
 function OptionChangeSize(id){
   var element = document.getElementById(id);
   var elementStyles = window.getComputedStyle(element);
@@ -1118,6 +1132,14 @@ function ChangeTextColors(){
     var element = document.getElementById(wybranaKomorka);
     element.style.color = textColor;
   }
+  if(tabelaZaznaczonych.length > 0){
+    for(var i=0; i<tabelaZaznaczonych.length; i++){
+      var element = document.getElementById(tabelaZaznaczonych[i]);
+      element.style.color = textColor;
+    }
+  }
+  document.getElementById("textColorWriter").value = textColor;
+  document.getElementById("textColorPicker").value = textColor;
 }
 
 function ChangeColorInBox(id){
@@ -1159,6 +1181,8 @@ function ChangeBorderColor(){
       }
     }
   }
+  document.getElementById("borderColorWriter").value = borderColor;
+  document.getElementById("borderColorPicker").value = borderColor;
 }
 
 function ChangeBorderCollapse(variable){
@@ -1564,5 +1588,107 @@ function Converter_px_pt(value){
     case "26px": return "20pt";
     case "33px": return "25pt";
     default: return "11pt";
+  }
+}
+
+
+function CheckValue() {
+  var element = this;
+  var text = element.value ? element.value : "";
+  for (var i = 0; i < text.length; i++) {
+    var char = text[i];
+
+    if (/^[0-9A-F]$/i.test(char)) {
+      element.value = "#" + element.value.substring(1, element.value.length);
+    } else {
+      element.value = "#" + element.value.slice(1, i) + element.value.slice(i + 1);
+    }
+  }
+  ChangeColor(element);
+}
+
+function ChangeColor(element) {
+  var color = element.value;
+  var elementName = element.getAttribute("name");
+  console.log(color);
+	if (color.length == 7) {
+
+    switch(elementName){
+      case "border": borderColor = color; break;
+      case "text" : textColor = color; break;
+      case "cell" : colorValue = color; break;
+    }
+
+    document.getElementById(elementName+"ColorPicker").value = color;
+    document.getElementById(elementName+"ColorText").style.color = color;
+    document.getElementById(elementName+"ColorText").style.backgroundColor = color;
+    switch(elementName){
+      case "border": ChangeBorderColor(); break;
+      case "text" : ChangeTextColors(); break;
+      case "cell" : ChangeCellBackground; break;
+    }
+    
+	}
+}
+
+function ColorPickerChange(color, elementName) {
+  console.log(elementName);
+  console.log(color);
+  switch(elementName){
+    case "border": borderColor = color;;break;
+    case "text" :  textColor = color ;break;
+    case "cell" : colorValue = color; break;
+  }
+
+  document.getElementById(elementName+"ColorPicker").value = color;
+  document.getElementById(elementName+"ColorText").style.color = color;
+  document.getElementById(elementName+"ColorText").style.backgroundColor = color;
+  document.getElementById(elementName+"ColorWriter").value = color;
+
+  switch(elementName){
+    case "border": ChangeBorderColor(); break;
+    case "text" : ChangeTextColors(); break;
+    case "cell" : ChangeCellBackground(); break;
+  }
+}
+
+function CreateColorCreator(container, type){
+  var p = document.createElement("p");
+  p.innerHTML = "Wpisz lub stworz ulubiony kolor";
+  p.classList.add("tip");
+  container.appendChild(p);
+
+  var input = document.createElement("input");
+  input.type = "text";
+  input.id = type+"ColorWriter";
+  input.addEventListener("input", CheckValue, false);
+  input.name = type;
+  input.maxLength = "7";
+  input.value = "#000000";
+  container.appendChild(input);
+
+  var inputColor = document.createElement("input");
+  inputColor.type = "color";
+  inputColor.value = "#000000";
+  inputColor.id = type+"ColorPicker";
+  inputColor.name = "color";
+	inputColor.addEventListener("change", function(){ColorPickerChange(this.value, type)}, false);
+  inputColor.addEventListener("input", function(){ColorPickerChange(this.value, type)}, false);
+
+  container.appendChild(inputColor);
+}
+
+function ChangeCellBackground(){
+  if(wybranaKomorka != null){
+    document.getElementById(wybranaKomorka).style.backgroundColor = colorValue;
+    var position = wybranaKomorka.split(":");
+    cellsColorTable[position[0]][position[1]] = colorValue;
+  }
+  if(tabelaZaznaczonych.length > 0){
+    for(var i=0; i<tabelaZaznaczonych.length; i++){
+      document.getElementById(tabelaZaznaczonych[i]).style.backgroundColor = colorValue;
+      var position = tabelaZaznaczonych[i].split(":");
+      cellsColorTable[position[0]][position[1]] = colorValue;
+    }
   }
 }

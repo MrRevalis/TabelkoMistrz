@@ -31,19 +31,17 @@ Exporter.genLatexCode = function(){
     var cellColorPackage = false;
 
     let code = [];
-    var colorName = (function(text){
-        switch(text){
-          case "#000000" : return "black";
-          case "#FF0000" : return "red";
-          case "#0000FF" : return "blue";
-          case "#FFFF00" : return "yellow";
-          case "#808080" : return "gray";
-          case "#008000" : return "green";
-        }
-      })(borderColor);
+    /*var colorName = (function(text){
+        var index = colorTable.findIndex(x => x == text);
+        var color = index ? colorNames[index] : "black";
+        return color;
+      })(borderColor);*/
 
-    if(colorName != "black"){
-        code.push("\\arrayrulecolor{"+colorName+"}");
+    if(borderColor != "#000000"){
+        var color = borderColor.substr(1, borderColor.length).toUpperCase();
+        code.push("\\definecolor{wlasnyKolor}{HTML}{"+color+"}")
+        code.push("\\arrayrulecolor{wlasnyKolor}");
+        cellColorPackage = true;
     }
     code.push("\\begin{table}");
     code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0], vheader));
