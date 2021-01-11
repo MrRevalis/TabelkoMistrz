@@ -110,6 +110,7 @@ Importer.loadLatex = function(){
         const thisRow = rows[i].replace("\\&", "<,UMPERDAND.>").split("&");
         const rowSpec = Importer.manageFirstCell(thisRow[0]);
         thisRow[0] = Importer.clearFirstCell(thisRow[0], rowSpec);
+        let rowColor = undefined;
 
         let tborders = [];
         //get cols with top borders
@@ -168,6 +169,16 @@ Importer.loadLatex = function(){
                 
                 //manage colours
                 cmd = Importer.getCommand(cellContent.trim(), 1);
+                if(col == 0 && cmd[0] == "rowcolor"){
+                    const rowColorVal = Importer.setRowColor(cmd[1], i, col);
+                    cellContent = cellContent.replace(rowColorVal[0], "");
+                    rowColor = rowColorVal[1];
+                    cmd = Importer.getCommand(cellContent.trim(), 1);
+                }
+                if(rowColor){
+                    cellsColorTable[i][col] = rowColor;
+                    document.getElementById(i+":"+col).style.backgroundColor = rowColor;
+                }
                 if(cmd[0] == "cellcolor"){
                     const replaceCellColorVal = Importer.setCellColor(cmd[1], i, col);
                     cellContent = cellContent.replace(replaceCellColorVal, "");
@@ -317,7 +328,7 @@ Importer.getCommand = function(code, idx){
     const knownCommandsNA = ["hline"]; //brak argumentow
     const knownCommandsWA = ["cline", "textbf"]; //jeden argument
     const knownCommandsTA = ["multicolumn", "multirow"]; //3 argumenty
-    const knownCommandsWO = ["cellcolor"]; //1 arg z opcjami
+    const knownCommandsWO = ["cellcolor", "rowcolor"]; //1 arg z opcjami
     let cmd = "";
     let arg = "";
     let cmdReady = false;
@@ -530,4 +541,49 @@ Importer.translateColor = function(color){
             return "#"+colorHTMLCodes[idx];
         } else return undefinied;
     }
+}
+
+Importer.setRowColor = function(args){
+    let option = null;
+    let color;
+    let returnVal = "\\rowcolor";
+    if(args.length > 1){
+        option = args[0];
+        color = args[1];
+        returnVal += "["+option+"]{"+color+"}";
+        switch(option){
+            case "HTML":
+            case 'html':
+                color = "#"+color;   
+            break;
+            case 'rgb':
+                let resultR = [];
+                let valuesR = color.split(',');
+                valuesR.forEach(element => {
+                    resultR.push(parseInt(element)*255);
+                });
+                color = "rgb("+resultR.join(',') + ")";
+            break;
+            case 'RGB':
+                color = "rgb("+color+")";
+            break;
+            case "CMYK":
+            case 'cmyk':
+                let valuesC = color.split(',');
+                let resultC = [];
+                valuesC.forEach(element => {
+                    resultC.push(element.trim()); 
+                });
+                const idx = colorCmykCodes.indexOf(resultC.join(','));
+                if(idx >= 0){
+                    color = "#"+colorHTMLCodes[idx];
+                } else color = undefined;
+            break;
+        }
+    } else {
+        returnVal += "{"+args[0]+"}";
+        color = Importer.translateColor(args[0]);
+    }
+    
+    return [returnVal, color];
 }
