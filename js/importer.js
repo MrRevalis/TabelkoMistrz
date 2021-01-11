@@ -68,11 +68,13 @@ Importer.loadLatex = function(){
 
     //caption and label
     const captionIdx = code.search("\\\\caption");
-    const caption = Importer.getToEnd(code, captionIdx+"caption".length+2);
+    let caption;
+    if(captionIdx >= 0) caption = Importer.getToEnd(code, captionIdx+"caption".length+2);
     const captionLocation = captionIdx < tabularIdx ? "top" : "bottom";
 
     const labelIdx = code.search("\\\\label");
-    const label = Importer.getToEnd(code, labelIdx+"label".length+2);
+    let label;
+    if(labelIdx >= 0) label = Importer.getToEnd(code, labelIdx+"label".length+2);
     
     //clear code
     code = code.replace(code.substring(0,tabularIdx), "");
