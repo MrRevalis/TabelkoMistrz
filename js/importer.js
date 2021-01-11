@@ -65,10 +65,20 @@ Importer.loadLatex = function(){
     vlines=headerResults[1];
     colsSpec=headerResults[2];
     colsExtras=headerResults[3];
+
+    //caption and label
+    const captionIdx = code.search("\\\\caption");
+    const caption = Importer.getToEnd(code, captionIdx+"caption".length+2);
+    const captionLocation = captionIdx < tabularIdx ? "top" : "bottom";
+
+    const labelIdx = code.search("\\\\label");
+    const label = Importer.getToEnd(code, labelIdx+"label".length+2);
     
     //clear code
     code = code.replace(code.substring(0,tabularIdx), "");
     code = code.replace("\\begin{tabular}{"+header+"}", "");
+    if(captionLocation != "top") code = code.replace("\\caption{"+caption+"}", "");
+    code = code.replace("\\label{"+label+"}", "");
     code = code.replace("\\end{tabular}", "");
     code = code.replace("\\end{table}", "").trim();
 
@@ -79,6 +89,12 @@ Importer.loadLatex = function(){
     //create table
     CreateTable(rowsCount, cols);
     const table = document.getElementById("mainTable");
+
+    if(caption){
+        document.querySelector("#caption").value = caption;
+        //to do location
+    }
+    if(label) document.querySelector("#label").value = label;
 
     Importer.insertColSpec(colsSpec, colsExtras);
 
