@@ -83,6 +83,7 @@ Exporter.genLatexCode = function(){
                 //check text color
                 if(cell.style.color != ""){
                     result = "\\textcolor[RGB]{"+cell.style.color.replace("rgb(","").replace(")","")+"}{"+result+"}";
+                    cellColorPackage = true;
                 }
                 //check cell color
                 if(cell.style.backgroundColor != "white" && cell.style.backgroundColor != "rgb(255, 255, 255)" && cell.style.backgroundColor != ""){
