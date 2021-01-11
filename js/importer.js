@@ -534,12 +534,12 @@ Importer.translateColor = function(color){
                 result += (parseInt(element)*255) + ',';
             });
             return "rgba("+result+"0."+transparency+")";
-        } else return undefinied;
+        } else return undefined;
     } else {
         const idx = colorNames.indexOf(aColor);
         if(idx >= 0){
             return "#"+colorHTMLCodes[idx];
-        } else return undefinied;
+        } else return undefined;
     }
 }
 
