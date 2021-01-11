@@ -80,7 +80,7 @@ Exporter.genLatexCode = function(){
                 
                 //Rozwala całkowicie widok :)
                 let fontType = Exporter.priv.getTextSize(cell.style.fontSize);
-                result = fontType+"{"+result+"}";
+                if(fontType != "\\normalsize") result = fontType+"{"+result+"}";
 
                 //check text color
                 if(cell.style.color != ""){
