@@ -287,8 +287,8 @@ nav {
   height: 100%;
   padding: 0 10px;
   pointer-events:none;
-  background-color: black;
-  color: black;
+  background-color: #000000;
+  color:#000000;
 }
 
 .colorCellStyleDiv{
@@ -317,8 +317,8 @@ i{
   height: 100%;
   padding: 0 10px;
   pointer-events:none;
-  background-color: black;
-  color: black;
+  background-color: #000000;
+  color:#000000;
 }
 
 #cellColorText{
@@ -327,8 +327,8 @@ i{
   height: 100%;
   padding: 0 10px;
   pointer-events:none;
-  background-color: white;
-  color: white;
+  background-color:	#FFFFFF;
+  color: 	#FFFFFF;
 }
 
 /* Style do paska */
@@ -338,9 +338,9 @@ i{
 }
 
 #toolBarContainer > table > tbody > tr > td{
-  border: 1px solid white;
+  border: 1px solid 	#FFFFFF;
   background-color: #add8e6;
-  color: white;
+  color: 	#FFFFFF;
   padding: 1em;
 }
 

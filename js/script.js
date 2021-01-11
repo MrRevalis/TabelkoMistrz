@@ -45,7 +45,7 @@ function CreateTable(x, y){
         for(var j=0; j<y; j++){
             var cell = document.createElement("td");
             cell.id = i +":" + j;
-            cell.style.background = "white";
+            cell.style.background = "#FFFFFF";
             cell.style.border = "1px dashed "+borderColor;
             cell.style.fontSize = Converter_pt_px("11pt");
             cell.style.textAlign = "left";
@@ -86,6 +86,7 @@ function AddFunction(){
             OptionChangeSize(this.id);
             ChangeColorInBox(this.id);
             CheckMerged(this.id);
+            CheckColorInCell(this.id);
           }
         };
     }
@@ -182,10 +183,10 @@ function WyczyscStyl(){
 function ShowPosition(id){
     if(wybranaKomorka != null){
       var element = wybranaKomorka.split(":");
-      document.getElementById(wybranaKomorka).style.background = cellsColorTable[element[0]][element[1]];
+      document.getElementById(wybranaKomorka).style.backgroundColor = cellsColorTable[element[0]][element[1]];
     }
     wybranaKomorka = id;
-    document.getElementById(id).style.background = "#BEF72C";
+    document.getElementById(id).style.backgroundColor = "#BEF72C";
 }
 
 function AddBorder(){
@@ -199,24 +200,6 @@ function AddBorder(){
       }
     }
 	
-}
-
-function TextColor(){
-    if(wybranaKomorka != null){
-        document.getElementById("input"+wybranaKomorka).style.color = "white";
-    }
-}
-
-function TextBold(){
-    if(wybranaKomorka != null){
-        document.getElementById("input"+wybranaKomorka).style.fontWeight = "bold";
-    }
-}
-
-function TextItalic(){
-  if(wybranaKomorka != null){
-    document.execCommand("italic");
-  }
 }
 
 function ScalKomorki(){
@@ -733,6 +716,9 @@ window.onload = function(){
       element.selected = true;
     }
   }
+
+  document.getElementById("cellColorPicker").value = "#ffffff";
+  document.getElementById("cellColorWriter").value = "#ffffff";
 }
 
 //Zaznaczenie zmienia kolor i należało by przywrócić do tego co było wcześniej
@@ -1152,7 +1138,10 @@ function ChangeColorInBox(id){
   box.style.background = actualTextColor;
   box.style.color = actualTextColor;
 
-  textColor = actualTextColor;
+  textColor = RGBToHex(actualTextColor);
+
+  document.getElementById("textColorWriter").value = textColor;
+  document.getElementById("textColorPicker").value = textColor;
 }
 
 
@@ -1691,4 +1680,33 @@ function ChangeCellBackground(){
       cellsColorTable[position[0]][position[1]] = colorValue;
     }
   }
+}
+
+function CheckColorInCell(id){
+  var position = id.split(":");
+  var color = RGBToHex(cellsColorTable[position[0]][position[1]]);
+
+  document.getElementById("cellColorText").style.backgroundColor = color;
+  document.getElementById("cellColorText").style.color = color;
+
+  document.getElementById("cellColorWriter").value = color;
+  document.getElementById("cellColorPicker").value = color;
+}
+
+function RGBToHex(rgb) {
+  var sep = rgb.indexOf(",") > -1 ? "," : " ";
+  rgb = rgb.substr(4).split(")")[0].split(sep);
+
+  var r = (+rgb[0]).toString(16),
+      g = (+rgb[1]).toString(16),
+      b = (+rgb[2]).toString(16);
+
+  if (r.length == 1)
+    r = "0" + r;
+  if (g.length == 1)
+    g = "0" + g;
+  if (b.length == 1)
+    b = "0" + b;
+
+  return "#" + r + g + b;
 }
