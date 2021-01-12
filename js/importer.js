@@ -125,7 +125,7 @@ Importer.loadLatex = function(){
     }
 
     for(let i = 0; i < table.rows.length; i++){
-        const thisRow = rows[i].replace("\\&", "<,UMPERDAND.>").split("&");
+        const thisRow = rows[i].replaceAll("\\&", "<,UMPERDAND.>").split("&");
         const rowSpec = Importer.manageFirstCell(thisRow[0]);
         thisRow[0] = Importer.clearFirstCell(thisRow[0], rowSpec);
         let rowColor = undefined;
@@ -146,7 +146,7 @@ Importer.loadLatex = function(){
             const cell = document.getElementById(i+":"+col);
             let colspan = 1;
             if(cell){
-                let cellContent = thisRow[j].replace("<,UMPERDAND.>", "&");
+                let cellContent = thisRow[j].replaceAll("<,UMPERDAND.>", "\\&");
                 //check for multi -column and -row
                 let cmd = Importer.getCommand(cellContent.trim(), 1);
                 if(cmd[0] == "multicolumn"){
@@ -222,6 +222,7 @@ Importer.loadLatex = function(){
                         case "emph": ItalicFont(cell); break;
                         case "underline": UnderLineFont(cell); break; 
                     }
+                    Importer.setFontSize(element, i, col);
                 });
                 wybranaKomorka = null;
                 
@@ -364,8 +365,8 @@ Importer.manageHeader = function(code){
 }
 //zwraca komende w podanym kodzie na podanym miejscu oraz argument
 Importer.getCommand = function(code, idx){
-    const knownCommandsNA = ["hline"]; //brak argumentow
-    const knownCommandsWA = ["cline", "textbf", "emph", "underline"]; //jeden argument
+    const knownCommandsNA = ["hline", "$", "%", "&", "#", "_", "{", "}", "backslash"]; //brak argumentow
+    const knownCommandsWA = ["cline", "textbf", "emph", "underline", "tiny", "scriptsize", "footnotesize", "small", "normalsize", "large", "Large", "LARGE", "huge", "Huge", "~", "^"]; //jeden argument
     const knownCommandsTA = ["multicolumn", "multirow"]; //3 argumenty
     const knownCommandsWO = ["cellcolor", "rowcolor"]; //1 arg z opcjami
     let cmd = "";
@@ -637,9 +638,36 @@ Importer.manageCell = function(content){
                 if(cmd[1]){
                     cmds.push(cmd[0]);
                     cell = cell.replace("\\"+cmd[0]+"{"+cmd[1]+"}", cmd[1]);
+                } else if(cmd[1] == ""){
+                    cell = cell.replace("\\"+cmd[0]+"{}", cmd[0]);
+                }else {
+                    if(cmd[0] == "backslash")
+                        cell = cell.replace("$\\backslash$", "\\");
+                    else
+                        cell = cell.replace("\\"+cmd[0], cmd[0]);
                 }
             }
         }
     }
     return [cell, cmds];
+}
+
+Importer.setFontSize = function(cmd, row, col){
+    const cell = document.getElementById(row+":"+col);
+    if(cell){
+        let size;
+        switch(cmd){
+            case "tiny": size = 6; break;
+            case "scriptsize": size = 8; break;
+            case "footnotesize": size = 9; break;
+            case "small": size = 10; break;
+            case "large": size = 12; break;
+            case "Large": size = 14; break;
+            case "LARGE": size = 17; break;
+            case "huge": size = 20; break;
+            case "Huge": size = 25; break;
+        }
+        size += "pt";
+        cell.style.fontSize = Converter_pt_px(size);
+    }
 }
