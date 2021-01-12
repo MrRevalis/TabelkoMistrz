@@ -520,7 +520,7 @@ Importer.setCellColor = function(args, row, col){
                 let resultR = [];
                 let valuesR = color.split(',');
                 valuesR.forEach(element => {
-                    resultR.push(parseInt(element)*255);
+                    resultR.push(parseFloat(element)*255);
                 });
                 color = "rgb("+resultR.join(',') + ")";
             break;
@@ -545,7 +545,6 @@ Importer.setCellColor = function(args, row, col){
         color = Importer.translateColor(args[0]);
     }
     
-    console.log(color);
     //set color
     if(color){
         cellsColorTable[row][col] = color;
@@ -571,7 +570,7 @@ Importer.translateColor = function(color){
             let result = "";
             const values = colorRGBCodes[idx].split(',');
             values.forEach(element => {
-                result += (parseInt(element)*255) + ',';
+                result += (parseFloat(element)*255) + ',';
             });
             return "rgba("+result+"0."+transparency+")";
         } else return undefined;
@@ -600,7 +599,7 @@ Importer.setRowColor = function(args){
                 let resultR = [];
                 let valuesR = color.split(',');
                 valuesR.forEach(element => {
-                    resultR.push(parseInt(element)*255);
+                    resultR.push(parseFloat(element)*255);
                 });
                 color = "rgb("+resultR.join(',') + ")";
             break;
