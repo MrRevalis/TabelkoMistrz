@@ -6,13 +6,13 @@ Importer.loadCsvFile = async function(file){
     return lines;
 }
 
-Importer.loadTable = function(lines){
+Importer.loadTable = function(lines, separator){
     const x = lines.length - 1;
-    const y = lines[0].split(',').length;
+    const y = lines[0].split(separator).length;
     CreateTable(x,y);
 
     for(let i = 0; i < x; i++){
-        const row = lines[i].split(',');
+        const row = lines[i].split(separator);
         for(let j = 0; j < y; j++){
             document.getElementById(i+":"+j).textContent = row[j];
         }
@@ -21,7 +21,9 @@ Importer.loadTable = function(lines){
 
 Importer.loadCsv = async function(){
     const lines = await Importer.loadCsvFile(document.getElementById("csvfileinput").files[0]);
-    Importer.loadTable(lines);
+    let separator = document.querySelector("#csvSeparator").value;
+    if(separator.length == 0) separator = ",";
+    Importer.loadTable(lines, separator);
     openCsvModal.close();
 }
 
@@ -33,7 +35,7 @@ var openCsvModal = new tingle.modal({
 });
 
 Importer.openCsvModal = function(){
-    openCsvModal.setContent('<h3>Wybierz plik:</h3><input type="file" id="csvfileinput" onchange="Importer.loadCsv(this)" />');
+    openCsvModal.setContent('<h3>Separator:</h3><input id="csvSeparator" type="text" value="," style="border:1px solid black;" /><h3>Wybierz plik:</h3><input type="file" accept=".txt,.csv" id="csvfileinput" onchange="Importer.loadCsv(this)" />');
     openCsvModal.open();
 }
 
