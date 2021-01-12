@@ -453,3 +453,12 @@ input[type="color"]::-webkit-color-swatch {
 .dropzone{
   border: 2px dashed #add8e6;
 }
+
+/* DIALOGI */
+.importModal textarea {
+  width: 100%;
+}
+.importModal .error {
+  font-weight: 600;
+  color: red;
+}

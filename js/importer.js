@@ -33,17 +33,34 @@ var openCsvModal = new tingle.modal({
 });
 
 Importer.openCsvModal = function(){
-    
-    openCsvModal.setContent('<input type="file" id="csvfileinput" onchange="Importer.loadCsv(this)" />');
+    openCsvModal.setContent('<h3>Wybierz plik:</h3><input type="file" id="csvfileinput" onchange="Importer.loadCsv(this)" />');
     openCsvModal.open();
 }
 
 /*
 LATEX SECTION
 */
+var openLatexModal = new tingle.modal({
+    footer: true,
+    stickyFooter: false,
+    closeMethods: ['overlay', 'button', 'escape'],
+    closeLabel: "Zamknij"
+});
+openLatexModal.addFooterBtn('Importuj', 'tingle-btn tingle-btn--primary tingle-btn--pull-right', function() {
+    if(Importer.loadLatex() == -1){
+        const element = document.createElement("p");
+        element.classList.add("error");
+        element.textContent = "Nie można odnaleźć tabeli w podanym kodzie!";
+        document.querySelector(".importModal").prepend(element);
+    }
+    else openLatexModal.close();
+});
+openLatexModal.addFooterBtn('Anuluj', 'tingle-btn tingle-btn--default tingle-btn--pull-right', function() {
+    openLatexModal.close();
+});
 Importer.openLatexModal = function(){
-    openCsvModal.setContent('<textarea id="latexInput"></textarea><button onclick="Importer.loadLatex()">Importuj</button>');
-    openCsvModal.open();
+    openLatexModal.setContent('<div class="importModal"><h3>Kod LaTeX:</h3><textarea rows=10 id="latexInput"></textarea></div>');
+    openLatexModal.open();
 }
 
 Importer.loadLatex = function(){
@@ -58,6 +75,7 @@ Importer.loadLatex = function(){
 
     //gdzie zaczyna sie tabular
     const tabularIdx = code.search("\\\\begin{tabular}");
+    if(tabularIdx == -1) return -1;
     const header = Importer.getToEnd(code, tabularIdx+"begin{tabular}".length+2);
     console.log(header);
     const headerResults = Importer.manageHeader(header);
