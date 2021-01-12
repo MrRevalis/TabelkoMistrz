@@ -467,6 +467,7 @@ Importer.insertColSpec = function(spec, extras){
             toolbar.item(i).textContent = spec[i];
             contentToolBar[i] = spec[i];
         }
+        ChangeCellsTextAlign(i, spec[i]);
     }
 }
 
