@@ -104,6 +104,7 @@ function AddFunction(){
           tabelaZaznaczonych = [];
           //Zapisanie pierwszej zaznaczonej komórki
           pierwszaKomorka = event.target.id;
+          ostatniaKomorka = event.target.id;
           //Zmiana koloru, na kolor zaznaczenie
           ZmienKolor(pierwszaKomorka);
           myszNacisnieta = true;
@@ -127,6 +128,16 @@ function AddFunction(){
     table.addEventListener("mouseup", function(){
       console.log("Mysz nie jest nacisnieta");
       myszNacisnieta = false;
+
+      //Zmieniamy opcje wyświetlania dla ostatniej zaznaczonej komorki przed zakonczeniem zaznaczania
+      BorderViewFunction(ostatniaKomorka);
+      CheckFontSettings(ostatniaKomorka);
+      CheckTextAlignSettings(ostatniaKomorka);
+      OptionChangeSize(ostatniaKomorka);
+      ChangeColorInBox(ostatniaKomorka);
+      CheckMerged(ostatniaKomorka);
+      CheckColorInCell(ostatniaKomorka);
+      wybranaKomorka = null;
     })
 
     table.addEventListener("dblclick", function(event){
@@ -907,70 +918,86 @@ function ClearTableBorder(){
 //Ustawienie aktualnie wpisywanej czcionki na BOLD
 //Potem można się pobawić że jak jest zaznaczony tekst i zostanie naciśnięty ten guzik do zmienia czcionke tego tekstu
 function FontBold(element){
-  if(wybranaKomorka != null){
-    var choosenCell = document.getElementById(wybranaKomorka);
-    var cellStyle = window.getComputedStyle(choosenCell);
-    //wybranaKomorka
-    var actualFontWeight = cellStyle.getPropertyValue("font-weight");
-    //Rodzic
-    var aElement = element.parentElement;
-    //400 oznacza normalną czcionke
-    if(actualFontWeight == 400){
-
-      aElement.classList.add("settingChoosen");
-      choosenCell.style.fontWeight = "bold";
-
-    }
-    else{
-
-      aElement.classList.remove("settingChoosen");
-      choosenCell.style.fontWeight = "400";
+  var items = (wybranaKomorka ? wybranaKomorka.split(" ") : tabelaZaznaczonych);
+  if(items){
+    for(var i = 0; i < items.length; i++){
+      var choosenCell;
+      if(document.getElementById(items[i])){
+        choosenCell = document.getElementById(items[i])
+      }
+      else{
+        continue;
+      }
+      var cellStyle = window.getComputedStyle(choosenCell);
+      //wybranaKomorka
+      var actualFontWeight = cellStyle.getPropertyValue("font-weight");
+      //Rodzic
+      var aElement = element.parentElement;
+      //400 oznacza normalną czcionke
+      if(actualFontWeight == 400){
+        aElement.classList.add("settingChoosen");
+        choosenCell.style.fontWeight = "bold";
+      }
+      else{
+        aElement.classList.remove("settingChoosen");
+        choosenCell.style.fontWeight = "400";
+      }
     }
   }
 }
 
 function ItalicFont(element){
-  if(wybranaKomorka != null){
-    var choosenCell = document.getElementById(wybranaKomorka);
-    var cellStyle = window.getComputedStyle(choosenCell);
-    //wybranaKomorka
-    var actualFontItalic = cellStyle.getPropertyValue("font-style");
-    //Rodzic
-    var aElement = element.parentElement;
-    if(actualFontItalic == "normal"){
-  
-      aElement.classList.add("settingChoosen");
-      choosenCell.style.fontStyle = "italic";
-  
-    }
-    else{
-  
-      aElement.classList.remove("settingChoosen");
-      choosenCell.style.fontStyle = "normal";
-  
+  var items = (wybranaKomorka ? wybranaKomorka.split(" ") : tabelaZaznaczonych);
+  if(items){
+    for(var i = 0; i < items.length; i++){
+      var choosenCell;
+      if(document.getElementById(items[i])){
+        choosenCell = document.getElementById(items[i])
+      }
+      else{
+        continue;
+      }
+      var cellStyle = window.getComputedStyle(choosenCell);
+      //wybranaKomorka
+      var actualFontItalic = cellStyle.getPropertyValue("font-style");
+      //Rodzic
+      var aElement = element.parentElement;
+      if(actualFontItalic == "normal"){
+        aElement.classList.add("settingChoosen");
+        choosenCell.style.fontStyle = "italic";
+      }
+      else{
+        aElement.classList.remove("settingChoosen");
+        choosenCell.style.fontStyle = "normal";
+      }
     }
   }
 }
 
 function UnderLineFont(element){
-  if(wybranaKomorka != null){
-    var choosenCell = document.getElementById(wybranaKomorka);
-    var cellStyle = window.getComputedStyle(choosenCell);
-    //wybranaKomorka
-    var actualFontUnderline = cellStyle.getPropertyValue("text-decoration");
-    //Rodzic
-    var aElement = element.parentElement;
-
-    if(actualFontUnderline == "rgb(0, 0, 0)"){
-      aElement.classList.add("settingChoosen");
-      choosenCell.style.textDecoration = "underline";
-
-    }
-    else{
-
-      aElement.classList.remove("settingChoosen");
-      choosenCell.style.textDecoration = "none";
-
+  var items = (wybranaKomorka ? wybranaKomorka.split(" ") : tabelaZaznaczonych);
+  if(items){
+    for(var i = 0; i < items.length; i++){
+      var choosenCell;
+      if(document.getElementById(items[i])){
+        choosenCell = document.getElementById(items[i])
+      }
+      else{
+        continue;
+      }
+      var cellStyle = window.getComputedStyle(choosenCell);
+      //wybranaKomorka
+      var actualFontUnderline = cellStyle.getPropertyValue("text-decoration");
+      //Rodzic
+      var aElement = element.parentElement;
+      if(actualFontUnderline.includes("none")){
+        aElement.classList.add("settingChoosen");
+        choosenCell.style.textDecoration = "underline";
+      }
+      else{
+        aElement.classList.remove("settingChoosen");
+        choosenCell.style.textDecoration = "none";
+      }
     }
   }
 }
@@ -987,7 +1014,7 @@ function CheckFontSettings(id){
   var italicButton = document.getElementsByClassName("fas fa-italic")[0].parentElement;
   var weightButton = document.getElementsByClassName("fas fa-bold")[0].parentElement;
 
-  if(actualFontUnderline == "underline rgb(0, 0, 0)"){
+  if(actualFontUnderline.includes("underline")){
     underlineButton.classList.add("settingChoosen");
   }else{
     underlineButton.classList.remove("settingChoosen");
@@ -1008,45 +1035,54 @@ function CheckFontSettings(id){
 
 
 function ChangeTextAlign(alignSettings){
-  if(wybranaKomorka != null){
-    var position = alignSettings.indexOf("1",0);
-    var element = document.getElementById(wybranaKomorka);
+  var items = (wybranaKomorka ? wybranaKomorka.split(" ") : tabelaZaznaczonych);
+  if(items){
+    for(var j = 0; j < items.length; j++){
+      var element;
+      if(document.getElementById(items[j])){
+        element = document.getElementById(items[j])
+      }
+      else{
+        continue;
+      }
+      var position = alignSettings.indexOf("1",0);
 
-    var leftButton = document.getElementsByClassName("fas fa-align-left")[0].parentElement;
-    var centerButton = document.getElementsByClassName("fa fa-align-center")[0].parentElement;
-    var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
-    //var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
+      var leftButton = document.getElementsByClassName("fas fa-align-left")[0].parentElement;
+      var centerButton = document.getElementsByClassName("fa fa-align-center")[0].parentElement;
+      var rightButton = document.getElementsByClassName("fa fa-align-right")[0].parentElement;
+      //var justifyButton = document.getElementsByClassName("fas fa-align-justify")[0].parentElement;
 
-    //var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
-    var buttonArray = Array.of(leftButton, centerButton, rightButton);
-    for(var i = 0 ; i < buttonArray.length ; i++){
-      buttonArray[i].classList.remove("settingChoosen");
-    }
+      //var buttonArray = Array.of(leftButton, centerButton, rightButton, justifyButton)
+      var buttonArray = Array.of(leftButton, centerButton, rightButton);
+      for(var i = 0 ; i < buttonArray.length ; i++){
+        buttonArray[i].classList.remove("settingChoosen");
+      }
 
-    switch(position){
-      case 0 : 
-        element.style.textAlign = "left";
-        element.style.verticalAlign = "";
-        leftButton.classList.add("settingChoosen");
-        break;
+      switch(position){
+        case 0 : 
+          element.style.textAlign = "left";
+          element.style.verticalAlign = "";
+          leftButton.classList.add("settingChoosen");
+          break;
 
-      case 1 : 
-        element.style.textAlign = "center";
-        element.style.verticalAlign = "";
-        centerButton.classList.add("settingChoosen");
-        break;
+        case 1 : 
+          element.style.textAlign = "center";
+          element.style.verticalAlign = "";
+          centerButton.classList.add("settingChoosen");
+          break;
 
-      case 2 : 
-        element.style.textAlign = "right";
-        element.style.verticalAlign = "";
-        rightButton.classList.add("settingChoosen");
-        break;
+        case 2 : 
+          element.style.textAlign = "right";
+          element.style.verticalAlign = "";
+          rightButton.classList.add("settingChoosen");
+          break;
 
-      /*case 3 : 
-        element.style.textAlign = "justify";
-        element.style.verticalAlign = "baseline";
-        justifyButton.classList.add("settingChoosen");
-        break;*/
+        /*case 3 : 
+          element.style.textAlign = "justify";
+          element.style.verticalAlign = "baseline";
+          justifyButton.classList.add("settingChoosen");
+          break;*/
+      }
     }
   }
 }
@@ -1093,10 +1129,19 @@ function CheckTextAlignSettings(id){
 function ChangeTextSize(){
   var element = document.getElementById("fontSize");
   var textSize = element.options[element.selectedIndex].text;
-  
-  if(wybranaKomorka != null){
-    var cell = document.getElementById(wybranaKomorka);
-    cell.style.fontSize = Converter_pt_px(textSize);
+
+  var items = (wybranaKomorka ? wybranaKomorka.split(" ") : tabelaZaznaczonych);
+  if(items){
+    for(var i = 0; i < items.length; i++){
+      var choosenCell;
+      if(document.getElementById(items[i])){
+        choosenCell = document.getElementById(items[i])
+      }
+      else{
+        continue;
+      }
+      choosenCell.style.fontSize = Converter_pt_px(textSize);
+    }
   }
 }
 

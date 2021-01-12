@@ -302,12 +302,12 @@ nav {
   opacity: 0.7;
 }
 
-
-i{
+.tab-item > i{
   display: inline-block;
   font-size: 19px;
   height: 100%;
-  padding: 0 10px;
+  width: 100%;
+  padding: 20px;
   cursor: pointer;
 }
 
