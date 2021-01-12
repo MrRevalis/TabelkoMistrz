@@ -78,7 +78,7 @@ Importer.loadLatex = function(){
     if(tabularIdx == -1) return -1;
     const header = Importer.getToEnd(code, tabularIdx+"begin{tabular}".length+2);
     console.log(header);
-    const headerResults = Importer.manageHeader(header);
+    const headerResults = Importer.manageHeader(header.replaceAll(" ",""));
     cols=headerResults[0];
     vlines=headerResults[1];
     colsSpec=headerResults[2];
@@ -99,8 +99,7 @@ Importer.loadLatex = function(){
     code = code.replace("\\begin{tabular}{"+header+"}", "");
     if(captionLocation != "top") code = code.replace("\\caption{"+caption+"}", "");
     code = code.replace("\\label{"+label+"}", "");
-    code = code.replace("\\end{tabular}", "");
-    code = code.replace("\\end{table}", "").trim();
+    code = code.substring(0, code.search("\\\\end{tabular}")).trim();
 
     //rows count
     const rows = code.split("\\\\");
