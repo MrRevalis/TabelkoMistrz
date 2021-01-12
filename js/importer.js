@@ -145,6 +145,15 @@ Importer.loadLatex = function(){
                     ostatniaKomorka = (i+rowspan-1)+":"+(col+colspan-1);
                     wybranaKomorka = i+":"+col;
                     ScalKomorki();
+
+                    //set align
+                    wybranaKomorka = i+":"+col;
+                    switch(cmd[1][1].replaceAll('|', '')){
+                        case "l": ChangeTextAlign(['1','0','0','0']); break;
+                        case "c": ChangeTextAlign(['0','1','0','0']); break;
+                        case "r": ChangeTextAlign(['0','0','1','0']); break;
+                    }
+                    wybranaKomorka = null;
                     
                     //set right border
                     if(!allVLines && (vlines[col+colspan] == 1 || cmd[1][1][cmd[1][1].length-1] == '|')){
