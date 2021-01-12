@@ -184,7 +184,19 @@ Importer.loadLatex = function(){
                     cellContent = cellContent.replace(replaceCellColorVal, "");
                     cellContent.trim();
                 }
-                cell.textContent = cellContent;
+
+                const cellmanged = Importer.manageCell(cellContent);
+                cell.textContent = cellmanged[0];
+                //do bold, italic, underline cmds
+                wybranaKomorka = i+":"+col;
+                cellmanged[1].forEach(element => {
+                    switch(element){
+                        case "textbf": FontBold(cell); break;
+                        case "emph": ItalicFont(cell); break;
+                        case "underline": UnderLineFont(cell); break; 
+                    }
+                });
+                wybranaKomorka = null;
                 
                 //set top border
                 if(tborders.includes(col)){
@@ -326,7 +338,7 @@ Importer.manageHeader = function(code){
 //zwraca komende w podanym kodzie na podanym miejscu oraz argument
 Importer.getCommand = function(code, idx){
     const knownCommandsNA = ["hline"]; //brak argumentow
-    const knownCommandsWA = ["cline", "textbf"]; //jeden argument
+    const knownCommandsWA = ["cline", "textbf", "emph", "underline"]; //jeden argument
     const knownCommandsTA = ["multicolumn", "multirow"]; //3 argumenty
     const knownCommandsWO = ["cellcolor", "rowcolor"]; //1 arg z opcjami
     let cmd = "";
@@ -586,4 +598,21 @@ Importer.setRowColor = function(args){
     }
     
     return [returnVal, color];
+}
+
+Importer.manageCell = function(content){
+    const cmds = [];
+    let cell = content;
+    for(let i = 0; i < content.length; i++){
+        if(cell[i] == "\\"){
+            const cmd = Importer.getCommand(cell, i+1);
+            if(cmd[0]){
+                if(cmd[1]){
+                    cmds.push(cmd[0]);
+                    cell = cell.replace("\\"+cmd[0]+"{"+cmd[1]+"}", cmd[1]);
+                }
+            }
+        }
+    }
+    return [cell, cmds];
 }
