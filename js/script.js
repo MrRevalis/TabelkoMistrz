@@ -1695,9 +1695,11 @@ function CheckColorInCell(id){
 }
 
 function RGBToHex(rgb) {
+
   var sep = rgb.indexOf(",") > -1 ? "," : " ";
   rgb = rgb.substr(4).split(")")[0].split(sep);
-
+  rgb[0] = rgb[0].replace("(","");
+  
   var r = (+rgb[0]).toString(16),
       g = (+rgb[1]).toString(16),
       b = (+rgb[2]).toString(16);
@@ -1711,6 +1713,7 @@ function RGBToHex(rgb) {
 
   return "#" + r + g + b;
 }
+
 var titlePlace = "bottom";
 var parentID;
 function onDragOver(event){

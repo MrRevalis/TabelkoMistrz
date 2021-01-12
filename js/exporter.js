@@ -64,7 +64,7 @@ Exporter.genLatexCode = function(){
                 let result = cell.textContent;
 				
 				//check special characters / symbols
-				result = Exporter.priv.specialCharacters(result);
+				result = Exporter.priv.specialCharacters(result).trim();
 				
                 //check font weight XD
                 if(cell.style.fontWeight == "bold"){
@@ -90,7 +90,13 @@ Exporter.genLatexCode = function(){
                 }
                 //check cell color
                 if(cell.style.backgroundColor != "white" && cell.style.backgroundColor != "rgb(255, 255, 255)" && cell.style.backgroundColor != ""){
-                    result = "\\cellcolor[RGB]{"+cell.style.backgroundColor.replace("rgb(","").replace(")","")+"}"+result;
+                    //split koloru =? usuniecie rgb i nawiasów, podzial na przecinki
+                    var color = cell.style.backgroundColor;
+                    var sep = color.indexOf(",") > -1 ? "," : " ";
+                    color = color.substr(4).split(")")[0].split(sep);
+                    color[0] = color[0].replace("(","");
+
+                    result = "\\cellcolor[RGB]{"+color[0]+","+color[1]+","+color[2]+"}"+result;
                     cellColorPackage = true;
                 }
                 //check multirow
