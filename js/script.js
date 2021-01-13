@@ -875,6 +875,11 @@ function TableBorderChange(borderValues){
 
   //ClearTableBorder();
 
+  if(borderValues.every(x => x == 1)){
+    if(horizontal) horizontal = false;
+    if(vertical) vertical = false;
+  }
+
   if(borderValues[0] == 1){
     if(horizontal){
       for(var i = 0; i < cells.length ; i++){

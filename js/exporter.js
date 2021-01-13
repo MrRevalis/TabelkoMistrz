@@ -482,7 +482,7 @@ Exporter.saveLatexCode = function(){
         element.remove();
     }
     else{
-        ShowCustomAlert("Utwórz tabele, żeby móc ją zapisać.")
+        ShowCustomAlert("Wygeneruj kod LateX, żeby móc go zapisać.")
     }
 }
 
