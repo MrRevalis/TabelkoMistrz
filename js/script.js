@@ -51,7 +51,7 @@ function CreateTable(x, y){
             var cell = document.createElement("td");
             cell.id = i +":" + j;
             cell.style.background = "#FFFFFF";
-            cell.style.border = "1px dashed "+borderColor;
+            cell.style.border = "1px dashed black";
             cell.style.fontSize = Converter_pt_px("11pt");
             cell.style.textAlign = "left";
             cell.setAttribute("contenteditable","false");
@@ -188,6 +188,7 @@ function ZmienKolor(id){
 //Przywrócenie starych kolorów, po zakończeniu zaznaczania (usuwamy kolor zaznaczenia)
 function WyczyscStyl(){
   var table = document.getElementById("mainTable");
+  if(!table)return;
     for (var i = 0; i < table.rows.length; i++) {
         for (var j = 0; j < table.rows[i].cells.length; j++){
           table.rows[i].cells[j].style.backgroundColor = cellsColorTable[i][j];
@@ -711,8 +712,8 @@ window.onload = function(){
 
     element.onclick = function(){
       textColor = this.id;
-      document.getElementById("textColorText").style.color = borderColor;
-      document.getElementById("textColorText").style.backgroundColor = borderColor;
+      document.getElementById("textColorText").style.color = textColor;
+      document.getElementById("textColorText").style.backgroundColor = textColor;
       ChangeTextColors();
     }
     textColorContainer.appendChild(element);
@@ -869,6 +870,7 @@ var horizontal = false;
 var vertical = false;
 function TableBorderChange(borderValues){
   var mainTable = document.getElementById("mainTable");
+  if(!mainTable)return;
   var cells = mainTable.querySelectorAll("td");
 
   //ClearTableBorder();
@@ -1209,6 +1211,7 @@ function ChangeColorInBox(id){
 
 function ChangeBorderColor(){
   var mainTable = document.getElementById("mainTable");
+  if(!mainTable)return;
   var cells = mainTable.querySelectorAll("td");
 
   /*if(horizontal == true){
@@ -1238,6 +1241,7 @@ function ChangeBorderColor(){
 
 function ChangeBorderCollapse(variable){
   var table = document.getElementById("mainTable");
+  if(!table)return;
   switch(variable){
     case 0 : table.style.borderCollapse = "collapse"; break;
     case 1 : table.style.borderCollapse = "separate"; break;
@@ -1467,7 +1471,7 @@ function SetCarretPosition(element, position){
 
 function CheckTableBorder(){
   var table = document.getElementById("mainTable");
-
+  if(!table)return;
   var allHorizontal = true;
   var allVertical = true;
 
@@ -1847,4 +1851,28 @@ function ShowHelp(){
   var element = document.getElementById("copyCodeTip");
   element.style.display = "block";
   //document.getElementById("copyCodeTip").innerHTML = "Skopiuj kod tabeli";
+}
+
+
+function ShowCustomAlert(message){
+  var modal = new tingle.modal({
+    footer: true,
+    stickyFooter: false,
+    closeMethods: ['overlay', 'button', 'escape'],
+    closeLabel: "Close",
+    cssClass: ['customAlert'],
+    beforeClose: function() {
+        return true;
+    }
+});
+
+  var element = document.createElement("h1");
+  element.innerHTML = message;
+  modal.setContent(element);
+
+  modal.addFooterBtn('OK', 'customButton', function() {
+      modal.close();
+  });
+  modal.open();
+
 }

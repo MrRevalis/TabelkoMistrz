@@ -517,3 +517,32 @@ input[type="color"]::-webkit-color-swatch {
   margin-left: -6px;
   border-color: var(--aquamarine) transparent transparent transparent;
 }
+
+
+.customAlert{
+  background-color: rgba(211, 211, 211, 0.2);
+  filter: blur(0px);
+  text-align: center;
+}
+
+.customAlert h1{
+  font-weight: 300;
+}
+
+.customButton{
+    display: block;
+    margin: 0 .5rem;
+    padding: 1rem 2rem;
+    border: none;
+    background-color: #add8e6;
+    box-shadow: none;
+    color: #fff;
+    text-decoration: none;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: normal;
+    cursor: pointer;
+    transition: background-color .4s ease;
+    margin: auto;
+    border-radius: 5px;
+}

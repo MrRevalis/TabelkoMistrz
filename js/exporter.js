@@ -7,6 +7,10 @@ Exporter.genLatexCode = function(){
     wybranaKomorka = null;
     WyczyscStyl();
     const table = document.getElementById("mainTable");
+    if(!table){
+        ShowCustomAlert("Stwórz najpierw tabele.");
+        return;
+    }
     const rows = table.rows.length;
 
     const allBorders = Exporter.priv.CheckTableBorders("allEdges");
@@ -216,6 +220,11 @@ Exporter.genLatexCode = function(){
 	}
     code.push("\\end{table}");
     console.log(code.join("\n"));
+
+    tabelaZaznaczonych = [];
+    pierwszaKomorka = null;
+    ostatniaKomorka = null;
+    ostatniaEdytowana = null;
 
     var preambule = Exporter.priv.packagesInfo(multiRowPackage,cellColorPackage);
     var newCode = preambule + code.join("\n");
@@ -472,6 +481,9 @@ Exporter.saveLatexCode = function(){
         element.href = URL.revokeObjectURL(file);
         element.remove();
     }
+    else{
+        ShowCustomAlert("Utwórz tabele, żeby móc ją zapisać.")
+    }
 }
 
 Exporter.saveHTMLCode = function(){
@@ -495,6 +507,9 @@ Exporter.saveHTMLCode = function(){
         element.click();
         element.href = URL.revokeObjectURL(file);
         element.remove();
+    }
+    else{
+        ShowCustomAlert("Utwórz tabele, żeby móc ją zapisać.")
     }
 }
 
