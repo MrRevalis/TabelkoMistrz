@@ -204,6 +204,7 @@ Exporter.genLatexCode = function(){
 	Exporter.priv
 
     //show
+    document.getElementById("copyCode").style.display = "block";
     document.querySelector("#latexCode").textContent = newCode;
     Prism.highlightElement(document.querySelector("#latexCode"));
     document.querySelector("#latexCode").parentElement.style.display = "block";

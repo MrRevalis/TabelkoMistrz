@@ -31,6 +31,11 @@ function CreateTable(x, y){
     document.getElementById("body").innerHTML = "";
     document.getElementById("toolBarContainer").innerHTML = "";
     document.getElementById("heightToolBar").innerHTML = "";
+    document.getElementById("copyCode").style.display = "none";
+    document.querySelector("#latexCode").textContent = "";
+    document.querySelector("#latexCode").parentElement.style.display = "none";
+
+
 
     var gdzieUmiescic = document.getElementById("body");
 
@@ -1804,4 +1809,31 @@ function onDrag(event){
 function onDragEnd(event){
   document.getElementById("textContainerBottom").classList.remove("dropzone");
   document.getElementById("textContainerTop").classList.remove("dropzone");
+}
+
+//https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API
+function CopyToClipboard(){
+  var text = document.querySelector("#latexCode").textContent;
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(function(){
+    console.log("pozytyw");
+    document.getElementById("copyCodeTip").style.display = "block";
+    document.getElementById("copyCodeTip").innerHTML = "Tabela skopiowana";
+  }, function(){
+    console.log("negatyw");
+    document.getElementById("copyCodeTip").style.display = "block";
+    document.getElementById("copyCodeTip").innerHTML = "Błąd kopiowania";
+  })
+}
+
+function HideMessage(){
+  var element = document.getElementById("copyCodeTip");
+  element.style.display != "none" ? (element.style.display = "none"): "";
+  document.getElementById("copyCodeTip").innerHTML = "Skopiuj kod tabeli";
+}
+
+function ShowHelp(){
+  var element = document.getElementById("copyCodeTip");
+  element.style.display = "block";
+  //document.getElementById("copyCodeTip").innerHTML = "Skopiuj kod tabeli";
 }
