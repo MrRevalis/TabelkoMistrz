@@ -1006,13 +1006,13 @@ function UnderLineFont(element){
       var actualFontUnderline = cellStyle.getPropertyValue("text-decoration");
       //Rodzic
       var aElement = element.parentElement;
-      if(actualFontUnderline.includes("none")){
-        aElement.classList.add("settingChoosen");
-        choosenCell.style.textDecoration = "underline";
-      }
-      else{
+      if(actualFontUnderline.includes("underline")){
         aElement.classList.remove("settingChoosen");
         choosenCell.style.textDecoration = "none";
+      }
+      else{
+        aElement.classList.add("settingChoosen");
+        choosenCell.style.textDecoration = "underline";
       }
     }
   }
