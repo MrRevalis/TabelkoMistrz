@@ -113,7 +113,22 @@ Importer.loadLatex = function(){
 
     if(caption){
         document.querySelector("#caption").value = caption;
-        //to do location
+        if(captionLocation == "top"){
+            console.log("top");
+            const captionHolder = document.getElementById("movableElement");
+            document.getElementById("bottom").removeChild(captionHolder);
+            var newtable = document.createElement("table");
+            var tbody = document.createElement("tbody");
+            tbody.appendChild(captionHolder);
+            newtable.appendChild(tbody);
+            document.getElementById("textContainerTop").appendChild(newtable);
+            titlePlace = "top";
+        } else if(titlePlace != "bottom") {
+            const captionHolder = document.getElementById("movableElement");
+            document.getElementById("textContainerTop").removeChild(document.querySelector("#textContainerTop table"));
+            document.getElementById("bottom").prepend(captionHolder);
+            titlePlace = "bottom";
+        }
     }
     if(label) document.querySelector("#label").value = label;
 
