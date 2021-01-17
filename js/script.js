@@ -99,7 +99,6 @@ function AddFunction(){
 
     //Wykrycie czy lewy przycisk myszy został naciśnięty
     table.addEventListener("mousedown", function(event){
-      console.log("Mysz nacisnieta");
       WyczyscStyl();
       SaveCellsColors()
       if(myszNacisnieta == false){
@@ -119,19 +118,17 @@ function AddFunction(){
 
     table.addEventListener("mousemove", function(event){
       if(myszNacisnieta){
-        console.log("Mysz sie porusza");
         //Jeśli target nie jest pusty oraz nie jest tabelką to wykonujemy zaznaczenie
         if(event.target.id != null && event.target.id != "mainTable"){
             WyczyscStyl();
             ostatniaKomorka = event.target.id;
             var aktualnaKomorka = event.target.id.split(":");
-            ZaznaczenieKomorek(pierwszaKomorka.split(":"), aktualnaKomorka);
+            CellSelection(pierwszaKomorka.split(":"), aktualnaKomorka);
         }
       }
     })
     //Kończymy zaznaczać i tym samym przez tabele "tabelaZaznaczonych" mamy dostęp do ID zaznaczonych
     table.addEventListener("mouseup", function(){
-      console.log("Mysz nie jest nacisnieta");
       myszNacisnieta = false;
 
       //Zmieniamy opcje wyświetlania dla ostatniej zaznaczonej komorki przed zakonczeniem zaznaczania
@@ -146,7 +143,6 @@ function AddFunction(){
     })
 
     table.addEventListener("dblclick", function(event){
-      console.log("edytujesz");
       if(ostatniaEdytowana != null){
         document.getElementById(ostatniaEdytowana).setAttribute("contenteditable","false");
         ostatniaEdytowana = event.target.id;
@@ -160,7 +156,7 @@ function AddFunction(){
 }
 
 //Wykonuje zaznaczenie komórek,
-function ZaznaczenieKomorek(poczatkowyPunkt, aktualnyPunkt){
+function CellSelection(poczatkowyPunkt, aktualnyPunkt){
 	wybranaKomorka = null;
 
   var xMin = Math.min(poczatkowyPunkt[0], aktualnyPunkt[0]);
@@ -192,7 +188,6 @@ function WyczyscStyl(){
     for (var i = 0; i < table.rows.length; i++) {
         for (var j = 0; j < table.rows[i].cells.length; j++){
           table.rows[i].cells[j].style.backgroundColor = cellsColorTable[i][j];
-          //console.log(cellsColorTable[i][j]);
         }
     }
 }
@@ -220,12 +215,10 @@ function AddBorder(){
 	
 }
 
-function ScalKomorki(){
+function MergeCells(){
   if(pierwszaKomorka != null && ostatniaKomorka != null){
-    console.log(pierwszaKomorka);
-    console.log(ostatniaKomorka);
 
-    RozdzielKomorki()
+    SplitCells()
 
     //Usuwanie komorek z roznicy pomiedzy pierwsza a ostatnia
     //Tekst pozostaje tylko w komorce startowej
@@ -265,11 +258,9 @@ function ScalKomorki(){
 
 //Wyjasnienie dlaczego są dwie funkcje o tej samej nazwie tylko w innym jezyku:
 //Generalnie poniższa funkcja decyduje czy mamy zaznaczone wiele komorek czy tylko jedna
-function RozdzielKomorki(){
-  console.log("Rozdziel");
+function SplitCells(){
   if(tabelaZaznaczonych.length > 0){
     //We are using here all highlighted cells (color yellow)
-    console.log("rozdziel zaznaczone komorki => zolty kolor");
     for(var i = 0; i < tabelaZaznaczonych.length; i++){
       if(CheckSpans(tabelaZaznaczonych[i])){
         SplitCell(tabelaZaznaczonych[i]);
@@ -280,7 +271,6 @@ function RozdzielKomorki(){
   }
   else if(wybranaKomorka != null){
     //We are using only one highlighted cell (color green)
-    console.log("rozdziel wybrana komorke => zielony kolor");
     if(CheckSpans(wybranaKomorka)){
       SplitCell(wybranaKomorka);
       ClearCheckMerged(wybranaKomorka);
@@ -380,7 +370,6 @@ function InsertColumn(side){
     }
   } else {
     //change ids
-    console.log("col:" + colID);
     for (let i = 0; i < table.rows.length; i++) {
       for (let j = 0; j < table.rows[i].cells.length; j++){
         let cCell = table.rows[i].cells[j].id.split(":");
@@ -420,7 +409,6 @@ function InsertRow(side){
     if(!confirm("Wstawienie wiersza spowoduje rozdzielenie niektórych komórek! Kontunuować?")) return;
     else {
       for(let c = 0; c < collision.length; c++){
-        //console.log("Trza rozdzielić: " + collision[c][0]+":"+collision[c][1]);
         SplitCell(collision[c][0]+":"+collision[c][1]);
       }
     }
@@ -498,7 +486,6 @@ function deleteRow(){
     if(!confirm("Usunięcie wiersza spowoduje rozdzielenie niektórych komórek! Kontunuować?")) return;
     else {
       for(let c = 0; c < collision.length; c++){
-        //console.log("Trza rozdzielić: " + collision[c][0]+":"+collision[c][1]);
         SplitCell(collision[c][0]+":"+collision[c][1]);
       }
     }
@@ -562,7 +549,6 @@ function checkMergeCollide(row, col, side, table){
     break;
     case "d":
       if(row < table.rows.length){
-        console.log("sprawdzam");
         for(let i = 0; i <= row; i++){
           for(let j = 0; j < table.rows[i].cells.length; j++){
             let cell = table.rows[i].cells[j];
@@ -576,7 +562,6 @@ function checkMergeCollide(row, col, side, table){
       }
     break;
   }
-  console.log(errorCells);
   return errorCells;
 }
 
@@ -1671,7 +1656,6 @@ function CheckValue() {
 function ChangeColor(element) {
   var color = element.value;
   var elementName = element.getAttribute("name");
-  console.log(color);
 	if (color.length == 7) {
 
     switch(elementName){
@@ -1693,8 +1677,6 @@ function ChangeColor(element) {
 }
 
 function ColorPickerChange(color, elementName) {
-  console.log(elementName);
-  console.log(color);
   switch(elementName){
     case "border": borderColor = color;;break;
     case "text" :  textColor = color ;break;
@@ -1837,11 +1819,9 @@ function CopyToClipboard(){
   var text = document.querySelector("#latexCode").textContent;
   if(!text) return;
   navigator.clipboard.writeText(text).then(function(){
-    console.log("pozytyw");
     document.getElementById("copyCodeTip").style.display = "block";
     document.getElementById("copyCodeTip").innerHTML = "Tabela skopiowana";
   }, function(){
-    console.log("negatyw");
     document.getElementById("copyCodeTip").style.display = "block";
     document.getElementById("copyCodeTip").innerHTML = "Błąd kopiowania";
   })
