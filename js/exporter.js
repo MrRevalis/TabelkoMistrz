@@ -94,29 +94,11 @@ Exporter.genLatexCode = function(){
                 }
                 //check cell color
                 if(cell.style.backgroundColor != "white" && cell.style.backgroundColor != "rgb(255, 255, 255)" && cell.style.backgroundColor != ""){
-                    //split koloru =? usuniecie rgb i nawiasów, podzial na przecinki
-                    var color = cell.style.backgroundColor;
-                    let transparency = false;
-                    if(color.includes("rgba(")) transparency = true;
-
-                    var sep = color.indexOf(",") > -1 ? "," : " ";
-                    color = color.substr(4).split(")")[0].split(sep);
-                    color[0] = color[0].replace("(","");
-
-                    let checkColor = (parseInt(color[0])/255).toFixed(2)+"," + (parseInt(color[1])/255).toFixed(2)+ "," + (parseInt(color[2])/255).toFixed(2);
-                    checkColor = checkColor.replaceAll("0.00", "0").replaceAll("1.00", "1");
-                    const colorIdx = colorRGBCodes.indexOf(checkColor);
-
-                    if(colorIdx >= 0){
-                        if(transparency){
-                            transparency = color[3].split('.')[1];
-                            if(transparency.length == 1) transparency = parseInt(transparency) * 10;
-                            result = "\\cellcolor{"+colorNames[colorIdx]+"!"+transparency+"}"+result;
-                        } else {
-                            result = "\\cellcolor{"+colorNames[colorIdx]+"}"+result;
-                        }
+                    const color = Exporter.priv.getColor(cell.style.backgroundColor)
+                    if(color.includes(",")){
+                        result = "\\cellcolor[RGB]{"+color+"}"+result;
                     } else {
-                        result = "\\cellcolor[RGB]{"+color[0]+","+color[1]+","+color[2]+"}"+result;
+                        result = "\\cellcolor{"+color+"}"+result;
                     }
 
                     cellColorPackage = true;
@@ -168,8 +150,19 @@ Exporter.genLatexCode = function(){
             } else {
                 const shift = Exporter.priv.getColsInMR(i, j);
                 if(shift != null){
+                    const parentColor = Exporter.priv.getParentColor(i,j);
+                    let cellColor = "";
+                    if(parentColor != "white" && parentColor != "rgb(255, 255, 255)" && parentColor != ""){
+                        cellColor += "\\cellcolor";
+                        const getColor = Exporter.priv.getColor(parentColor);
+                        if(getColor.includes(",")){
+                            cellColor += "[RGB]{"+getColor+"}";
+                        } else {
+                            cellColor += "{"+getColor+"}";
+                        }
+                    }
                     if(shift == 1){
-                        row.push("");
+                        row.push(cellColor);
                     } else{
                         var element = null;
                         var a = 1;
@@ -188,7 +181,7 @@ Exporter.genLatexCode = function(){
                         let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[element.id.split(":")[0]];
                         //let border = "l";
                     if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
-                        row.push("\\multicolumn{" + shift + "}{" + border + "}{}");
+                        row.push("\\multicolumn{" + shift + "}{" + border + "}{"+cellColor+"}");
                     }
                 }
             }
@@ -276,6 +269,56 @@ Exporter.priv.getColsInMR = function(row, col){
         if(cell != null){
             if(cell.rowSpan > 1){
                 return cell.colSpan;
+            }
+        }
+    }
+    return null;
+}
+
+Exporter.priv.getColor = function(color){
+    let transparency = false;
+    if(color.includes("rgba(")) transparency = true;
+
+    if(color.includes("#")){
+        color = color.replace("#", "");
+        const colorIdx = colorHTMLCodes.indexOf(color);
+        if(colorIdx >= 0){
+            return colorNames[colorIdx];
+        } else {
+            const colorVal = colorRGBCodes[colorHTMLCodes.indexOf(color)].split(",");
+            for(let c = 0; c < colorVal.length; c++)
+                colorVal[c] *= 255;
+            return colorVal.join(",");
+        }
+    } else {
+        var sep = color.indexOf(",") > -1 ? "," : " ";
+        color = color.substr(4).split(")")[0].split(sep);
+        color[0] = color[0].replace("(","");
+
+        let checkColor = (parseInt(color[0])/255).toFixed(2)+"," + (parseInt(color[1])/255).toFixed(2)+ "," + (parseInt(color[2])/255).toFixed(2);
+        checkColor = checkColor.replaceAll("0.00", "0").replaceAll("1.00", "1");
+        const colorIdx = colorRGBCodes.indexOf(checkColor);
+
+        if(colorIdx >= 0){
+            if(transparency){
+                transparency = color[3].split('.')[1];
+                if(transparency.length == 1) transparency = parseInt(transparency) * 10;
+                return colorNames[colorIdx]+"!"+transparency;
+            } else {
+                return colorNames[colorIdx];
+            }
+        } else {
+            return color[0]+","+color[1]+","+color[2];
+        }
+    }
+}
+
+Exporter.priv.getParentColor = function(row, col){
+    for(let i = row - 1; i >= 0; i--){
+        const cell = document.getElementById(i+":"+col);
+        if(cell != null){
+            if(cell.rowSpan > 1){
+                return cellsColorTable[i][col];
             }
         }
     }
