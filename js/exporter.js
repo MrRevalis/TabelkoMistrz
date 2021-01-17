@@ -49,7 +49,7 @@ Exporter.genLatexCode = function(){
     }
     code.push("\\begin{table}");
     if(document.getElementById("caption").value.length > 0 && titlePlace == "top"){
-		code.push("\\caption{" + document.getElementById("caption").value + "}");
+		code.push("\\caption{" + Exporter.priv.specialCharacters(document.getElementById("caption").value) + "}");
 	}
     code.push(Exporter.priv.createTableHeader(tableCols, allBorders, verticalBorders, horizontalBorders, hlines[0], vheader));
     for(let i = 0; i < rows; i++){
@@ -213,10 +213,10 @@ Exporter.genLatexCode = function(){
     code.push("\\end{tabular}");	
 	//dopisanie caption i label na końcu
 	if(document.getElementById("caption").value.length > 0 && titlePlace == "bottom"){
-		code.push("\\caption{" + document.getElementById("caption").value + "}");
+		code.push("\\caption{" + Exporter.priv.specialCharacters(document.getElementById("caption").value) + "}");
 	}
 	if(document.getElementById("label").value.length > 0){
-		code.push("\\label{" + document.getElementById("label").value + "}");
+		code.push("\\label{" + Exporter.priv.removeSpecialCharacters(document.getElementById("label").value) + "}");
 	}
     code.push("\\end{table}");
     console.log(code.join("\n"));
@@ -467,6 +467,21 @@ Exporter.priv.specialCharacters = function(result){
 		}
 	}
 	return specialCharacters;
+}
+
+Exporter.priv.removeSpecialCharacters = function(result){
+	let textWithoutSpecialCharacters = "";
+	for(let i=0; i < result.length; i++){
+		if(result[i] == "$" || result[i] == "&" || result[i] == "%" || result[i] == "#" || 
+			result[i] == "_" || result[i] == "{" || result[i] == "}" || result[i] == "^" || 
+			result[i] == "~" || result[i] == "\\"){
+			textWithoutSpecialCharacters += "";
+		}
+		else{
+			textWithoutSpecialCharacters += result[i];
+		}
+	}
+	return textWithoutSpecialCharacters;
 }
 
 Exporter.saveLatexCode = function(){
