@@ -1862,3 +1862,55 @@ function ShowCustomAlert(message){
   modal.open();
 
 }
+
+function Help(domain){
+	var modalHelp = new tingle.modal({
+		footer: true,
+		stickyFooter: false,
+		closeMethods:['overlay', 'button', 'escape'],
+		closeLabel: "Close",
+		cssClass: ['helper'],
+		beforeClose: function(){
+			return true;
+		}
+	});
+	
+	var helperContent = "<h1>Help " + domain + "</h1>";
+	if(domain == "Plik"){
+		helperContent += "<h5>• Otwórz - po najechaniu na tę opcję wyświetlone zostaną możliwości utworzenia tabeli na podstawie wcześniej utworzonego kodu LaTeX lub poprzez wybranie pliku z rozszerzeniem .csv. Aby importować tabele wystarczy kliknąć interesującą nas opcję, a następnie wybrać odpowiedni plik lub wprowadzić kod LaTeX.</h5>";
+		helperContent += "<h5>• Zapisz - po najechaniu na tę opcję wyświetlone zostaną możliwości zapisania (pobrania) wygenerowanego kodu dla utworzonej przez użytkownika tabeli. Dostępne opcję to .txt oraz .tex. Aby zapisać tabele wystarczy kliknąć interesującą nas opcję.</h5>";
+		helperContent += "<h5>• Utwórz tabelę - istnieją dwie możliwości utworzenia tabeli - kliknięcie interesującej nas wielkości tabeli na podstawie pomocniczej tabelki lub wybranie odpowiadającego rozmiaru tabeli poprzez wpisanie, zwiększenie/zmniejszenie ilości wierszy/kolumn oraz dodanie tabeli przyciskiem +.</h5>";
+	}
+	else if(domain == "Narzędzia główne"){
+		helperContent += "<h5>• Przyciski edycji tekstu - wybranie jednego z sześciu przycisków (pogrubienie, kursywa, podkreślenie, wyrównanie do lewej/środka/prawej) aktywuje daną opcję dla zaznaczonej komórki.</h5>";
+		helperContent += "<h5>• Wielkość czcionki - wybranie wielkości czcionki dla komórki odbywa się za pomocą listy rozwijanej.</h5>";
+		helperContent += "<h5>• Kolor czcionki - dostępnych jest 18 kolorów podstawowych oraz możliwość stworzenia własnego koloru poprzez wpisanie jego wartości w postaci heksadecymalnej lub kliknięcie znacznika koloru i wybranie interesującej nas opcji.</h5>";
+	}
+	else if(domain == "Edycja"){
+		helperContent += "<h5>• Wstawiania wiersza/kolumny - w zależności od wybrania opcji po lewej/prawej lub na górze/dole wstawiany jest wiersz/kolumna od zaznaczonej komórki.</h5>";		
+		helperContent += "<h5>• Usunięcie wiersza/kolumny - usuwa wiersz/kolumnę wybranej komórki.</h5>";
+	}
+	else if(domain == "Komórka"){
+		helperContent += "<h5>• Kolor komórki - dostępnych jest 18 kolorów podstawowych oraz możliwość stworzenia własnego koloru poprzez wpisanie jego wartości w postaci heksadecymalnej lub kliknięcie znacznika koloru i wybranie interesującej nas opcji.</h5>";
+		helperContent += "<h5>• Scal komórki - scala zaznaczone komórki zgodnie z zasadami tworzenia tabel LaTeX zachowując opcje wybrane dla komórki, od której rozpoczęto zaznaczanie.</h5>";
+		helperContent += "<h5>• Rozdziel komórki - rozdziela wybraną, scaloną wcześniej komórkę resetując jej ustawienia i zawartość.</h5>";
+		helperContent += "<h5>• Krawędzie komórki - wyświetla listę dostępnych obramowań, które możemy wybrać dla komórki klikając interesujące nas opcje.</h5>";		
+	}
+	else if(domain == "Tabela"){
+		helperContent += "<h5>• Krawędzie tabeli - wyświetla listę dostępnych obramowań, które możemy wybrać dla komórki klikając interesujące nas opcje.</h5>";
+		helperContent += "<h5>• Kolor obramowania - dostępnych jest 18 kolorów podstawowych oraz możliwość stworzenia własnego koloru poprzez wpisanie jego wartości w postaci heksadecymalnej lub kliknięcie znacznika koloru i wybranie interesującej nas opcji.</h5>";
+	}
+	else{ //Inne
+		helperContent += "<h5>• Edycja komórek - wymagane pojedyncze kliknięcie aby dodawać atrybuty oraz podwójne, aby dodawać tekst.</h5>";	
+		helperContent += "<h5>• Wyrównanie kolumny - znajdujące się ponad tabelą opcje wyrównania całej kolumny udostępnia możliwość wyrównania do lewej l, środka (poziomo) c, prawej r oraz góry p{Xcm} środka (pionowo) m{Xcm} dołu b{Xcm} (X - ilość centymetrów).</h5>";
+		helperContent += "<h5>• Wysokość wiersza - znajdujące się po prawej stronie tabeli opcje wysokości wiersza można zmieniać poprzez wpisanie interesującej nas liczby ex'ów.</h5>";
+		helperContent += "<h5>• Podpis tabeli - interaktywny podpis tabeli znajdujący się docelowo pod tabelą może zostać przeniesiony ponad tabelę wykorzystując narzędzie Drag & Drop (przeciągnij & upuść).</h5>";
+		helperContent += "<h5>• Odnośnik tabeli - nie obsługuje znaków specjalnych LaTeX.</h5>";
+		helperContent += "<h5>• Generuj kod LaTeX - kliknięcie generuje kod LaTeX tabeli istniejącej w trakcie kliknięcia.</h5>";
+		helperContent += "<h5>• Kopiuj do schowka - kopiuje wygenerowany kod LaTeX do schowka (zalecane kopiowanie za pomocą przycisku).</h5>";	
+		}
+	
+	modalHelp.setContent(helperContent);
+	
+	modalHelp.open();
+}
