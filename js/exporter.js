@@ -34,6 +34,9 @@ Exporter.genLatexCode = function(){
     var multiRowPackage = false;
     var cellColorPackage = false;
 
+    const minusRowSpanCols = []; //zawiera id komorek w ktorych multirow musi byc ujemne
+    const minusRowSpanSpec = []; //zawiera [rowSpan, content] tychze komorek
+
     let code = [];
     /*var colorName = (function(text){
         var index = colorTable.findIndex(x => x == text);
@@ -103,10 +106,19 @@ Exporter.genLatexCode = function(){
 
                     cellColorPackage = true;
                 }
+                let multiRowProblem = false;
                 //check multirow
                 if(cell.rowSpan > 1){
                     result = "\\multirow{" + cell.rowSpan + "}{*}{" + result + "}";
                     multiRowPackage = true;
+                    if(result.includes("\\cellcolor")) multiRowProblem = true;
+                }
+
+                if(multiRowProblem){
+                    const textCellContent = cell.textContent
+                    result = result.replace(textCellContent, "");
+                    minusRowSpanCols.push((i+cell.rowSpan-1)+":"+j);
+                    minusRowSpanSpec.push([cell.rowSpan, textCellContent]);
                 }
                 //check multicol
 
@@ -161,8 +173,13 @@ Exporter.genLatexCode = function(){
                             cellColor += "{"+getColor+"}";
                         }
                     }
+                    const mrIdx = minusRowSpanCols.indexOf(i+":"+j);
+                    let minusrow = cellColor;
+                    if(mrIdx >= 0){
+                        minusrow = "\\multirow{-"+minusRowSpanSpec[mrIdx][0]+"}{*}{"+cellColor+minusRowSpanSpec[mrIdx][1]+"}";
+                    }
                     if(shift == 1){
-                        row.push(cellColor);
+                        row.push(minusrow);
                     } else{
                         var element = null;
                         var a = 1;
@@ -180,8 +197,8 @@ Exporter.genLatexCode = function(){
                         var cellTextAlign = element.style.verticalAlign != "" ? element.style.verticalAlign : element.style.textAlign;
                         let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[element.id.split(":")[0]];
                         //let border = "l";
-                    if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
-                        row.push("\\multicolumn{" + shift + "}{" + border + "}{"+cellColor+"}");
+                        if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
+                            row.push("\\multicolumn{" + shift + "}{" + border + "}{"+minusrow+"}");
                     }
                 }
             }
@@ -202,6 +219,9 @@ Exporter.genLatexCode = function(){
         }
         else
             code.push(row.join(" & ") + "\\\\" + heightValue);
+        console.log(minusRowSpanCols);
+        console.log(minusRowSpanSpec);
+        console.log();
     }
     code.push("\\end{tabular}");	
 	//dopisanie caption i label na końcu
