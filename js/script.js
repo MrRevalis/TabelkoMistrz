@@ -1902,7 +1902,7 @@ function Help(domain){
 	}
 	else{ //Inne
 		helperContent += "<h5>• Edycja komórek - wymagane pojedyncze kliknięcie aby dodawać atrybuty oraz podwójne, aby dodawać tekst.</h5>";	
-		helperContent += "<h5>• Wyrównanie kolumny - znajdujące się ponad tabelą opcje wyrównania całej kolumny udostępnia możliwość wyrównania do lewej l, środka (poziomo) c, prawej r oraz góry p{Xcm} środka (pionowo) m{Xcm} dołu b{Xcm} (X - ilość centymetrów).</h5>";
+		helperContent += "<h5>• Wyrównanie kolumny - znajdujące się ponad tabelą opcje wyrównania całej kolumny udostępnia możliwość wyrównania do lewej l, środka (poziomo) c, prawej r oraz góry p{Xcm}, środka (pionowo) m{Xcm}, dołu b{Xcm} (X - ilość centymetrów).</h5>";
 		helperContent += "<h5>• Wysokość wiersza - znajdujące się po prawej stronie tabeli opcje wysokości wiersza można zmieniać poprzez wpisanie interesującej nas liczby ex'ów.</h5>";
 		helperContent += "<h5>• Podpis tabeli - interaktywny podpis tabeli znajdujący się docelowo pod tabelą może zostać przeniesiony ponad tabelę wykorzystując narzędzie Drag & Drop (przeciągnij & upuść).</h5>";
 		helperContent += "<h5>• Odnośnik tabeli - nie obsługuje znaków specjalnych LaTeX.</h5>";
