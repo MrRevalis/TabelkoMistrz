@@ -198,9 +198,9 @@ Exporter.genLatexCode = function(){
                             a++;
                             console.log("here");
                         }
-                        var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[element.id.split(":")[0]][0]);
+                        var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[element.id.split(":")[1]][0]);
                         var cellTextAlign = element.style.verticalAlign != "" ? element.style.verticalAlign : element.style.textAlign;
-                        let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[element.id.split(":")[0]];
+                        let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[element.id.split(":")[1]];
                         //let border = "l";
                         if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
                             row.push("\\multicolumn{" + shift + "}{" + border + "}{"+minusrow+"}");
