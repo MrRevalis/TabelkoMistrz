@@ -1542,6 +1542,7 @@ function ChangeCellsTextAlign(column, text){
       if(element != null){
         if(text.match(patternFirst)){
           element.style.textAlign = textAlign;
+          element.style.verticalAlign = ""
         }
         else if(text.match(patternSecond)){
           element.style.textAlign = "center";
