@@ -92,7 +92,12 @@ Exporter.genLatexCode = function(){
 
                 //check text color
                 if(cell.style.color != ""){
-                    result = "\\textcolor[RGB]{"+cell.style.color.replace("rgb(","").replace(")","")+"}{"+result+"}";
+                    const color = Exporter.priv.getColor(cell.style.color);
+                    if(color.includes(",")){
+                        result = "\\textcolor[RGB]{"+color+"}{"+result+"}";
+                    } else {
+                        result = "\\textcolor{"+color+"}{"+result+"}";
+                    }
                     cellColorPackage = true;
                 }
                 //check cell color
