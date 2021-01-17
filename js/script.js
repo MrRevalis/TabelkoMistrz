@@ -35,8 +35,6 @@ function CreateTable(x, y){
     document.querySelector("#latexCode").textContent = "";
     document.querySelector("#latexCode").parentElement.style.display = "none";
 
-
-
     var gdzieUmiescic = document.getElementById("body");
 
     var elemTable = document.createElement("table");
@@ -59,7 +57,7 @@ function CreateTable(x, y){
             //Testowe, zeby zobaczyc ID => latwiej mi się kontroluje 
             cell.innerHTML = cell.id;
 
-            row.appendChild(cell)
+            row.appendChild(cell);
         }
         elemBody.appendChild(row);
     }
@@ -123,7 +121,7 @@ function AddFunction(){
             WyczyscStyl();
             ostatniaKomorka = event.target.id;
             var aktualnaKomorka = event.target.id.split(":");
-            CellSelection(pierwszaKomorka.split(":"), aktualnaKomorka);
+            ZaznaczenieKomorek(pierwszaKomorka.split(":"), aktualnaKomorka);
         }
       }
     })
@@ -156,7 +154,7 @@ function AddFunction(){
 }
 
 //Wykonuje zaznaczenie komórek,
-function CellSelection(poczatkowyPunkt, aktualnyPunkt){
+function ZaznaczenieKomorek(poczatkowyPunkt, aktualnyPunkt){
 	wybranaKomorka = null;
 
   var xMin = Math.min(poczatkowyPunkt[0], aktualnyPunkt[0]);
@@ -215,10 +213,10 @@ function AddBorder(){
 	
 }
 
-function MergeCells(){
+function ScalKomorki(){
   if(pierwszaKomorka != null && ostatniaKomorka != null){
 
-    SplitCells()
+    RozdzielKomorki()
 
     //Usuwanie komorek z roznicy pomiedzy pierwsza a ostatnia
     //Tekst pozostaje tylko w komorce startowej
@@ -245,6 +243,7 @@ function MergeCells(){
     document.getElementById(xMin+":"+yMin).rowSpan = Math.abs(xMax - xMin + 1);
     document.getElementById(xMin+":"+yMin).colSpan = Math.abs(yMax - yMin + 1);
     document.getElementById(xMin+":"+yMin).innerHTML = tekst;
+    document.getElementById(xMin+":"+yMin).style.height = (Number(Math.abs(xMax - xMin + 1)) * 5)+"vh";
     
     WyczyscStyl();
 
@@ -258,7 +257,7 @@ function MergeCells(){
 
 //Wyjasnienie dlaczego są dwie funkcje o tej samej nazwie tylko w innym jezyku:
 //Generalnie poniższa funkcja decyduje czy mamy zaznaczone wiele komorek czy tylko jedna
-function SplitCells(){
+function RozdzielKomorki(){
   if(tabelaZaznaczonych.length > 0){
     //We are using here all highlighted cells (color yellow)
     for(var i = 0; i < tabelaZaznaczonych.length; i++){
@@ -304,7 +303,7 @@ function SplitCell(element){
 
   document.getElementById(element).rowSpan = 1;
   document.getElementById(element).colSpan = 1;
-
+  document.getElementById(element).style.height = "5vh";
   //Create new element from id of this element to id + rows and id + cols
   //
   for (var i = elementID[0]; i < Number(elementID[0]) + Number(rows) ; i++) {
