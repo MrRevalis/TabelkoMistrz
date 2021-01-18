@@ -72,6 +72,8 @@ function CreateTable(x, y){
     document.getElementById("textContainerBottom").style.display = "block";
     document.getElementById("caption").value = "";
     document.getElementById("label").value = "";
+
+  document.addEventListener("keydown", MovingInTable)
 }
 
 
@@ -1912,4 +1914,26 @@ function Help(domain){
 	modalHelp.setContent(helperContent);
 	
 	modalHelp.open();
+}
+
+function MovingInTable(event){
+  if(event.key == "ArrowUp" || event.key == "ArrowLeft" || event.key == "ArrowRight" || event.key == "ArrowDown"){
+    var actualElement = wybranaKomorka ? wybranaKomorka : ostatniaKomorka;
+    if(actualElement){
+      var position = actualElement.split(":");
+      var rowspan = document.getElementById(actualElement).rowSpan - 1;
+      var colspan = document.getElementById(actualElement).colSpan - 1;
+      switch(event.key){
+        case "ArrowUp": ;position[0] = Number(position[0]) - 1; break;
+        case "ArrowDown": position[0] = Number(position[0]) + 1 + Number(rowspan); break;
+        case "ArrowLeft": position[1] = Number(position[1]) - 1; break;
+        case "ArrowRight": position[1] = Number(position[1]) + 1 + Number(colspan); break;
+      }
+      var newID = position[0]+":"+position[1];
+      alert(newID);
+      if(document.getElementById(newID)){
+        document.getElementById(newID).click();
+      }
+    }
+  }
 }
