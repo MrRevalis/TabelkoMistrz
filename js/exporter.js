@@ -461,9 +461,7 @@ Exporter.priv.isEdgeOfMultiSpan = function(i, j){
         for(let c = 0; c <= j; c++){
             const cell = document.getElementById(r+":"+c);
             if(cell == null) continue;
-            if(cell.rowSpan > 1){
-                if(r + cell.rowSpan - 1 == i && c + cell.colSpan - 1 == j) return true;
-            }
+            if(r + cell.rowSpan - 1 == i && c + cell.colSpan - 1 == j) return true;
         }
     }
     return false;
