@@ -160,7 +160,9 @@ Exporter.genLatexCode = function(){
                     /*var cellAlign = cell.style.verticalAlign;
                     console.log(cellTextAlign);
                     alert(cellAlign);*/
-                    result = "\\multicolumn{1}{"+Exporter.priv.TextInCell(cellTextAlign)+"}{"+result+"}";
+                    var position = Exporter.priv.TextInCell(cellTextAlign);
+                    if(allBorders || verticalBorders) if(j == 0) position = "|"+position+"|"; else position = position+"|";
+                    result = "\\multicolumn{1}{"+position+"}{"+result+"}";
                 }
 
                 row.push(result);
