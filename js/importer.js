@@ -143,7 +143,7 @@ Importer.loadLatex = function(data){
     //caption and label
     const captionIdx = code.search("\\\\caption");
     let caption;
-    if(captionIdx >= 0) caption = Importer.getToEnd(code, captionIdx+"caption".length+2);
+    if(captionIdx >= 0) caption = Importer.manageCell(Importer.getToEnd(code, captionIdx+"caption".length+2))[0];
     const captionLocation = captionIdx < tabularIdx ? "top" : "bottom";
 
     const labelIdx = code.search("\\\\label");
