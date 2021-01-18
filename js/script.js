@@ -73,6 +73,10 @@ function CreateTable(x, y){
     document.getElementById("caption").value = "";
     document.getElementById("label").value = "";
 
+    gdzieUmiescic.addEventListener("mousedown", function(){
+      WyczyscStyl();
+    })
+
   document.addEventListener("keydown", MovingInTable)
 }
 
@@ -345,7 +349,22 @@ function AddPropertiesToCell(cell, i, j){
 }
 
 function InsertColumn(side){
-  if(wybranaKomorka == null) return;
+  if(wybranaKomorka == null){
+    if(tabelaZaznaczonych.length > 0){
+      alert(tabelaZaznaczonych[0]);
+      alert(tabelaZaznaczonych[tabelaZaznaczonych.length - 1]);
+      switch(side){
+        case "l": wybranaKomorka = tabelaZaznaczonych[0];break;
+        case "r": wybranaKomorka = tabelaZaznaczonych[tabelaZaznaczonych.length - 1];break;
+      }
+      tabelaZaznaczonych = [];
+      ostatniaKomorka = "";
+    }
+    else{
+      return;
+    }
+  }
+  
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   //check collision
@@ -399,7 +418,21 @@ function InsertColumn(side){
 }
 
 function InsertRow(side){
-  if(wybranaKomorka == null) return;
+  if(wybranaKomorka == null){
+    if(tabelaZaznaczonych.length > 0){
+      alert(tabelaZaznaczonych[0]);
+      alert(tabelaZaznaczonych[tabelaZaznaczonych.length - 1]);
+      switch(side){
+        case "u": wybranaKomorka = tabelaZaznaczonych[0];break;
+        case "d": wybranaKomorka = tabelaZaznaczonych[tabelaZaznaczonych.length - 1];break;
+      }
+      tabelaZaznaczonych = [];
+      ostatniaKomorka = "";
+    }
+    else{
+      return;
+    }
+  }
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   let rowID = parseInt(coords[0]);
@@ -437,7 +470,16 @@ function InsertRow(side){
 }
 
 function deleteColumn(){
-  if(wybranaKomorka == null) return;
+  if(wybranaKomorka == null){
+    if(ostatniaKomorka != null && tabelaZaznaczonych.length > 0){
+      wybranaKomorka = ostatniaKomorka;
+      tabelaZaznaczonych = [];
+      ostatniaKomorka = "";
+    }
+    else{
+      return;
+    }
+  }
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   const colID = parseInt(coords[1]);
@@ -477,7 +519,16 @@ function deleteColumn(){
 }
 
 function deleteRow(){
-  if(wybranaKomorka == null) return;
+  if(wybranaKomorka == null){
+    if(ostatniaKomorka != null && tabelaZaznaczonych.length > 0){
+      wybranaKomorka = ostatniaKomorka;
+      tabelaZaznaczonych = [];
+      ostatniaKomorka = "";
+    }
+    else{
+      return;
+    }
+  }
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   let rowID = parseInt(coords[0]);
