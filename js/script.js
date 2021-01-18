@@ -472,6 +472,7 @@ function deleteColumn(){
   RemoveFromToolBar(colID);
   tableCols--;
   wybranaKomorka = null;
+  SaveCellsColors();
   WyczyscStyl();
 }
 
@@ -500,6 +501,7 @@ function deleteRow(){
     }
   }
   wybranaKomorka = null;
+  SaveCellsColors();
   WyczyscStyl();
 }
 
