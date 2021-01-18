@@ -1960,11 +1960,13 @@ function Help(domain){
 		helperContent += "<h5>• Kolor komórki - dostępnych jest 18 kolorów podstawowych oraz możliwość stworzenia własnego koloru poprzez wpisanie jego wartości w postaci heksadecymalnej lub kliknięcie znacznika koloru i wybranie interesującej nas opcji.</h5>";
 		helperContent += "<h5>• Scal komórki - scala zaznaczone komórki zgodnie z zasadami tworzenia tabel LaTeX zachowując opcje wybrane dla komórki, od której rozpoczęto zaznaczanie.</h5>";
 		helperContent += "<h5>• Rozdziel komórki - rozdziela wybraną, scaloną wcześniej komórkę resetując jej ustawienia i zawartość.</h5>";
-		helperContent += "<h5>• Krawędzie komórki - wyświetla listę dostępnych obramowań, które możemy wybrać dla komórki klikając interesujące nas opcje.</h5>";		
+    helperContent += "<h5>• Krawędzie komórki - wyświetla listę dostępnych obramowań, które możemy wybrać dla komórki klikając interesujące nas opcje.</h5>";	
+    helperContent += "<h5>• Zakończenie edycji komórki - kliknij klawisz Escape, żeby zakończyć edycje.</h5>";	
 	}
 	else if(domain == "Tabela"){
 		helperContent += "<h5>• Krawędzie tabeli - wyświetla listę dostępnych obramowań, które możemy wybrać dla komórki klikając interesujące nas opcje.</h5>";
-		helperContent += "<h5>• Kolor obramowania - dostępnych jest 18 kolorów podstawowych oraz możliwość stworzenia własnego koloru poprzez wpisanie jego wartości w postaci heksadecymalnej lub kliknięcie znacznika koloru i wybranie interesującej nas opcji.</h5>";
+    helperContent += "<h5>• Kolor obramowania - dostępnych jest 18 kolorów podstawowych oraz możliwość stworzenia własnego koloru poprzez wpisanie jego wartości w postaci heksadecymalnej lub kliknięcie znacznika koloru i wybranie interesującej nas opcji.</h5>";
+    helperContent += "<h5>• Poruszanie się po tabeli - po wybraniu komórki można poruszać się po tabeli z wykorzystaniem klawiszu strzałek.</h5>";
 	}
 	else{ //Inne
 		helperContent += "<h5>• Edycja komórek - wymagane pojedyncze kliknięcie aby dodawać atrybuty oraz podwójne, aby dodawać tekst.</h5>";	
