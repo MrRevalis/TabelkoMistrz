@@ -101,14 +101,16 @@ Exporter.genLatexCode = function(){
                     cellColorPackage = true;
                 }
                 //check cell color
+                var testColor;
                 if(cell.style.backgroundColor != "white" && cell.style.backgroundColor != "rgb(255, 255, 255)" && cell.style.backgroundColor != ""){
                     const color = Exporter.priv.getColor(cell.style.backgroundColor)
                     if(color.includes(",")){
                         result = "\\cellcolor[RGB]{"+color+"}"+result;
+                        testColor = "\\cellcolor[RGB]{"+color+"}";
                     } else {
                         result = "\\cellcolor{"+color+"}"+result;
+                        testColor = "\\cellcolor{"+color+"}";
                     }
-
                     cellColorPackage = true;
                 }
                 let multiRowProblem = false;
@@ -120,10 +122,12 @@ Exporter.genLatexCode = function(){
                 }
 
                 if(multiRowProblem){
-                    const textCellContent = cell.textContent
-                    result = result.replace(textCellContent, "");
+                    var startIndex = result.indexOf("*");
+                    var newResult = result.substr(startIndex + 2, result.length - 2);
+                    result = result.replace(newResult, "");
+                    result += "{"+testColor+"}";
                     minusRowSpanCols.push((i+cell.rowSpan-1)+":"+j);
-                    minusRowSpanSpec.push([cell.rowSpan, textCellContent]);
+                    minusRowSpanSpec.push([cell.rowSpan, newResult]);
                 }
                 //check multicol
 
@@ -207,7 +211,8 @@ Exporter.genLatexCode = function(){
                     const mrIdx = minusRowSpanCols.indexOf(i+":"+j);
                     let minusrow = cellColor;
                     if(mrIdx >= 0){
-                        minusrow = "\\multirow{-"+minusRowSpanSpec[mrIdx][0]+"}{*}{"+cellColor+minusRowSpanSpec[mrIdx][1]+"}";
+                        //minusrow = "\\multirow{-"+minusRowSpanSpec[mrIdx][0]+"}{*}{"+cellColor+minusRowSpanSpec[mrIdx][1]+"}";
+                        minusrow = "\\multirow{-"+minusRowSpanSpec[mrIdx][0]+"}{*}{"+minusRowSpanSpec[mrIdx][1]+"}";
                     }
                     //get parent col border
                     const mrborders = [0,0]
