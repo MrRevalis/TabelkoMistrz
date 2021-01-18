@@ -443,9 +443,13 @@ Exporter.priv.getClines = function(i){
         const cell = document.getElementById(i+":"+j);
         if(cell == null){
             if(Exporter.priv.isPartOfRowSpan(i-1, j)){
-                if(first == null) first = j;
+                if(first == null) first = j+1;
+                else{
+                    clines.push((first+1)+"-"+j);
+                    first = null;
+                }
             }
-            else if(first != null && !Exporter.priv.isEdgeOfMultiSpan(i, j)){
+            else if(first != null && (!Exporter.priv.isEdgeOfMultiSpan(i, j) && !Exporter.priv.isPartOfMultiSpan(i, j))){
                 clines.push((first+1)+"-"+(j));
                 first = null;
             }
@@ -490,6 +494,17 @@ Exporter.priv.isEdgeOfMultiSpan = function(i, j){
             const cell = document.getElementById(r+":"+c);
             if(cell == null) continue;
             if(r + cell.rowSpan - 1 == i && c + cell.colSpan - 1 == j) return true;
+        }
+    }
+    return false;
+}
+
+Exporter.priv.isPartOfMultiSpan = function(i, j){
+    for(let r = 0; r <= i; r++){
+        for(let c = 0; c <= j; c++){
+            const cell = document.getElementById(r+":"+c);
+            if(cell == null) continue;
+            if(r + cell.rowSpan - 1 == i && c + cell.colSpan - 1 > j) return true;
         }
     }
     return false;
