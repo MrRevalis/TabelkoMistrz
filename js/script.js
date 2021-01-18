@@ -492,6 +492,7 @@ function deleteColumn(){
       return;
     }
   }
+  if(!wybranaKomorka) return;
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   const colID = parseInt(coords[1]);
@@ -541,6 +542,7 @@ function deleteRow(){
       return;
     }
   }
+  if(!wybranaKomorka) return;
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   let rowID = parseInt(coords[0]);
