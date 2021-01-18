@@ -58,7 +58,7 @@ Importer.loadHtml = async function(){
         AddFunction();
         GenerateToolBar();
         GenerateHeightToolBar(document.getElementById("mainTable").rows.length);
-
+        CheckTableBorder();
         document.getElementById("textContainerTop").style.display = "block";
         document.getElementById("textContainerBottom").style.display = "block";
         document.getElementById("caption").value = "";
@@ -75,11 +75,46 @@ Importer.getTableCols = function(){
     const table = document.getElementById("mainTable");
     const maxIds = [];
     for(let i =0;i<table.rows.length;i++){
-        maxIds.push(table.rows[i].cells[table.rows[i].cells.length-1].id.split(':')[1]);
+        //maxIds.push(table.rows[i].cells[table.rows[i].cells.length-1].id.split(':')[1]);
+        maxIds.push(table.rows[i].cells.length);
     }
     return Math.max(...maxIds);
 }
 
+Importer.CheckTableBorder = function(){
+    var table = document.getElementById("mainTable");
+    var cells = table.querySelectorAll("td");
+    var horizontal = true;
+    var vertical = true;
+
+    for(var i = 0; i < cells.length ; i++)
+    {
+        var left = cells[i].style.borderLeft;
+        var right = cells[i].style.borderRight;
+        if(!left.includes("solid") && !right.includes("solid")){
+            vertical = false;
+            break;
+        }
+    }
+    for(var i = 0; i < cells.length ; i++)
+    {
+        var top = cells[i].style.borderTop;
+        var bot = cells[i].style.borderBottom;
+        if(!top.includes("solid") && !bot.includes("solid")){
+            horizontal = false;
+            break;
+        }
+    }
+    if(vertical){
+        document.getElementById("verticalEdges").classList.remove("borderChecked");
+    }
+    if(horizontal){
+        document.getElementById("horizontalEdges").classList.add("borderChecked");
+    }
+    if(horizontal && vertical){
+        document.getElementById("allEdges").classList.add("borderChecked");
+    }
+}
 /*
 LATEX SECTION
 */
@@ -439,7 +474,6 @@ Importer.manageHeader = function(code){
     } else {
         vlines.push(0);
     }
-
     return [cols,vlines,colsSpec,colsExtras];
 }
 //zwraca komende w podanym kodzie na podanym miejscu oraz argument
