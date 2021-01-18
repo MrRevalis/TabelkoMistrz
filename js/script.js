@@ -34,6 +34,9 @@ function CreateTable(x, y){
     document.getElementById("copyCode").style.display = "none";
     document.querySelector("#latexCode").textContent = "";
     document.querySelector("#latexCode").parentElement.style.display = "none";
+    document.getElementById("horizontalEdges").classList.remove("borderChecked");
+    document.getElementById("verticalEdges").classList.remove("borderChecked");
+    document.getElementById("allEdges").classList.remove("borderChecked");
 
     var gdzieUmiescic = document.getElementById("body");
 
