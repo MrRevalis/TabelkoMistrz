@@ -39,9 +39,61 @@ Importer.openCsvModal = function(){
     openCsvModal.open();
 }
 
+Importer.openHTMLModal = function(){
+    openCsvModal.setContent('<h3>Wybierz plik:</h3><input type="file" accept=".txt,.html" id="htmlfileinput" onchange="Importer.loadHtml(this)" />');
+    openCsvModal.open();
+}
+
+Importer.loadHtml = async function(){
+    const data = await document.getElementById("htmlfileinput").files[0].text();
+    if(data.includes('<table id="mainTable"')){
+        document.getElementById("body").innerHTML = data;
+        document.getElementById("toolBarContainer").innerHTML = "";
+        document.getElementById("heightToolBar").innerHTML = "";
+        document.getElementById("copyCode").style.display = "none";
+        document.querySelector("#latexCode").textContent = "";
+        document.querySelector("#latexCode").parentElement.style.display = "none";
+        tableCols = Importer.getTableCols()+1;
+        SaveCellsColors();
+        AddFunction();
+        GenerateToolBar();
+        GenerateHeightToolBar(document.getElementById("mainTable").rows.length);
+
+        document.getElementById("textContainerTop").style.display = "block";
+        document.getElementById("textContainerBottom").style.display = "block";
+        document.getElementById("caption").value = "";
+        document.getElementById("label").value = "";
+
+        document.addEventListener("keydown", MovingInTable);
+    } else {
+        //blad
+    }
+    openCsvModal.close();
+}
+
+Importer.getTableCols = function(){
+    const table = document.getElementById("mainTable");
+    const maxIds = [];
+    for(let i =0;i<table.rows.length;i++){
+        maxIds.push(table.rows[i].cells[table.rows[i].cells.length-1].id.split(':')[1]);
+    }
+    return Math.max(...maxIds);
+}
+
 /*
 LATEX SECTION
 */
+Importer.openLatexFileModal = function(){
+    openCsvModal.setContent('<h3>Wybierz plik:</h3><input type="file" accept=".txt,.tex" id="latexfileinput" onchange="Importer.loadLatexFile(this)" />');
+    openCsvModal.open();
+}
+
+Importer.loadLatexFile = async function(){
+    const data = await document.getElementById("latexfileinput").files[0].text();
+    openCsvModal.close();
+    Importer.loadLatex(data);
+}
+
 var openLatexModal = new tingle.modal({
     footer: true,
     stickyFooter: false,
@@ -65,14 +117,16 @@ Importer.openLatexModal = function(){
     openLatexModal.open();
 }
 
-Importer.loadLatex = function(){
+Importer.loadLatex = function(data){
     let cols;
     let rowsCount;
     let colsSpec;
     let colsExtras;
     let vlines;
 
-    let code = document.querySelector("#latexInput").value;
+    let code = data;
+    if(data == null)
+        code = document.querySelector("#latexInput").value;
     //openCsvModal.close();
 
     //gdzie zaczyna sie tabular
