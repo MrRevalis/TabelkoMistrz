@@ -477,6 +477,7 @@ function InsertRow(side){
     let cell = table.rows[rowID].insertCell(i);
     AddPropertiesToCell(cell, rowID, i);
   }
+  AddToHeightBar(rowID);
   wybranaKomorka = null;
   SaveCellsColors();
   WyczyscStyl();
@@ -561,6 +562,7 @@ function deleteRow(){
     }
   }
   table.deleteRow(rowID);
+  RemoveFromHeightBar(rowID);
   //change ids
   for(let i = rowID; i < table.rows.length; i++){
     for(let j = 0; j < table.rows[i].cells.length; j++){
@@ -1636,6 +1638,44 @@ function GenerateHeightToolBar(height){
   }
   table.appendChild(tbody);
   container.appendChild(table);
+}
+
+function AddToHeightBar(index){
+  var newArray = [];
+  for(var i = 0; i < heightTooBarArray.length + 1; i++){
+    if(i == index){
+      newArray.push("[0ex]");
+    }
+    newArray.push(heightTooBarArray[i]);
+  }
+  heightTooBarArray = newArray;
+
+  var table = document.getElementById("heightToolBarTable");
+  var row = table.insertRow(index);
+  var cell = row.insertCell(0);
+  cell.innerHTML = heightTooBarArray[index].replace("[","").replace("]","");
+  cell.addEventListener("input", CellInput, false);
+  cell.addEventListener("focusin", RemoveUnit, false);
+  cell.addEventListener("focusout", AddUnit, false);
+  cell.setAttribute("contenteditable","true");
+
+  ChangeIDHeight();
+}
+
+function ChangeIDHeight(){
+  var table = document.getElementById("heightToolBarTable");
+  for(var i = 0; i < table.rows.length; i++){
+    for(var j = 0; j < table.rows[i].cells.length; j++){
+      table.rows[i].cells[j].id = "h"+i;
+    }
+  }
+}
+
+function RemoveFromHeightBar(index){
+  var table = document.getElementById("heightToolBarTable");
+  table.deleteRow(index);
+  heightTooBarArray.splice(index, 1);
+  ChangeIDHeight();
 }
 
 function CellInput(event){
