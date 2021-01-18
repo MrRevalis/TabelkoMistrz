@@ -1358,41 +1358,57 @@ function GenerateToolBar(){
     cell.id = i;
     cell.setAttribute("contenteditable","true");
     
-    cell.addEventListener("input", function(event){
-      var patternFirst = new RegExp("^[lcr]");
-      var patternSecond = new RegExp("^[pmb]");
-      var patternThird = new RegExp("^[pmb]{.*}$");
+    cell.addEventListener("input", ToolBarInput,false);
 
-      var text  = this.innerHTML;
-      var firstLetter = text[0];
+    cell.addEventListener("focusout", ToolBarFocusOut, false);
 
-      if(firstLetter == null) return;
-      if(firstLetter.match(patternFirst)){
-        this.innerHTML = firstLetter;
-        withWidth = false;
-        SetCarretPosition(this, 1)
-        contentToolBar[this.id] = firstLetter;
-      }
-      else if(firstLetter.match(patternSecond) && withWidth == false){
-        withWidth = true;
+    cell.addEventListener("keydown", ToolBarKeyDown, false)
+
+    cell.addEventListener("focus", function(event){
+      SetCarretPosition(this, this.innerHTML.length);
+    })
+
+    row.appendChild(cell);
+  }
+  tbody.appendChild(row);
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function ToolBarInput(event){
+    var patternFirst = new RegExp("^[lcr]");
+    var patternSecond = new RegExp("^[pmb]");
+    var patternThird = new RegExp("^[pmb]{.*}$");
+
+    var text  = this.innerHTML;
+    var firstLetter = text[0];
+
+    if(firstLetter == null) return;
+    if(firstLetter.match(patternFirst)){
+      this.innerHTML = firstLetter;
+      withWidth = false;
+      SetCarretPosition(this, 1)
+      contentToolBar[this.id] = firstLetter;
+    }
+    else if(firstLetter.match(patternSecond) && withWidth == false){
+      withWidth = true;
+      this.innerHTML = firstLetter + "{}";
+      SetCarretPosition(this, this.innerHTML.length - 1)
+    }
+    else if(withWidth == false){
+      this.innerHTML = "";
+    }
+
+    if(withWidth == true){
+      if(!text.match(patternThird)){
         this.innerHTML = firstLetter + "{}";
         SetCarretPosition(this, this.innerHTML.length - 1)
       }
-      else if(withWidth == false){
-        this.innerHTML = "";
-      }
+    }
+}
 
-      if(withWidth == true){
-        if(!text.match(patternThird)){
-          this.innerHTML = firstLetter + "{}";
-          SetCarretPosition(this, this.innerHTML.length - 1)
-        }
-      }
-    });
-
-    cell.addEventListener("focusout", function(event){
-
-      var text = this.innerHTML;
+function ToolBarFocusOut(event){
+  var text = this.innerHTML;
       text = text.replace(",",".");
       this.innerHTML = text;
 
@@ -1424,10 +1440,10 @@ function GenerateToolBar(){
         }
       }
       ChangeCellsTextAlign(this.id, this.innerHTML[0]);
-    });
+}
 
-    cell.addEventListener("keydown", function(event){
-      var key = event.key;
+function ToolBarKeyDown(event){
+  var key = event.key;
 
       if(key === "Backspace") { 
         var carretIndex = getCaretCharacterOffsetWithin(this);
@@ -1448,17 +1464,6 @@ function GenerateToolBar(){
         var fieldID = Number(this.id);
         document.getElementById((Number(fieldID) + 1 < contentToolBar.length) ? Number(fieldID) + 1 : 0).focus();
       }
-    });
-
-    cell.addEventListener("focus", function(event){
-      SetCarretPosition(this, this.innerHTML.length);
-    })
-
-    row.appendChild(cell);
-  }
-  tbody.appendChild(row);
-  table.appendChild(tbody);
-  container.appendChild(table);
 }
 
 function AddToToolBar(index){
@@ -1476,7 +1481,15 @@ function AddToToolBar(index){
   cell.innerHTML = contentToolBar[index];
   cell.id = index;
   cell.setAttribute("contenteditable","true");
+  cell.addEventListener("input", ToolBarInput,false);
 
+  cell.addEventListener("focusout", ToolBarFocusOut, false);
+
+  cell.addEventListener("keydown", ToolBarKeyDown, false)
+
+  cell.addEventListener("focus", function(event){
+    SetCarretPosition(this, this.innerHTML.length);
+  })
   ChangeID();
 }
 

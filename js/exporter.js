@@ -139,7 +139,16 @@ Exporter.genLatexCode = function(){
                 if(cell.colSpan > 1){
                     //let border = "l";
                     if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
-                    else if(vheader[j + cell.colSpan] == 1) border = border + "|";
+                    else if(vheader[j + cell.colSpan] == 1) border = border + "|"; else{
+                        if(vlines[i][j] == 1){
+                            if(j+1 == tableCols && (vlines[i][tableCols] == 1 || vheader[tableCols] == 1)){
+                                //last cell
+                                border = "|"+border;
+                            } else {
+                                border = "|"+border;
+                            }
+                        }
+                    }
                     result = "\\multicolumn{" + cell.colSpan + "}{" + border + "}{" + result + "}";
                     j += cell.colSpan-1;
                 } 
@@ -219,6 +228,7 @@ Exporter.genLatexCode = function(){
                         var cellTextAlign = element.style.verticalAlign != "" ? element.style.verticalAlign : element.style.textAlign;
                         let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[element.id.split(":")[1]];
                         //let border = "l";
+                        
                         if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
                             row.push("\\multicolumn{" + shift + "}{" + border + "}{"+minusrow+"}");
                     }
