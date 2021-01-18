@@ -184,6 +184,27 @@ Importer.loadLatex = function(data){
     const labelIdx = code.search("\\\\label");
     let label;
     if(labelIdx >= 0) label = Importer.getToEnd(code, labelIdx+"label".length+2);
+
+    //border color
+    const bordercolorIdx = code.search("\\arrayrulecolor");
+    if(bordercolorIdx >= 0){
+        const impborderColor = Importer.getToEnd(code, bordercolorIdx + "arrayrulecolor".length+1);
+        const colorIdx = colorNames.indexOf(impborderColor);
+        if(colorIdx >= 0){
+            borderColor = "#"+colorHTMLCodes[colorIdx];
+            ChangeBorderColor();
+        } else {
+            const defineColorIdx = code.search("\\\\definecolor");
+            if(defineColorIdx >= 0){
+                const colorCmd = Importer.getCommand(code, defineColorIdx+1);
+                const refactoredBColor = Importer.getBorderColor(colorCmd[1][1], colorCmd[1][2]);
+                if(refactoredBColor){
+                    borderColor = refactoredBColor;
+                    ChangeBorderColor();
+                }
+            }
+        }
+    }
     
     //clear code
     code = code.replace(code.substring(0,tabularIdx), "");
@@ -480,7 +501,7 @@ Importer.manageHeader = function(code){
 Importer.getCommand = function(code, idx){
     const knownCommandsNA = ["hline", "$", "%", "&", "#", "_", "{", "}", "backslash"]; //brak argumentow
     const knownCommandsWA = ["cline", "textbf", "emph", "underline", "tiny", "scriptsize", "footnotesize", "small", "normalsize", "large", "Large", "LARGE", "huge", "Huge", "~", "^"]; //jeden argument
-    const knownCommandsTA = ["multicolumn", "multirow"]; //3 argumenty
+    const knownCommandsTA = ["multicolumn", "multirow", "definecolor"]; //3 argumenty
     const knownCommandsWO = ["cellcolor", "rowcolor", "textcolor"]; //1 arg z opcjami
     let cmd = "";
     let arg = "";
@@ -835,4 +856,41 @@ Importer.setFontSize = function(cmd, row, col){
             cell.style.fontSize = Converter_pt_px(size);
         }
     }
+}
+
+Importer.getBorderColor = function(option, icolor){
+    let color = icolor;
+    switch(option){
+        case "HTML":
+        case 'html':
+            color = "#"+color;   
+        break;
+        case 'rgb':
+            let resultR = [];
+            let valuesR = color.split(',');
+            valuesR.forEach(element => {
+                resultR.push(element.trim());
+            });
+            const idx2 = colorRGBCodes.indexOf(valuesR.join(','));
+            if(idx2 >= 0)
+                color = "#"+colorHTMLCodes[idx2];
+            else color = undefined;
+        break;
+        case 'RGB':
+            color = RGBToHex(color);
+        break;
+        case "CMYK":
+        case 'cmyk':
+            let valuesC = color.split(',');
+            let resultC = [];
+            valuesC.forEach(element => {
+                resultC.push(element.trim()); 
+            });
+            const idx = colorCmykCodes.indexOf(resultC.join(','));
+            if(idx >= 0){
+                color = "#"+colorHTMLCodes[idx];
+            } else color = undefined;
+        break;
+    }
+    return color;
 }
