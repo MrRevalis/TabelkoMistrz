@@ -209,8 +209,27 @@ Exporter.genLatexCode = function(){
                     if(mrIdx >= 0){
                         minusrow = "\\multirow{-"+minusRowSpanSpec[mrIdx][0]+"}{*}{"+cellColor+minusRowSpanSpec[mrIdx][1]+"}";
                     }
+                    //get parent col border
+                    const mrborders = [0,0]
+                    for(let r = 0; r < i; r++){
+                        const checCell = document.getElementById(r+":"+j);
+                        if(checCell == null) continue;
+                        if(checCell.rowSpan > 1)
+                            if(r+checCell.rowSpan-1>=i){
+                                if(checCell.style.borderLeftStyle == "solid") mrborders[0] = 1;
+                                if(checCell.style.borderRightStyle == "solid") mrborders[1] = 1;
+                            }
+                    }
+                    let mrborder = "";
+                            if(mrborders[0] == 1) mrborder += "|";
+                            mrborder += "l";
+                            if(mrborders[1] == 1) mrborder += "|";
                     if(shift == 1){
-                        row.push(minusrow);
+                        if(mrborders.includes(1)){
+                            row.push("\\multicolumn{1}{"+mrborder+"}{"+minusrow+"}");
+                        } else {
+                            row.push(minusrow);
+                        }
                     } else{
                         var element = null;
                         var a = 1;
@@ -226,11 +245,15 @@ Exporter.genLatexCode = function(){
                         }
                         var columnTextAlign = Exporter.priv.TextAlignInColumn(specificColumns[element.id.split(":")[1]][0]);
                         var cellTextAlign = element.style.verticalAlign != "" ? element.style.verticalAlign : element.style.textAlign;
-                        let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[element.id.split(":")[1]];
-                        //let border = "l";
-                        
-                        if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
-                            row.push("\\multicolumn{" + shift + "}{" + border + "}{"+minusrow+"}");
+                        if(mrborders != ""){
+                            row.push("\\multicolumn{" + shift + "}{" + mrborder + "}{"+minusrow+"}");
+                        } else {
+                            let border = (cellTextAlign != columnTextAlign) ? Exporter.priv.TextInCell(cellTextAlign) : specificColumns[element.id.split(":")[1]];
+                            //let border = "l";
+                            
+                            if(allBorders || verticalBorders) if(j == 0) border = "|"+border+"|"; else border = border+"|";
+                                row.push("\\multicolumn{" + shift + "}{" + border + "}{"+minusrow+"}");
+                        }
                     }
                 }
             }
