@@ -1250,8 +1250,10 @@ function ChangeTextColors(){
   }
   if(tabelaZaznaczonych.length > 0){
     for(var i=0; i<tabelaZaznaczonych.length; i++){
-      var element = document.getElementById(tabelaZaznaczonych[i]);
-      element.style.color = textColor;
+      if(document.getElementById(tabelaZaznaczonych[i])){
+        var element = document.getElementById(tabelaZaznaczonych[i]);
+        element.style.color = textColor;
+      }
     }
   }
   document.getElementById("textColorWriter").value = textColor;
