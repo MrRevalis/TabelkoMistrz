@@ -161,8 +161,6 @@ Exporter.genLatexCode = function(){
                     console.log(cellTextAlign);
                     alert(cellAlign);*/
                     var position = Exporter.priv.TextInCell(cellTextAlign);
-                    alert(i+":"+j);
-                    //if(allBorders || verticalBorders) if(j == 0) position = "|"+position+"|"; else position = position+"|";
                     if(vlines.length > 0){
                         if(vlines[i][j] == 1){
                             if(j+1 == tableCols && (vlines[i][tableCols] == 1 || vheader[tableCols] == 1)){
@@ -176,8 +174,10 @@ Exporter.genLatexCode = function(){
                             result = "\\multicolumn{1}{"+position+"}{"+result+"}";
                         }
                     }
-                    else
+                    else{
+                        if(allBorders || verticalBorders) if(j == 0) position = "|"+position+"|"; else position = position+"|";
                         result = "\\multicolumn{1}{"+position+"}{"+result+"}";
+                    }
                 }
 
                 row.push(result);
