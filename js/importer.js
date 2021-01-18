@@ -44,6 +44,55 @@ Importer.openHTMLModal = function(){
     openCsvModal.open();
 }
 
+Importer.loadTemplate = async function(number){
+    switch(number){
+        case 0: file = "../template/template0.html";break;
+        case 1: file = "../template/template1.html";break;
+    }
+    var data = await Importer.readTextFile(file);
+    if(data.includes('<table id="mainTable"')){
+        document.getElementById("body").innerHTML = data;
+        document.getElementById("toolBarContainer").innerHTML = "";
+        document.getElementById("heightToolBar").innerHTML = "";
+        document.getElementById("copyCode").style.display = "none";
+        document.querySelector("#latexCode").textContent = "";
+        document.querySelector("#latexCode").parentElement.style.display = "none";
+        tableCols = Importer.getTableCols()+1;
+        SaveCellsColors();
+        AddFunction();
+        GenerateToolBar();
+        GenerateHeightToolBar(document.getElementById("mainTable").rows.length);
+        CheckTableBorder();
+        document.getElementById("textContainerTop").style.display = "block";
+        document.getElementById("textContainerBottom").style.display = "block";
+        document.getElementById("caption").value = "";
+        document.getElementById("label").value = "";
+
+        document.addEventListener("keydown", MovingInTable);
+    } else {
+        //blad
+    }
+}
+
+Importer.readTextFile = async function(file)
+{
+    var rawFile = new XMLHttpRequest();
+    var text = "";
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                text = rawFile.responseText;
+            }
+        }
+    }
+    rawFile.send(null);
+    return text 
+}
+
 Importer.loadHtml = async function(){
     const data = await document.getElementById("htmlfileinput").files[0].text();
     if(data.includes('<table id="mainTable"')){

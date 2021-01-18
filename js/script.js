@@ -723,7 +723,9 @@ window.onload = function(){
       }
       if(tabelaZaznaczonych.length > 0){
         for(var i=0; i<tabelaZaznaczonych.length; i++){
-          document.getElementById(tabelaZaznaczonych[i]).style.backgroundColor = colorValue;
+          if(document.getElementById(tabelaZaznaczonych[i])){
+            document.getElementById(tabelaZaznaczonych[i]).style.backgroundColor = colorValue;
+          }
           var position = tabelaZaznaczonych[i].split(":");
           cellsColorTable[position[0]][position[1]] = colorValue;
         }
