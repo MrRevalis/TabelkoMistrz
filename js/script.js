@@ -75,6 +75,10 @@ function CreateTable(x, y){
 
     gdzieUmiescic.addEventListener("mousedown", function(){
       WyczyscStyl();
+      if(wybranaKomorka){
+        document.getElementById(wybranaKomorka).setAttribute("contenteditable","false");
+      }
+      wybranaKomorka = "";
     })
 
   document.addEventListener("keydown", MovingInTable)
@@ -85,20 +89,26 @@ function CreateTable(x, y){
 function AddFunction(){
     var table = document.getElementById("mainTable");
     for (var i = 0; i < table.rows.length; i++) {
-        for (var j = 0; j < table.rows[i].cells.length; j++)
-        table.rows[i].cells[j].onclick = function () {
-          if(myszNacisnieta != true){
-            WyczyscStyl();
-            ShowPosition(this.id);
-            BorderViewFunction(this.id);
-            CheckFontSettings(this.id);
-            CheckTextAlignSettings(this.id);
-            OptionChangeSize(this.id);
-            ChangeColorInBox(this.id);
-            CheckMerged(this.id);
-            CheckColorInCell(this.id);
-          }
-        };
+        for (var j = 0; j < table.rows[i].cells.length; j++){
+          table.rows[i].cells[j].onclick = function () {
+            if(myszNacisnieta != true){
+              WyczyscStyl();
+              ShowPosition(this.id);
+              BorderViewFunction(this.id);
+              CheckFontSettings(this.id);
+              CheckTextAlignSettings(this.id);
+              OptionChangeSize(this.id);
+              ChangeColorInBox(this.id);
+              CheckMerged(this.id);
+              CheckColorInCell(this.id);
+            }
+          };
+          table.rows[i].cells[j].addEventListener("keydown", function(event){
+            if(event.key == "Escape"){
+              this.setAttribute("contenteditable","false");
+            }
+          })
+        }
     }
 
     //Wykrycie czy lewy przycisk myszy został naciśnięty
@@ -155,6 +165,7 @@ function AddFunction(){
         ostatniaEdytowana = event.target.id;
       }
       document.getElementById(ostatniaEdytowana).setAttribute("contenteditable","true");
+      SetCarretPosition(document.getElementById(ostatniaEdytowana),document.getElementById(ostatniaEdytowana).innerHTML.length);
       document.getElementById(ostatniaEdytowana).focus();
     })
 }
@@ -364,7 +375,7 @@ function InsertColumn(side){
       return;
     }
   }
-  
+  if(!wybranaKomorka) return;
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   //check collision
@@ -433,6 +444,7 @@ function InsertRow(side){
       return;
     }
   }
+  if(!wybranaKomorka) return;
   const coords = wybranaKomorka.split(":");
   const table = document.getElementById("mainTable");
   let rowID = parseInt(coords[0]);
@@ -1973,19 +1985,22 @@ function MovingInTable(event){
   if(event.key == "ArrowUp" || event.key == "ArrowLeft" || event.key == "ArrowRight" || event.key == "ArrowDown"){
     var actualElement = wybranaKomorka ? wybranaKomorka : ostatniaKomorka;
     if(actualElement){
-      var position = actualElement.split(":");
-      var rowspan = document.getElementById(actualElement).rowSpan - 1;
-      var colspan = document.getElementById(actualElement).colSpan - 1;
-      switch(event.key){
-        case "ArrowUp": ;position[0] = Number(position[0]) - 1; break;
-        case "ArrowDown": position[0] = Number(position[0]) + 1 + Number(rowspan); break;
-        case "ArrowLeft": position[1] = Number(position[1]) - 1; break;
-        case "ArrowRight": position[1] = Number(position[1]) + 1 + Number(colspan); break;
-      }
-      var newID = position[0]+":"+position[1];
-      alert(newID);
-      if(document.getElementById(newID)){
-        document.getElementById(newID).click();
+      var styleEditable = document.getElementById(actualElement).getAttribute("contenteditable");
+      if(styleEditable == "false"){
+        var position = actualElement.split(":");
+        var rowspan = document.getElementById(actualElement).rowSpan - 1;
+        var colspan = document.getElementById(actualElement).colSpan - 1;
+        switch(event.key){
+          case "ArrowUp": ;position[0] = Number(position[0]) - 1; break;
+          case "ArrowDown": position[0] = Number(position[0]) + 1 + Number(rowspan); break;
+          case "ArrowLeft": position[1] = Number(position[1]) - 1; break;
+          case "ArrowRight": position[1] = Number(position[1]) + 1 + Number(colspan); break;
+        }
+        var newID = position[0]+":"+position[1];
+        if(document.getElementById(newID)){
+          document.getElementById(newID).click();
+          wybranaKomorka = newID;
+        }
       }
     }
   }
