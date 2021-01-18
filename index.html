@@ -76,9 +76,6 @@
 			<div class="tab">
 				<a class="tab-btn" onclick="ChangeBorderCollapse(0)">Edycja</a>
 				<div class="tab-content">
-					<a class="tab-item">Cofnij</a>
-					<a class="tab-item">Wklej</a>
-					<div class="divider"></div>
 					<a class="tab-item" onclick="InsertColumn('l')">Wstaw po lewej</a>
 					<a class="tab-item" onclick="InsertColumn('r')">Wstaw po prawej</a>
 					<a class="tab-item" onclick="InsertRow('u')">Wstaw na górze</a>
@@ -186,13 +183,13 @@
 
 
 	<script>
-		//DO UŻYCIA PÓŹNIEJ - blokuje przypadkowe zamknięcie strony
-		/*window.addEventListener('beforeunload', (event) => {
-  // Cancel the event as stated by the standard.
-  event.preventDefault();
-  // Chrome requires returnValue to be set.
-  event.returnValue = '';
-});*/
+		//blokuje przypadkowe zamknięcie strony
+		window.addEventListener('beforeunload', (event) => {
+			// Cancel the event as stated by the standard.
+			event.preventDefault();
+			// Chrome requires returnValue to be set.
+			event.returnValue = '';
+		});
 	</script>
 
 	<script src="js/prism.js"></script>
