@@ -1795,7 +1795,7 @@ function ChangeColor(element) {
     switch(elementName){
       case "border": ChangeBorderColor(); break;
       case "text" : ChangeTextColors(); break;
-      case "cell" : ChangeCellBackground; break;
+      case "cell" : ChangeCellBackground(); break;
     }
     
 	}
