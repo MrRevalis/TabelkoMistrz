@@ -170,7 +170,8 @@ Importer.loadLatex = function(data){
         if(captionLocation == "top"){
             console.log("top");
             const captionHolder = document.getElementById("movableElement");
-            document.getElementById("bottom").removeChild(captionHolder);
+            if(captionHolder.parentElement.id == "bottom")
+                document.getElementById("bottom").removeChild(captionHolder);
             var newtable = document.createElement("table");
             var tbody = document.createElement("tbody");
             tbody.appendChild(captionHolder);
@@ -773,6 +774,7 @@ Importer.manageCell = function(content){
                     else
                         cell = cell.replace("\\"+cmd[0], cmd[0]);
                 }
+                i=0; //check text content from the beggining, coz of replace method
             }
         }
     }
@@ -794,7 +796,9 @@ Importer.setFontSize = function(cmd, row, col){
             case "huge": size = 20; break;
             case "Huge": size = 25; break;
         }
-        size += "pt";
-        cell.style.fontSize = Converter_pt_px(size);
+        if(size){
+            size += "pt";
+            cell.style.fontSize = Converter_pt_px(size);
+        }
     }
 }
