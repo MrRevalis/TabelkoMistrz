@@ -224,9 +224,6 @@ Exporter.genLatexCode = function(){
         }
         else
             code.push(row.join(" & ") + "\\\\" + heightValue);
-        console.log(minusRowSpanCols);
-        console.log(minusRowSpanSpec);
-        console.log();
     }
     code.push("\\end{tabular}");	
 	//dopisanie caption i label na końcu
@@ -390,7 +387,10 @@ Exporter.priv.getClines = function(i){
     for(let j = 0; j <= tableCols; j++){
         const cell = document.getElementById(i+":"+j);
         if(cell == null){
-            if(first != null){
+            if(Exporter.priv.isPartOfRowSpan(i-1, j)){
+                if(first == null) first = j;
+            }
+            else if(first != null && !Exporter.priv.isEdgeOfMultiSpan(i, j)){
                 clines.push((first+1)+"-"+(j));
                 first = null;
             }
@@ -424,6 +424,19 @@ Exporter.priv.isPartOfRowSpan = function(i, j){
         if(cell == null) continue;
         if(cell.rowSpan > 1){
             if(r + cell.rowSpan - 1 > i) return true;
+        }
+    }
+    return false;
+}
+
+Exporter.priv.isEdgeOfMultiSpan = function(i, j){
+    for(let r = 0; r <= i; r++){
+        for(let c = 0; c <= j; c++){
+            const cell = document.getElementById(r+":"+c);
+            if(cell == null) continue;
+            if(cell.rowSpan > 1){
+                if(r + cell.rowSpan - 1 == i && c + cell.colSpan - 1 == j) return true;
+            }
         }
     }
     return false;
