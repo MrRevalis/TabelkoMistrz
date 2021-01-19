@@ -46,8 +46,8 @@ Importer.openHTMLModal = function(){
 
 Importer.loadTemplate = async function(number){
     switch(number){
-        case 0: file = "../template/template0.html";break;
-        case 1: file = "../template/template1.html";break;
+        case 0: file = "./template/template0.html";break;
+        case 1: file = "./template/template1.html";break;
     }
     var data = await Importer.readTextFile(file);
     if(data.includes('<table id="mainTable"')){
