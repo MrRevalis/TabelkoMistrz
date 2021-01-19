@@ -863,8 +863,8 @@ Importer.setCellTextColor = function(args, row, col){
 Importer.manageCell = function(content){
     const cmds = [];
     let cell = content;
-    for(let i = 0; i < content.length; i++){
-        if(cell[i] == "\\"){
+    for(let i = 0; i < cell.length; i++){
+        if(cell[i] == "\\" || cell[i] == "\\\\"){
             const cmd = Importer.getCommand(cell, i+1);
             if(cmd[0]){
                 if(cmd[1]){
@@ -878,7 +878,7 @@ Importer.manageCell = function(content){
                     else
                         cell = cell.replace("\\"+cmd[0], cmd[0]);
                 }
-                i=0; //check text content from the beggining, coz of replace method
+                i=-1; //check text content from the beggining, coz of replace method
             }
         }
     }
