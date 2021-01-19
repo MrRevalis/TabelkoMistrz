@@ -1666,8 +1666,8 @@ function AddToHeightBar(index){
     }
     newArray.push(heightTooBarArray[i]);
   }
-  heightTooBarArray = newArray;
-
+  heightTooBarArray = [...newArray];
+  alert(heightTooBarArray);
   var table = document.getElementById("heightToolBarTable");
   var row = table.insertRow(index);
   var cell = row.insertCell(0);
@@ -1683,9 +1683,8 @@ function AddToHeightBar(index){
 function ChangeIDHeight(){
   var table = document.getElementById("heightToolBarTable");
   for(var i = 0; i < table.rows.length; i++){
-    for(var j = 0; j < table.rows[i].cells.length; j++){
-      table.rows[i].cells[j].id = "h"+i;
-    }
+      var element = table.rows[i].cells[0];
+      element.id = "h:"+i;
   }
 }
 
