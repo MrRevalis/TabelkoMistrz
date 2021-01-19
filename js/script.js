@@ -366,8 +366,6 @@ function AddPropertiesToCell(cell, i, j){
 function InsertColumn(side){
   if(wybranaKomorka == null){
     if(tabelaZaznaczonych.length > 0){
-      alert(tabelaZaznaczonych[0]);
-      alert(tabelaZaznaczonych[tabelaZaznaczonych.length - 1]);
       switch(side){
         case "l": wybranaKomorka = tabelaZaznaczonych[0];break;
         case "r": wybranaKomorka = tabelaZaznaczonych[tabelaZaznaczonych.length - 1];break;
@@ -435,8 +433,6 @@ function InsertColumn(side){
 function InsertRow(side){
   if(wybranaKomorka == null){
     if(tabelaZaznaczonych.length > 0){
-      alert(tabelaZaznaczonych[0]);
-      alert(tabelaZaznaczonych[tabelaZaznaczonych.length - 1]);
       switch(side){
         case "u": wybranaKomorka = tabelaZaznaczonych[0];break;
         case "d": wybranaKomorka = tabelaZaznaczonych[tabelaZaznaczonych.length - 1];break;
@@ -1667,7 +1663,6 @@ function AddToHeightBar(index){
     newArray.push(heightTooBarArray[i]);
   }
   heightTooBarArray = [...newArray];
-  alert(heightTooBarArray);
   var table = document.getElementById("heightToolBarTable");
   var row = table.insertRow(index);
   var cell = row.insertCell(0);

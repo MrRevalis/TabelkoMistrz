@@ -677,6 +677,32 @@ Exporter.saveHTMLCode = function(){
     }
 }
 
+Exporter.saveHTMLCodeToHTML = function(){
+    var table = document.getElementById("mainTable") ? document.getElementById("mainTable").outerHTML : "";
+    if(table.length > 0){
+
+        var tableText = "";
+        for(var i = 0; i < table.length; i++){
+            tableText += table[i];
+            if(table[i] == ">"){
+                tableText += "\n";
+            }
+            if(table[i + 1] == "<" && table[i + 2] == "/"){
+                tableText += "\n";
+            }
+        }
+        var file = new Blob([tableText], {type: "text/plain"});
+        var element = document.createElement("a");
+        element.href = URL.createObjectURL(file);
+        element.download = "tabela_latex_HTML.html";
+        element.click();
+        element.href = URL.revokeObjectURL(file);
+        element.remove();
+    }
+    else{
+        ShowCustomAlert("Utwórz tabele, żeby móc ją zapisać.")
+    }
+}
 Exporter.priv.packagesInfo = function(multiRowPackage,cellColorPackage){
     var tableInfo = [];
     if(multiRowPackage || cellColorPackage){
